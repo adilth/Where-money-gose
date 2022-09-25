@@ -1,0 +1,26 @@
+<%- include('partials/header.ejs') -%>
+<main id="main">
+   <div class="container">
+      <div><a href="/home/new">New</a></div>
+      <p>Your expenses</p>
+      <ul class="row list-unstyled tasks">
+         <% for(var i=0; i<tasks.length; i++) {%>
+         <li class="col-6 justify-content-between mt-5">
+            <a href="/post/<%= tasks[i]._id%>">
+               more details
+            </a>
+         </li>
+         <li class="col-6 justify-content-between mt-5"> <%= tasks[i].task%>
+         </li>
+         <li class="col-6 justify-content-between mt-5">
+            <%= tasks[i].spend%>
+         </li>
+         <li class="col-6 justify-content-between mt-5">
+            <%= tasks[i].spendAt%>
+         </li>
+         <% } %>
+      </ul>
+      <p class="tolal">Total: </p>
+   </div>
+</main>
+<%- include('partials/footer.ejs') -%>
