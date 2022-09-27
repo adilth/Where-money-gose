@@ -1,0 +1,24 @@
+<%- include('partials/header.ejs') -%>
+<% if (error != '') { %>
+<%= error %>
+<% } else { %>
+<h2 class="page-title">New Menu</h2>
+<form action="/home/edit/<%=tasks[0]._id%>" method="POST">
+      <input type="hidden" name="_method" value="PUT" />
+      <div class="menu-edit">
+            <div class="menu-name"><label for="task">Spend On</label><input type="text" name="task"
+                        value="<%= tasks[0].task %>"></div>
+            <div class="menu-icon-link"><label for="spend">How Much</label><input type="number" name="spend"
+                        value="<%= tasks[0].spend %>"></div>
+            <div class="menu-url"><label for="info">more info</label><input type="text" name="info"
+                        value="<%= tasks[0].info %>"></div>
+            <div class="menu-btn">
+                  <button type="submit" class="btn btn-primary">Save</button>
+                  <button type="button" class="btn btn-primary"
+                        onclick="javascript:location.href='/home';">Cancel</button>
+                  <input type="hidden" name="menuId" value="<%= tasks[0]._id %>">
+            </div>
+      </div>
+</form>
+<% } %>
+<%- include('partials/footer.ejs') -%>
