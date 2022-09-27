@@ -3,23 +3,48 @@
    <div class="container">
       <div><a href="/home/new">New</a></div>
       <p>Your expenses</p>
-      <ul class="row list-unstyled tasks">
-         <% for(var i=0; i<tasks.length; i++) {%>
-         <li class="col-6 justify-content-between mt-5">
-            <a href="/post/<%= tasks[i]._id%>">
-               more details
-            </a>
-         </li>
-         <li class="col-6 justify-content-between mt-5"> <%= tasks[i].task%>
-         </li>
-         <li class="col-6 justify-content-between mt-5">
-            <%= tasks[i].spend%>
-         </li>
-         <li class="col-6 justify-content-between mt-5">
-            <%= tasks[i].spendAt%>
-         </li>
-         <% } %>
+      <!-- <div class="row"> -->
+      <ul>
+         <div class="flex gap-1-5 row-cols-md-4">
+            <% tasks.forEach(task => {%>
+            <div class="card">
+               <div class="card-header">
+                  <li class="card-title"> <%= task.task %></li>
+
+               </div>
+               <div class="card-body">
+                  <div class="card-body">
+                     <li class="card-text ">
+                        <%= task.spend%> $
+                     </li>
+                     <li class="card-text ">
+                        <%= task.info%>
+                     </li>
+                     <li class="col-6 mt-5">
+                        <a class="card-link" href="/post/<%= task._id%>">
+                           more details
+                        </a>
+                     </li>
+                  </div>
+
+                  <div class="mb-1 p-1 flex between-space">
+                     <a class="card-link" href="/home/editTask/<%= task._id %>">Edit</a> &nbsp;
+                     <a class="card-link" href="/menu/delete/<%= task._id %>" class="red"
+                        onclick="return confirm('Are you sure you wish to delete this?');">Delete</a>
+                  </div>
+               </div>
+               <div class="card-footer text-muted">
+                  <li class="card-subtitle mb-2 text-muted ">
+                     <%= moment(task.spendAt).format("MMMM Do YYYY")%>
+                  </li>
+               </div>
+            </div>
+
+            <% }) %>
+         </div>
       </ul>
+      <!-- </div> -->
+
       <p class="tolal">Total: </p>
    </div>
 </main>
