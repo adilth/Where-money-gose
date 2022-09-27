@@ -12,22 +12,29 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
       integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
       crossorigin="anonymous" />
-   <link rel="stylesheet" href="/css/style.css" />
+   <link rel="stylesheet" href="/style.css" />
 </head>
 
 <body>
    <% if(user._id){ %>
-   <header>
-      <a href="/home">Money Where Spent</a>
-      <ul>
-         <li>search</li>
+   <header class="flex between-space block">
+      <h2 class="logo-head"><a href="/home">Money Where Spent</a></h2>
+      <form action="/q" method="POST" class="search-form" id="searchForm">
+         <div class="input-group mb-3">
+            <input type="text" class="form-control" name="searchInput" value="">
+            <div class="input-group-append"><button class="btn btn-primary"><i class="fas fa-search"></i></button>
+            </div>
+         </div>
+      </form>
+      <ul class="flex margin ">
          <li><a href="/user/logout" class="btn btn-primary">logout</a> </li>
          <li><%= user.userName %> profile</li>
       </ul>
    </header>
-   <% } %>
+   <%} else {%>
    <header class="container">
       <div class="text-center">
-         <h1 class=""><a href="/home">Money Where Spent</a></h1>
+         <h1 class="logo-head"><a href="/home">Money Where Spent</a></h1>
       </div>
    </header>
+   <% } %>
