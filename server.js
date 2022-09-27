@@ -6,6 +6,8 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const flash = require("express-flash");
 const logger = require("morgan");
+const moment = require("moment");
+const methodOverride = require("method-override");
 const connectDB = require("./config/db");
 const homeRouter = require("./routes/home");
 const indexRouter = require("./routes/index");
@@ -19,9 +21,25 @@ require("./config/passport")(passport);
 connectDB();
 
 app.use(express.json());
-app.set("view engine", "ejs");
-app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+
+// Method overwrite
+app.use(
+  methodOverride((req, res) => {
+    if (req.body && typeof req.body === "object" && "_method" in req.body) {
+      let method = req.body._method;
+      delete req.body._method;
+      return method;
+    }
+  })
+);
+//ejs
+app.use((req, res, next) => {
+  res.locals.moment = moment;
+  next();
+});
+app.set("view engine", "ejs");
 app.use(logger("dev"));
 app.set("trust proxy", 1);
 // Sessions
