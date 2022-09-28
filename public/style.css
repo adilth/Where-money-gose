@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap");
 *,
 *::after,
 *::before {
@@ -5,12 +6,70 @@
   margin: 0;
   padding: 0;
 }
+card {
+  width: 400px;
+  background-color: #fff;
+  border: none;
+  border-radius: 12px;
+}
+label.radio {
+  cursor: pointer;
+  width: 100%;
+}
+label.radio input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+label.radio span {
+  padding: 7px 14px;
+  border: 2px solid #eee;
+  display: inline-block;
+  color: #039be5;
+  border-radius: 10px;
+  width: 100%;
+  height: 48px;
+  line-height: 27px;
+}
+label.radio input:checked + span {
+  border-color: #039be5;
+  background-color: #81d4fa;
+  color: #fff;
+  border-radius: 9px;
+  height: 48px;
+  line-height: 27px;
+}
+.form-control {
+  margin-top: 10px;
+  height: 48px;
+  border: 2px solid #eee;
+  border-radius: 10px;
+}
+.form-control:focus {
+  box-shadow: none;
+  border: 2px solid #039be5;
+}
+.agree-text {
+  font-size: 12px;
+}
+.terms {
+  font-size: 12px;
+  text-decoration: none;
+  color: #039be5;
+}
+.confirm-button {
+  height: 50px;
+  border-radius: 10px;
+}
 
 body,
 html {
   height: 100%;
   width: 100%;
   scroll-behavior: smooth;
+  font-family: "Roboto", sans-serif;
 }
 
 a {
@@ -48,6 +107,79 @@ h4,
 h5 {
   line-height: 1.1;
   hyphens: auto;
+}
+/* header style*/
+header {
+  min-width: 1335px;
+  background-color: #cbcbcb;
+}
+.space-mg {
+  padding-block: 0.9rem;
+}
+.form-control {
+  border-radius: 7px;
+  border: 1.5px solid #e3e6ed;
+  margin-left: 2rem;
+}
+.margin {
+  margin-left: auto;
+}
+.logo-head {
+  font-size: 1.7rem;
+}
+input.form-control:focus {
+  box-shadow: none;
+  border: 1.5px solid #e3e6ed;
+  background-color: #f7f8fd;
+  letter-spacing: 1px;
+}
+.mg-ft {
+  margin-left: 0.8rem;
+}
+/*general style*/
+.main {
+  margin-top: 2rem;
+}
+.link {
+  text-align: right;
+  text-decoration: underline;
+}
+/*welcome page */
+.image-cont {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
+    url("../images/money-index3.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  padding: 0.9em 7em;
+  color: white;
+}
+
+.container.full {
+  width: 100%;
+  height: 100%;
+}
+.grid-center {
+  height: 100%;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+.fosz {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+/* style cards */
+.flex {
+  display: flex;
+}
+.gap-1-5 {
+  gap: 1.5em;
+}
+.between-space {
+  justify-content: space-between;
 }
 @media (prefers-reduced-motion: reduce) {
   html,
