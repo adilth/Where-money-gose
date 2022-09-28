@@ -1,7 +1,7 @@
 <%- include('partials/header.ejs') -%>
-<main id="main">
+<main id="main" class="main">
    <div class="container">
-      <div><a href="/home/new">New</a></div>
+      <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa-solid fa-plus"></i></a></div>
       <p>Your expenses</p>
       <!-- <div class="row"> -->
       <ul>
@@ -9,7 +9,7 @@
             <% tasks.forEach(task => {%>
             <div class="card">
                <div class="card-header">
-                  <li class="card-title"> <%= task.task %></li>
+                  <li class="card-title fosz text-center"> <%= task.task %></li>
 
                </div>
                <div class="card-body">
