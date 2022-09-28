@@ -2,23 +2,55 @@
 <% if (error != '') { %>
 <%= error %>
 <% } else { %>
-<h2 class="page-title">New Menu</h2>
-<form action="/home/edit/<%=tasks[0]._id%>" method="POST">
-      <input type="hidden" name="_method" value="PUT" />
-      <div class="menu-edit">
-            <div class="menu-name"><label for="task">Spend On</label><input type="text" name="task"
-                        value="<%= tasks[0].task %>"></div>
-            <div class="menu-icon-link"><label for="spend">How Much</label><input type="number" name="spend"
-                        value="<%= tasks[0].spend %>"></div>
-            <div class="menu-url"><label for="info">more info</label><input type="text" name="info"
-                        value="<%= tasks[0].info %>"></div>
-            <div class="menu-btn">
-                  <button type="submit" class="btn btn-primary">Save</button>
-                  <button type="button" class="btn btn-primary"
-                        onclick="javascript:location.href='/home';">Cancel</button>
-                  <input type="hidden" name="menuId" value="<%= tasks[0]._id %>">
+<h2 class="page-title">edit Spends</h2>
+<div class="container mt-5 mb-5 d-flex justify-content-center">
+      <div class="card px-1 py-4">
+            <div class="card-body">
+                  <form action="/home/edit/<%=tasks[0]._id%>" method="POST">
+                        <input type="hidden" name="_method" value="PUT" />
+                        <h6 class="information mt-4">Please provide all fields</h6>
+                        <div class="row">
+                              <div class="col-sm-12">
+                                    <div class="form-group">
+                                          <input class="form-control" type="text" name="task"
+                                                value="<%= tasks[0].task %>" placeholder="spend On"> </div>
+                              </div>
+                        </div>
+                        <div class="row">
+                              <div class="col-sm-12">
+                                    <div class="form-group">
+                                          <div class="input-group"> <input class="form-control" type="number"
+                                                      name="spend" placeholder="How much" value="<%= tasks[0].spend %>">
+                                          </div>
+                                    </div>
+                              </div>
+                        </div>
+                        <div class="row">
+                              <div class="col-sm-12">
+                                    <div class="form-group">
+                                          <div class="input-group"> <input class="form-control" type="text" name="info"
+                                                      placeholder="More Info" value="<%= tasks[0].info %>"> </div>
+                                    </div>
+                              </div>
+                        </div>
+                        <div class="row">
+                              <div class="col-sm-12">
+                                    <div class="form-group">
+                                          <div class="input-group"> <input class="form-control" type="date"
+                                                      name="spendAt" value="<%= tasks[0].spendAt %>"> </div>
+                                    </div>
+                              </div>
+                        </div>
+                        <div class="menu-btn">
+                              <button type="submit" class="btn btn-primary">Save</button>
+                              <button type="button" class="btn btn-primary"
+                                    onclick="javascript:location.href='/home';">Cancel</button>
+                              <input type="hidden" name="menuId" value="<%= tasks[0]._id %>">
+                        </div>
+                  </form>
             </div>
       </div>
-</form>
+</div>
+
 <% } %>
 <%- include('partials/footer.ejs') -%>
