@@ -21,20 +21,29 @@ module.exports = {
       error: "",
     });
   },
-  getEditTask: async (req, res) => {
+  getSpends: async (req, res) => {
     const tasks = await Tasks.find();
+    res.render("spend.ejs", {
+      tasks: tasks,
+      title: "more details about spends Page",
+      user: req.user,
+      error: "",
+    });
+  },
+  getEditTask: async (req, res) => {
+    const tasks = await Tasks.find({ _id: req.params.id });
     res.render("editTask.ejs", {
       title: "Add new task Page",
       tasks: tasks,
       user: req.user,
-      error: "Invalid Request",
+      error: "",
     });
   },
   postAddTask: async (req, res) => {
     try {
       req.body.user = req.user.id;
       await Tasks.create(req.body);
-      res.redirect("/dashboard");
+      res.redirect("/home");
     } catch (err) {
       console.log(err);
       res.render("error404.ejs");
@@ -42,12 +51,31 @@ module.exports = {
   },
   editTask: async (req, res) => {
     try {
-      req.body.user = req.user.id;
-      await Tasks.create(req.body);
-      res.redirect("/dashboard");
+      const task = await Tasks.findById(req.params.id).lean();
+      if (!task) {
+        return res.render("error404.ejs");
+      }
+      if (task.user != req.user.id) {
+        res.redirect("/home");
+      } else {
+        task = await Tasks.findOneAndUpdate({ _id: req.params.id }, req.body);
+      }
+      res.redirect("/home");
     } catch (err) {
-      console.log(err);
-      res.render("error404.ejs");
+      console.error(err);
+      res.render("error500.ejs");
+    }
+  },
+  deleteSpends: async (req, res) => {
+    try {
+      // Find post by id
+      let task = await Tasks.findById({ _id: req.params.id });
+      // Delete task from db
+      await task.remove({ _id: req.params.id });
+      console.log("Deleted task");
+      res.redirect("/home");
+    } catch (err) {
+      res.redirect("/home");
     }
   },
 };
