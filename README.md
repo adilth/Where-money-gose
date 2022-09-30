@@ -2,7 +2,7 @@
 
 # Introduction
 
-A Simple webpage to target your money where it spends. and is built using the MVC Architecture, we have also implemented "authorization" so user can sign up, customize & personalize the app
+A Simple webpage to target your money where it spends. and is built using the MVC Architecture, we have also implemented "authorization" so users can sign up, customize & personalize the app
 
 ---
 
@@ -12,7 +12,7 @@ A Simple webpage to target your money where it spends. and is built using the MV
 
 # Objectives
 
-- It's a beginner-level app created to understand how MVC concept and logins are added
+- It's a beginner-level app created to understand how MVC concepts and logins are added using nodeJs(express) with a lot of dependencies either using vanilla JavaScript, Ejs as a template engine, and Bootstrap.
 
 ---
 
@@ -24,7 +24,7 @@ A Simple webpage to target your money where it spends. and is built using the MV
 
 # Packages/Dependencies used
 
-bcrypt, connect-mongo, dotenv, ejs, express, express-flash, express-session, mongodb, mongoose, morgan, nodemon, passport, passport-local, validator
+bcrypt, connect-mongo, dotenv, ejs, express, moment, express-flash, express-session, mongodb, mongoose, morgan, nodemon, passport, passport-local, validator
 
 ---
 
@@ -37,7 +37,7 @@ bcrypt, connect-mongo, dotenv, ejs, express, express-flash, express-session, mon
 # Things to add
 
 - Create a `.env` file and add the following as `key: value`
-  - PORT: 2121 (can be any port example: 3000)
+  - PORT: 3001 (can be any port example: 3000)
   - DB_STRING: `your database URI`
   ***
 
