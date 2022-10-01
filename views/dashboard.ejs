@@ -2,10 +2,10 @@
 <main id="main" class="main">
    <div class="container">
       <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa-solid fa-plus"></i></a></div>
-      <p>Your expenses</p>
+      <h4 class="mb-3">Your expenses</h4>
       <!-- <div class="row"> -->
       <ul>
-         <div class="flex gap-1-5 row-cols-md-4">
+         <div class="flex gap-1-5 row-cols-md-4 flex-wrap">
             <% tasks.forEach(task => {%>
             <div class="card">
                <div class="card-header">
@@ -29,8 +29,12 @@
 
                   <div class="mb-1 p-1 flex between-space">
                      <a class="card-link" href="/home/editTask/<%= task._id %>">Edit</a> &nbsp;
-                     <a class="card-link" href="/menu/delete/<%= task._id %>" class="red"
-                        onclick="return confirm('Are you sure you wish to delete this?');">Delete</a>
+                     <form action="/home/deletePost/<%= task._id %>" method="POST" id="delete-form">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit" class="card-link"
+                           onclick="return confirm('Are you sure you wish to delete this?');">Delete
+                        </button>
+                     </form>
                   </div>
                </div>
                <div class="card-footer text-muted">
