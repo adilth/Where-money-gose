@@ -12,56 +12,16 @@ card {
   border: none;
   border-radius: 12px;
 }
-label.radio {
-  cursor: pointer;
-  width: 100%;
-}
-label.radio input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-label.radio span {
-  padding: 7px 14px;
-  border: 2px solid #eee;
-  display: inline-block;
-  color: #039be5;
-  border-radius: 10px;
-  width: 100%;
-  height: 48px;
-  line-height: 27px;
-}
-label.radio input:checked + span {
-  border-color: #039be5;
-  background-color: #81d4fa;
-  color: #fff;
-  border-radius: 9px;
-  height: 48px;
-  line-height: 27px;
-}
-.form-control {
-  margin-top: 10px;
-  height: 48px;
-  border: 2px solid #eee;
-  border-radius: 10px;
-}
-.form-control:focus {
-  box-shadow: none;
-  border: 2px solid #039be5;
-}
-.agree-text {
-  font-size: 12px;
-}
-.terms {
-  font-size: 12px;
-  text-decoration: none;
-  color: #039be5;
-}
-.confirm-button {
-  height: 50px;
-  border-radius: 10px;
+.bg-image {
+  background-image: linear-gradient(
+      to right,
+      rgba(132, 250, 176, 0.5),
+      rgba(143, 211, 244, 0.5)
+    ),
+    url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp");
+  background-size: cover;
+  min-width: 100%;
+  min-height: 100% !important;
 }
 
 body,
@@ -111,12 +71,12 @@ h5 {
 /* header style*/
 header {
   min-width: 1335px;
-  background-color: #cbcbcb;
+  background-color: #e2e2e2;
 }
 .space-mg {
-  padding-block: 0.9rem;
+  padding-block: 0.8rem;
 }
-.form-control {
+.input-group > .form-control {
   border-radius: 7px;
   border: 1.5px solid #e3e6ed;
   margin-left: 2rem;
@@ -137,6 +97,9 @@ input.form-control:focus {
   margin-left: 0.8rem;
 }
 /*general style*/
+.page-title {
+  margin: 1.5rem auto;
+}
 .main {
   margin-top: 2rem;
 }
@@ -160,6 +123,7 @@ input.form-control:focus {
   width: 100%;
   height: 100%;
 }
+
 .grid-center {
   height: 100%;
   display: grid;
@@ -180,6 +144,11 @@ input.form-control:focus {
 }
 .between-space {
   justify-content: space-between;
+}
+.card-link {
+  background-color: transparent;
+  border: none;
+  text-decoration: underline;
 }
 @media (prefers-reduced-motion: reduce) {
   html,
