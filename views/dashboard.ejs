@@ -4,49 +4,70 @@
       <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa-solid fa-plus"></i></a></div>
       <h4 class="mb-3">Your expenses</h4>
       <!-- <div class="row"> -->
-      <ul>
-         <div class="flex gap-1-5 row-cols-md-4 flex-wrap">
-            <% tasks.forEach(task => {%>
-            <div class="card">
-               <div class="card-header">
-                  <li class="card-title fosz text-center"> <%= task.task %></li>
-
-               </div>
-               <div class="card-body">
-                  <div class="card-body">
-                     <li class="card-text ">
-                        <%= task.spend%> $
-                     </li>
-                     <li class="card-text ">
-                        <%= task.info%>
-                     </li>
-                     <li class="col-6 mt-5">
-                        <a class="card-link" href="/post/<%= task._id%>">
-                           more details
-                        </a>
-                     </li>
+      <div class="main-content flex">
+         <div class="side-bar">
+            <p>Click on the Year panel to open specific month or week .</p>
+            <div class="panel-group">
+               <div class="panel panel-default">
+                  <div class="panel-heading">
+                     <h4 class="panel-title">
+                        <!-- do on if statement and check if there in other years  -->
+                        <a data-toggle="collapse" href="#collapse1">Collapsible panel</a>
+                     </h4>
                   </div>
-
-                  <div class="mb-1 p-1 flex between-space">
-                     <a class="card-link" href="/home/editTask/<%= task._id %>">Edit</a> &nbsp;
-                     <form action="/home/deletePost/<%= task._id %>" method="POST" id="delete-form">
-                        <input type="hidden" name="_method" value="DELETE" />
-                        <button type="submit" class="card-link"
-                           onclick="return confirm('Are you sure you wish to delete this?');">Delete
-                        </button>
-                     </form>
+                  <div id="collapse1" class="panel-collapse collapse">
+                     <div class="panel-body">Panel Body</div>
+                     <div class="panel-footer">Panel Footer</div>
                   </div>
-               </div>
-               <div class="card-footer text-muted">
-                  <li class="card-subtitle mb-2 text-muted ">
-                     <%= moment(task.spendAt).format("MMMM Do YYYY")%>
-                  </li>
                </div>
             </div>
-
-            <% }) %>
          </div>
-      </ul>
+
+         <ul>
+            <div class="flex gap-1-5 row-cols-md-4 flex-wrap">
+               <% tasks.forEach(task => {%>
+               <div class="card">
+                  <div class="card-header">
+                     <li class="card-title fosz text-center"> <%= task.task %></li>
+
+                  </div>
+                  <div class="card-body">
+                     <div class="card-body">
+                        <li class="card-text ">
+                           <%= task.spend%> $
+                        </li>
+                        <li class="card-text ">
+                           <%= task.info%>
+                        </li>
+                        <li class="col-6 mt-5">
+                           <a class="card-link" href="/post/<%= task._id%>">
+                              more details
+                           </a>
+                        </li>
+                     </div>
+
+                     <div class="mb-1 p-1 flex between-space">
+                        <a class="card-link" href="/home/editTask/<%= task._id %>">Edit</a> &nbsp;
+                        <form action="/home/deletePost/<%= task._id %>" method="POST" id="delete-form">
+                           <input type="hidden" name="_method" value="DELETE" />
+                           <button type="submit" class="card-link"
+                              onclick="return confirm('Are you sure you wish to delete this?');">Delete
+                           </button>
+                        </form>
+                     </div>
+                  </div>
+                  <div class="card-footer text-muted">
+                     <li class="card-subtitle mb-2 text-muted ">
+                        <%= moment(task.spendAt).format("MMMM Do YYYY")%>
+                     </li>
+                  </div>
+               </div>
+
+               <% }) %>
+            </div>
+         </ul>
+      </div>
+
       <!-- </div> -->
 
       <p class="tolal">Total: </p>
