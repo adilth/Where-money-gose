@@ -12,6 +12,7 @@ const connectDB = require("./config/db");
 const homeRouter = require("./routes/home");
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
+const profileRouter = require("./routes/profile");
 
 require("dotenv").config({ path: "./config/.env" });
 
@@ -64,6 +65,7 @@ app.use(flash());
 app.use("/", indexRouter);
 app.use("/home", homeRouter);
 app.use("/user", userRouter);
+app.use("/profile", profileRouter);
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running, you better catch it!");
