@@ -2,24 +2,64 @@
 <% if (error != '') { %>
 <%= error %>
 <% } else { %>
-<h2 class="page-title">New Menu</h2>
-<form action="/home/newTask" method="POST">
-      <div class="menu-edit">
-            <div class="menu-name"><label for="spendOn">Spend On</label><input type="text" name="task"
-                        value="<%= tasks.task %>"></div>
-            <div class="menu-icon-link"><label for="spend">How Much $</label><input type="number" name="spend"
-                        value="<%= tasks.spend %>"> </div>
-            <div class="menu-url"><label for="info">more info</label><input type="text" name="info"
-                        value="<%= tasks.info %>"></div>
-            <div class="menu-url"><label for="spendAt">spend At</label><input type="date" name="spendAt"
-                        value="<%= tasks.spendAt %>"></div>
-            <div class="menu-btn">
-                  <button type="submit" class="btn btn-primary">Save</button>
-                  <button type="button" class="btn btn-primary"
-                        onclick="javascript:location.href='/home';">Cancel</button>
-                  <input type="hidden" name="menuId" value="<%= tasks._id %>">
+<section class=" bg-image gradient-custom-3 pt-5">
+      <!-- <div class="head-tetle flex">
+            <h2 class="page-title"></h2>
+      </div> -->
+      <div class="mask d-flex align-items-center">
+            <div class="container h-100">
+                  <div class="row d-flex justify-content-center align-items-center h-100">
+                        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                              <div class="card" style="border-radius: 15px;">
+                                    <div class="card-body p-5">
+                                          <h2 class="text-uppercase text-center mb-5">Add New Spends</h2>
+
+                                          <form action="/home/newTask" method="POST">
+
+                                                <div class="form-outline mb-4">
+                                                      <input type="text" id="form3Example1cg"
+                                                            class="form-control form-control-lg" name="task" />
+                                                      <label class="form-label" for="form3Example1cg">Where Spend
+                                                            it</label>
+                                                </div>
+
+                                                <div class="form-outline mb-4">
+                                                      <input type="number" id="form3Example3cg"
+                                                            class="form-control form-control-lg" name="spend" />
+                                                      <label class="form-label" for="form3Example3cg">How Much</label>
+                                                </div>
+
+                                                <div class="form-outline mb-4">
+                                                      <input type="text" id="form3Example4cg"
+                                                            class="form-control form-control-lg" name="info" />
+                                                      <label class="form-label" for="form3Example4cg">More Info</label>
+                                                </div>
+
+                                                <div class="form-outline mb-4">
+                                                      <input type="date" id="form3Example4cdg"
+                                                            class="form-control form-control-lg" name="spendAt" />
+                                                      <label class="form-label" for="form3Example4cdg">Date spend
+                                                            At</label>
+                                                </div>
+                                                <p class="text-center text-muted mt-4 mb-3">Please make sure you file
+                                                      all field and with current info? </p>
+                                                <div class="d-flex justify-content-around">
+                                                      <div class=" menu-btn">
+                                                            <button type="submit"
+                                                                  class="btn btn-primary btn-lg">Save</button>
+                                                            <button type="button" class="btn btn-primary btn-lg "
+                                                                  onclick="javascript:location.href='/home';">Cancel</button>
+                                                      </div>
+                                                </div>
+
+                                          </form>
+
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
             </div>
       </div>
-</form>
+</section>
 <% } %>
 <%- include('partials/footer.ejs') -%>
