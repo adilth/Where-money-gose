@@ -23,7 +23,10 @@ card {
   min-width: 100%;
   min-height: 100% !important;
 }
-
+ol,
+ul {
+  padding-left: 0rem !important;
+}
 body,
 html {
   height: 100%;
@@ -37,6 +40,9 @@ a {
 }
 li {
   list-style: none;
+}
+ul {
+  margin-bottom: 0 !important;
 }
 img,
 canvas,
@@ -107,6 +113,9 @@ input.form-control:focus {
   text-align: right;
   text-decoration: underline;
 }
+.months {
+  font-size: 1.1rem;
+}
 /*welcome page */
 .image-cont {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)),
@@ -134,6 +143,27 @@ input.form-control:focus {
 .fosz {
   font-weight: bold;
   font-size: 1.2rem;
+}
+/* main content */
+.title-head {
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+}
+.main-content {
+  gap: 1rem;
+}
+.side-bar {
+  width: 15%;
+}
+.flex-size {
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.flex-size > * {
+  flex: 0 0 30%;
+}
+.pd-3 {
+  padding: 1rem;
 }
 /* style cards */
 .flex {
