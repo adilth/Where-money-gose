@@ -1,8 +1,8 @@
 <%- include('partials/header.ejs') -%>
 <main id="main" class="main">
    <div class="container">
-      <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa-solid fa-plus"></i></a></div>
-      <h4 class="mb-3">Your expenses</h4>
+      <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
+      <h4 class="title-head">Your expenses</h4>
       <!-- <div class="row"> -->
       <div class="main-content flex">
          <div class="side-bar">
@@ -10,21 +10,31 @@
             <div class="panel-group">
                <div class="panel panel-default">
                   <div class="panel-heading">
-                     <h4 class="panel-title">
+                     <h4 class="card-header">
                         <ul>
-                           <% [...new Set(tasks.map((task) => task.spendAt.getMonth() + 1))].forEach((task) =>{ %>
-                           <li><a data-toggle="collapse" href="#collapse1"><a href="/home/<%= task %> ">
-                                    <%= task %></a></a>
+                           <% [...new Set(tasks.map((task) => task.spendAt.getFullYear() ))].forEach((task) =>{ %>
+                           <li class="flex between-space">
+                              <a href="/home/<%= task %> "><%= task %></a>
+                              <a class="btn" data-bs-toggle="collapse" href="#collapse1"> <i
+                                    class="fa fa-chevron-down"></i>
+                              </a>
                            </li>
                            <% }) %>
                         </ul>
                         <!-- do on if statement and check if there in other years  -->
-
                      </h4>
                   </div>
                   <div id="collapse1" class="panel-collapse collapse">
-                     <div class="panel-body">Panel Body</div>
-                     <div class="panel-footer">Panel Footer</div>
+                     <div class="panel-body">
+                        <ul>
+                           <% [...new Set(tasks.map((task) => task.spendAt.getMonth() + 1))].forEach((task) =>{ %>
+                           <% var months = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep", "oct", "nov", "dec"];%>
+                           <li><a data-toggle="collapse" href="#collapse1"><a class="months" href="/home/<%= task %> ">
+                                    <%= months[task - 1] %></a></a>
+                           </li>
+                           <% }) %>
+                        </ul>
+                     </div>
                   </div>
                </div>
             </div>
