@@ -5,8 +5,10 @@ module.exports = {
   getHome: async (req, res) => {
     try {
       const tasks = await Tasks.find().sort({ createdAt: "desc" }).lean();
-      // const user = await User.find();
-      res.render("dashboard.ejs", { tasks: tasks, user: req.user });
+      res.render("dashboard.ejs", {
+        tasks: tasks,
+        user: req.user,
+      });
     } catch (err) {
       console.log(err);
       res.render("error404.ejs");
@@ -83,17 +85,30 @@ module.exports = {
     const tasks = await Tasks.find({
       $expr: { $eq: [{ $year: "$spendAt" }, year] },
     });
-    res.render("newTask.ejs", {
+    res.render("dashboard.ejs", {
       tasks: tasks,
       title: "Show year",
       user: req.user,
+      error: "",
     });
   },
   getDay: async (req, res) => {
     const tasks = await Tasks.find();
-    res.render("newTask.ejs", {
-      // tasks: tasks,
+    res.render("dashboard.ejs", {
+      tasks: tasks,
       title: "Add new task Page",
+      user: req.user,
+      error: "",
+    });
+  },
+  getWeek: async (req, res) => {
+    let week = req.params.week;
+    let tasks = await Tasks.find({
+      $expr: { $eq: [{ $week: "$spendAt" }, week] },
+    });
+    res.render("dashboard.ejs", {
+      tasks: tasks,
+      title: "week spend page",
       user: req.user,
       error: "",
     });
