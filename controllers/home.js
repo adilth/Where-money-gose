@@ -4,7 +4,9 @@ const User = require("../models/User");
 module.exports = {
   getHome: async (req, res) => {
     try {
-      const tasks = await Tasks.find().sort({ createdAt: "desc" }).lean();
+      const tasks = await Tasks.find({ user: req.user.id })
+        .sort({ createdAt: "desc" })
+        .lean();
       res.render("dashboard.ejs", {
         tasks: tasks,
         user: req.user,
@@ -116,6 +118,7 @@ module.exports = {
   getMonth: async (req, res) => {
     let month = req.params.month;
     let tasks = await Tasks.find({
+      user: req.user.id,
       $expr: { $eq: [{ $month: "$spendAt" }, month] },
     });
     res.render("dashboard.ejs", {
