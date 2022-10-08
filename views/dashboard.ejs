@@ -2,7 +2,7 @@
 <main id="main" class="main">
    <div class="container">
       <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
-      <h4 class="title-head">Your expenses</h4>
+      <h4 class="title-head">Your expenses for all times</h4>
       <!-- <div class="row"> -->
       <div class="main-content flex">
          <div class="side-bar">
@@ -12,29 +12,49 @@
                   <div class="panel-heading">
                      <h4 class="card-header">
                         <ul>
-                           <% [...new Set(tasks.map((task) => task.spendAt.getFullYear() ))].forEach((task) =>{ %>
-                           <li class="flex between-space">
-                              <a href="/home/<%= task %> "><%= task %></a>
-                              <a class="btn" data-bs-toggle="collapse" href="#collapse1"> <i
-                                    class="fa fa-chevron-down"></i>
-                              </a>
+                           <% [...new Set(tasks.map((task) => task.spendAt.getFullYear()))].forEach((task) =>{ %>
+                           <li>
+                              <div class="flex between-space">
+                                 <a href="/home/<%= task %> "><%= task %></a>
+                                 <a class="btn" data-bs-toggle="collapse" href="#collapse<%=task %>"> <i
+                                       class="fa fa-chevron-down"></i>
+                                 </a>
+                              </div>
+
+                              <div id="collapse<%=task %>" class="panel-collapse collapse">
+                                 <div class="panel-body">
+                                    <ul>
+                                       <% [...new Set(tasks.map((task) => task.spendAt.getMonth() + 1))].forEach((month) =>{ %>
+                                       <li>
+                                          <% var months = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep",
+                                          "oct", "nov", "dec"];%>
+                                          <div class="flex between-space">
+                                             <a class="months" href="/home/month/<%= month %>">
+                                                <%= months[month - 1]%></a> <a class="btn" data-bs-toggle="collapse"
+                                                href="#collapseM<%=month  %> ">
+                                                <i class="fa fa-chevron-down"></i></a>
+                                          </div>
+                                          <div id="collapseM<%= month %>" class="penel-collapse collapse">
+                                             <div class="panel-body">
+                                                <% [...new Set(tasks.map((week) => { %>
+                                                <%    var oneJan = new Date(week.spendAt.getFullYear(),0,1);%>
+                                                <%   var numberOfDays = Math.floor((week.spendAt - oneJan) / (24 * 60 * 60 * 1000));%>
+                                                <% return Math.ceil(( week.spendAt.getDay() + 1 + numberOfDays) / 7) %>
+                                                <% }))].forEach((week) => { %>
+                                                <a class="months" href="/home/week/<%= week %> "><%=week  %> </a>
+                                                <% }) %>
+                                             </div>
+                                          </div>
+                                       </li>
+                                       <% }) %>
+                                    </ul>
+                                 </div>
+                              </div>
                            </li>
                            <% }) %>
                         </ul>
                         <!-- do on if statement and check if there in other years  -->
                      </h4>
-                  </div>
-                  <div id="collapse1" class="panel-collapse collapse">
-                     <div class="panel-body">
-                        <ul>
-                           <% [...new Set(tasks.map((task) => task.spendAt.getMonth() + 1))].forEach((task) =>{ %>
-                           <% var months = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep", "oct", "nov", "dec"];%>
-                           <li><a data-toggle="collapse" href="#collapse1"><a class="months" href="/home/<%= task %> ">
-                                    <%= months[task - 1] %></a></a>
-                           </li>
-                           <% }) %>
-                        </ul>
-                     </div>
                   </div>
                </div>
             </div>
@@ -90,4 +110,5 @@
       <p class="tolal">Total: </p>
    </div>
 </main>
+
 <%- include('partials/footer.ejs') -%>
