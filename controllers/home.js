@@ -1,5 +1,6 @@
 const Tasks = require("../models/Tasks");
 const User = require("../models/User");
+const mongoose = require("mongoose");
 
 module.exports = {
   getHome: async (req, res) => {
@@ -7,9 +8,25 @@ module.exports = {
       const tasks = await Tasks.find({ user: req.user.id })
         .sort({ createdAt: "desc" })
         .lean();
+      const total = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            count: {
+              $sum: "$spend",
+            },
+          },
+        },
+      ]);
       res.render("dashboard.ejs", {
         tasks: tasks,
         user: req.user,
+        total: total,
       });
     } catch (err) {
       console.log(err);
@@ -86,6 +103,7 @@ module.exports = {
     let year = req.params.year;
     const tasks = await Tasks.find({
       $expr: { $eq: [{ $year: "$spendAt" }, year] },
+      user: req.user.id,
     });
     res.render("dashboard.ejs", {
       tasks: tasks,
@@ -107,6 +125,7 @@ module.exports = {
     let week = req.params.week;
     let tasks = await Tasks.find({
       $expr: { $eq: [{ $week: "$spendAt" }, week] },
+      user: req.user.id,
     });
     res.render("dashboard.ejs", {
       tasks: tasks,
@@ -118,12 +137,31 @@ module.exports = {
   getMonth: async (req, res) => {
     let month = req.params.month;
     let tasks = await Tasks.find({
-      user: req.user.id,
       $expr: { $eq: [{ $month: "$spendAt" }, month] },
+      user: req.user.id,
+    })
+      .sort({ createdAt: "desc" })
+      .lean();
+    res.render("dashboard.ejs", {
+      tasks: tasks,
+      title: "get month page",
+      user: req.user,
+      error: "",
+    });
+  },
+  getRange: async (req, res) => {
+    let from = req.params.from;
+    let to = req.params.to;
+    let tasks = await Tasks.find({
+      day: {
+        $gt: from,
+        $lt: to,
+      },
+      user: req.user.id,
     });
     res.render("dashboard.ejs", {
       tasks: tasks,
-      title: "Add new task Page",
+      title: "range filter",
       user: req.user,
       error: "",
     });
