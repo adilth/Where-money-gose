@@ -1,5 +1,10 @@
 <%- include('partials/header.ejs') -%>
-<h2><%= user.userName  %> </h2>
-<h2><%= user.email  %> </h2>
+<form action="/profile" method="post">
+   <input type="hidden" name="_method" value="PUT" />
+   <h2>Name : <input type="text" name="userName" value="<%= user.userName  %>"> </h2>
+   <h2>Email : <input type="text" name="email" value="<%= user.email  %>"> </h2>
+   <p>if you want change <a href="/profile/password">password</a></p>
+   <h2>Password<%= user.password  %> </h2>
+</form>
 <h2>you write a total of : <%= result  %> </h2>
 <%- include('partials/footer.ejs') %>
