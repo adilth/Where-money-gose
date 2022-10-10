@@ -146,21 +146,24 @@ input.form-control:focus {
 }
 /* main content */
 .title-head {
-  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.6rem;
   font-weight: bold;
+  text-align: center;
 }
 .main-content {
-  gap: 1rem;
+  gap: 1.5rem;
 }
+
 .side-bar {
-  width: 15%;
+  width: 17%;
 }
 .flex-size {
-  gap: 1rem;
+  gap: 1.3rem;
   flex-wrap: wrap;
 }
 .flex-size > * {
-  flex: 0 0 30%;
+  flex: 1 0 30%;
 }
 .pd-3 {
   padding: 1rem;
