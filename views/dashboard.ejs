@@ -3,7 +3,18 @@
    <div class="container">
       <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
       <h4 class="title-head">Your expenses for all times</h4>
-      <!-- <div class="row"> -->
+      <form action="/home/range" method="post">
+         <div class="from-group">
+            <label for="from">From</label>
+            <input type="date" name="from" id="from">
+         </div>
+         <div class="from-group">
+            <label for="to">From</label>
+            <input type="date" name="to" id="to">
+         </div>
+         <button type="submit">Go</button>
+      </form>
+      <!-- <div class=" row"> -->
       <div class="main-content flex">
          <div class="side-bar">
             <p>Click on the Year panel to open specific month or week .</p>
