@@ -1,10 +1,40 @@
 <%- include('partials/header.ejs') -%>
-<form action="/profile" method="post">
-   <input type="hidden" name="_method" value="PUT" />
-   <h2>Name : <input type="text" name="userName" value="<%= user.userName  %>"> </h2>
-   <h2>Email : <input type="text" name="email" value="<%= user.email  %>"> </h2>
-   <p>if you want change <a href="/profile/password">password</a></p>
-   <h2>Password<%= user.password  %> </h2>
-</form>
-<h2>you write a total of : <%= result  %> </h2>
+<div class="main-profile">
+   <form action="/profile" method="post">
+      <input type="hidden" name="_method" value="PUT" />
+      <h3>Name : <input type="text" name="userName" value="<%= user.userName  %>"> </h3>
+      <h3>Email : <input type="text" name="email" value="<%= user.email  %>"> </h3>
+      <button type="submit" class="btn-modal">save</button>
+   </form>
+   <div class="change-pass">
+      <p>if you want change <button class="btn btn-open">password</button></p>
+      <section class="modal hidden">
+         <div class="flex-end">
+            <button class="btn-close">X</button>
+         </div>
+         <h3>change password</h3>
+         <form action="/profile/password" method="post">
+            <input type="hidden" name="_method" value="PUT" />
+            <div class="from-group flex between-space">
+               <label for="oldPass">Old password</label>
+               <input type="password" name="oldPassword" id="oldPass">
+            </div>
+            <div class="from-group flex between-space">
+               <label for="password">password</label>
+               <input type="password" name="password" id="password">
+            </div>
+            <div class="from-group flex between-space">
+               <label for="confirmPassword">confirm password</label>
+               <input type="password" name="confirmPassword" id="confirmPassword">
+            </div>
+
+            <button class="btn-modal">submit</button>
+         </form>
+      </section>
+   </div>
+
+   <h2>you write a total of : <%= result  %> </h2>
+   <div class="overlay hidden"></div>
+</div>
+
 <%- include('partials/footer.ejs') %>
