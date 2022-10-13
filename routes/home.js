@@ -12,7 +12,7 @@ router.get("/:year", ensureAuth, homeController.getYear);
 router.get("/day", ensureAuth, homeController.getDay);
 router.get("/week/:week", ensureAuth, homeController.getWeek);
 router.get("/month/:month", ensureAuth, homeController.getMonth);
-router.get("/range/:from&:to", ensureAuth, homeController.getRange);
+router.post("/range", ensureAuth, homeController.getRange);
 router.delete("/deletePost/:id", homeController.deleteSpends);
 router.post("/newTask", ensureAuth, homeController.postAddTask);
 router.put("/edit/:id", homeController.editTask);
