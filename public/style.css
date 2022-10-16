@@ -145,6 +145,34 @@ input.form-control:focus {
   font-size: 1.2rem;
 }
 /* main content */
+.total {
+  color: green;
+  font-weight: bold;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: end;
+}
+.form {
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.date-input {
+  padding: 0.4rem;
+  border-radius: 5px;
+}
+.date-btn {
+  width: 55px;
+  height: 45px;
+  border: none;
+  background-color: #066efd;
+  padding: 0 1em;
+  color: #fff;
+  border-radius: 5px;
+}
+.form-cont {
+  display: flex;
+  gap: 1.5rem;
+}
 .title-head {
   margin-top: 0.5rem;
   margin-bottom: 1.6rem;
