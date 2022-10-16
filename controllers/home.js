@@ -1,6 +1,7 @@
 const Tasks = require("../models/Tasks");
 const User = require("../models/User");
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 module.exports = {
   getHome: async (req, res) => {
@@ -105,8 +106,28 @@ module.exports = {
       $expr: { $eq: [{ $year: "$spendAt" }, year] },
       user: req.user.id,
     });
+    const total = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+          spendAt: {
+            $gte: new Date(`${year}-1-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
     res.render("dashboard.ejs", {
       tasks: tasks,
+      total: total,
       title: "Show year",
       user: req.user,
       error: "",
@@ -116,6 +137,7 @@ module.exports = {
     const tasks = await Tasks.find();
     res.render("dashboard.ejs", {
       tasks: tasks,
+      // total: tasks;
       title: "Add new task Page",
       user: req.user,
       error: "",
@@ -127,8 +149,24 @@ module.exports = {
       $expr: { $eq: [{ $week: "$spendAt" }, week] },
       user: req.user.id,
     });
+    const total = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
     res.render("dashboard.ejs", {
       tasks: tasks,
+      total: total,
       title: "week spend page",
       user: req.user,
       error: "",
@@ -142,26 +180,66 @@ module.exports = {
     })
       .sort({ createdAt: "desc" })
       .lean();
+    const total = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+          spendAt: {
+            $gte: new Date(`2022-${month}-01`),
+            $lte: new Date(`2022-${month}-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
+    console.log(total);
     res.render("dashboard.ejs", {
       tasks: tasks,
+      total: total,
       title: "get month page",
       user: req.user,
       error: "",
     });
   },
   getRange: async (req, res) => {
-    let from = req.params.from;
-    let to = req.params.to;
+    let from = req.query.from;
+    let to = req.query.to;
+    let formatFrom = new Date(moment(from, "YYYY-MM-DD").format());
+    let formatTo = new Date(moment(to, "YYYY-MM-DD").format());
     let tasks = await Tasks.find({
-      day: {
-        $gt: from,
-        $lt: to,
+      spendAt: {
+        $gte: formatFrom,
+        $lt: formatTo,
       },
       user: req.user.id,
     });
+    const total = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+          spendAt: { $gte: formatFrom, $lt: formatTo },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
     res.render("dashboard.ejs", {
       tasks: tasks,
       title: "range filter",
+      total: total,
       user: req.user,
       error: "",
     });
