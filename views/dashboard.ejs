@@ -3,16 +3,20 @@
    <div class="container">
       <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
       <h4 class="title-head">Your expenses for all times</h4>
-      <form action="/home/range" method="post">
-         <div class="from-group">
-            <label for="from">From</label>
-            <input type="date" name="from" id="from">
+      <p class="tolal">Total: <%=total[0].count %> </p>
+      <form action="/home/range/:from&:to" method="get" class="flex form">
+         <div class="flex form-cont">
+            <div class="from-group">
+               <label for="from">From</label>
+               <input type="date" name="from" id="from" class="date-input">
+            </div>
+            <div class="from-group">
+               <label for="to">From</label>
+               <input type="date" name="to" id="to" class="date-input">
+            </div>
          </div>
-         <div class="from-group">
-            <label for="to">From</label>
-            <input type="date" name="to" id="to">
-         </div>
-         <button type="submit">Go</button>
+
+         <button type="submit" class="date-btn">Go</button>
       </form>
       <!-- <div class=" row"> -->
       <div class="main-content flex">
@@ -118,7 +122,7 @@
 
       <!-- </div> -->
 
-      <p class="tolal">Total: <%=total[0].count %> </p>
+
    </div>
 </main>
 
