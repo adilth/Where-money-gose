@@ -1,3 +1,4 @@
+  <%- include('partials/header.ejs') -%>
   <div>more details about spends</div>
   <div class="col-6">
      <h2><%= tasks.task %></h2>
@@ -5,8 +6,9 @@
      <p><%= tasks.info %></p>
      <p><%= tasks.spendAt %></p>
      <div class="mb-1 p-1">
-        <a href="/menu/<%= item._id %>">Edit</a> &nbsp;
-        <a href="/menu/delete/<%= item._id %>" class="red"
+        <a href="/home/editTask/<%= tasks._id %>">Edit</a> &nbsp;
+        <a href="/home/deletePost/<%= tasks._id %>" class="red"
            onclick="return confirm('Are you sure you wish to delete this?');">Delete</a>
      </div>
   </div>
+  <%- include('partials/footer.ejs') -%>
