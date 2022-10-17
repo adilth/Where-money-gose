@@ -3,7 +3,7 @@
    <div class="container">
       <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
       <h4 class="title-head">Your expenses for all times</h4>
-      <p class="tolal">Total: <%=total[0].count %> </p>
+      <p class="total">Total: <%=total[0].count %> $ </p>
       <form action="/home/range/:from&:to" method="get" class="flex form">
          <div class="flex form-cont">
             <div class="from-group">
@@ -85,14 +85,14 @@
                   </div>
                   <div class="card-body">
                      <div class="card-body">
-                        <li class="card-text ">
+                        <li class="card-text card-money">
                            <%= task.spend%> $
                         </li>
                         <li class="card-text ">
                            <%= task.info%>
                         </li>
                         <li class="col-6 mt-5">
-                           <a class="card-link" href="/post/<%= task._id%>">
+                           <a class="card-link" href="/home/spendsDetail/<%= task._id%>">
                               more details
                            </a>
                         </li>
