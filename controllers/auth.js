@@ -1,5 +1,6 @@
 const passport = require("passport");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
 module.exports = {
@@ -130,5 +131,83 @@ module.exports = {
         });
       }
     );
+  },
+  postConfirmEmail: async (req, res) => {
+    const user = await User.find();
+    if (req.user) {
+      return res.redirect("/home");
+    }
+    res.render("signup", {
+      title: "Create Account",
+      user: user,
+    });
+  },
+  getForgetPass: async (req, res) => {
+    const user = await User.find();
+    if (req.user) {
+      return res.redirect("/home");
+    }
+    res.render("forgetPass", {
+      title: "Create Account",
+      user: user,
+    });
+  },
+  getResetPass: async (req, res) => {
+    const user = await User.find();
+    if (req.user) {
+      return res.redirect("/home");
+    }
+    res.render("resetPass", {
+      title: "Create Account",
+      user: user,
+    });
+  },
+  putResetPass: async (req, res) => {
+    const user = await User.find();
+    if (req.user) {
+      return res.redirect("/home");
+    }
+    res.render("signup", {
+      title: "Create Account",
+      user: user,
+    });
+  },
+  changePass: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = await User.find({ _id: id });
+      const { oldPassword, password } = req.body;
+      if (!validator.isLength(req.body.password, { min: 8 }))
+        validationErrors.push({
+          msg: "Password must be at least 8 characters long",
+        });
+      if (req.body.password !== req.body.confirmPassword)
+        validationErrors.push({ msg: "Passwords do not match" });
+
+      if (validationErrors.length) {
+        req.flash("errors", validationErrors);
+        return res.redirect("/home/profile");
+      }
+      const isValidPassword = await bcrypt.compare(oldPassword, user.password);
+      if (!isValidPassword) {
+        validationErrors.push({ msg: "Please enter correct old password" });
+      }
+      const salt = await bcrypt.genSalt(10);
+
+      const newPassword = await bcrypt.hash(password, salt);
+      // const userPassword = await User.findOneAndUpdate(
+      //   { _id: req.user.id },
+      //   { password: passport },
+      //   { new: true }
+      // );
+      await newPassword.save();
+      res.render("profile.ejs", {
+        title: "Profile Page",
+        user: user,
+      });
+    } catch (err) {
+      console.log(err);
+      res.render("error404.ejs");
+    }
   },
 };
