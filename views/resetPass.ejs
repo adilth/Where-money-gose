@@ -1,0 +1,23 @@
+<%- include('partials/header.ejs') -%>
+  <div>please inter your new password to have a new password and access to you spend information</div>
+  <div class="col-6">
+         <% if (locals.messages.errors) { %> <% messages.errors.forEach( el => { %>
+         <div class="alert alert-danger"><%= el.msg %></div>
+         <% }) %> <% } %> <% if (locals.messages.info) { %> <%
+      messages.info.forEach( el => { %>
+         <div class="alert alert-info"><%= el.msg %></div>
+         <% }) %> <% } %>
+      <form action="/user/resetPass" method="post">
+         <input type="hidden" name="_method" value="PUT" />
+         <label for="password">password</label>
+         <input type="password" id="password" name="password" placeholder="please inter your password">
+         <label for="confirmPassword">password</label>
+         <input type="confirmPassword" id="confirmPassword" name="confirmPassword" placeholder="please inter your password">
+         <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+         <div class="otherStuff">
+            <p>if have an account please go to <a href="/user/login">login</a> page if you do not have an account please <a href="/user/signup">signUp</a></p>
+         </div>
+  </div>
+
+<%- include('partials/footer.ejs') -%>
