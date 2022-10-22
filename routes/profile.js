@@ -4,9 +4,10 @@ const profileController = require("../controllers/profile");
 const { ensureAuth, ensureGuest } = require("../middleware/auth");
 
 //Main Routes - simplified for now
-router.get("/", ensureAuth, profileController.getProfile);
+router.get("", ensureAuth, profileController.getProfile);
 router.get("/countSpend", ensureAuth, profileController.getCount);
+router.put("/:id", profileController.changePass);
+router.put("/user/:id", profileController.changeUserInfo);
 // router.get("/profile/:id", ensureAuth, postsController.getProfile);
-// router.get("dashboard", ensureAuth, postsController.getFeed);
 
 module.exports = router;
