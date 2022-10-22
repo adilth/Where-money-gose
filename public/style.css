@@ -235,10 +235,18 @@ input.form-control:focus {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
+  /* position: relative; */
   /* width: 100%; */
   /* min-height: 100vh; */
 }
+.user-form {
+  width: 600px;
+  padding: 1.2em;
+}
+.user-info label {
+  font-size: 1.1rem;
+}
+/* model */
 .modal {
   display: flex;
   flex-direction: column;
@@ -247,9 +255,11 @@ input.form-control:focus {
   width: 450px;
   padding: 1.2rem;
   min-height: 340px;
+  max-height: 420px;
   position: absolute;
   z-index: 2;
-  top: 20%;
+  top: 15%;
+  left: 40%;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 15px;
@@ -262,11 +272,11 @@ input.form-control:focus {
   align-items: center;
   justify-content: end;
 }
-.modal input {
+.user-form input {
   padding: 0.6rem 1rem;
   border: 1px solid rgb(170, 170, 170);
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .modal p {
@@ -288,7 +298,9 @@ button {
   font-weight: bold;
 }
 .btn-open {
-  color: rgb(135, 235, 168);
+  color: #066efd;
+  font-size: 1.1rem;
+  text-decoration: underline;
   font-weight: bold;
 }
 .btn-modal {
@@ -302,8 +314,9 @@ button {
   font-size: 1em;
   margin-top: 0.5rem;
 }
-.from-group {
-  padding: 0.4rem 0;
+.form-group {
+  padding: 0.4rem 0.2em;
+  margin-inline: 0.6rem;
 }
 .overlay {
   position: absolute;
