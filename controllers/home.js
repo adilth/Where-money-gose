@@ -28,6 +28,7 @@ module.exports = {
         tasks: tasks,
         user: req.user,
         total: total,
+        search: "",
       });
     } catch (err) {
       console.log(err);
