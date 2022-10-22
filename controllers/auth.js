@@ -23,7 +23,7 @@ module.exports = {
 
     if (validationErrors.length) {
       req.flash("errors", validationErrors);
-      return res.redirect("/login");
+      return res.redirect("/user/login");
     }
     req.body.email = validator.normalizeEmail(req.body.email, {
       gmail_remove_dots: false,
@@ -35,7 +35,7 @@ module.exports = {
       }
       if (!user) {
         req.flash("errors", info);
-        return res.redirect("/login");
+        return res.redirect("/user/login");
       }
       req.logIn(user, (err) => {
         if (err) {
