@@ -103,6 +103,12 @@ input.form-control:focus {
   margin-left: 0.8rem;
 }
 /*general style*/
+.content-task {
+  flex: 2;
+}
+.side-bar {
+  width: 20%;
+}
 .page-title {
   margin: 1.5rem auto;
 }
@@ -158,6 +164,14 @@ input.form-control:focus {
 .form {
   gap: 1rem;
   margin-bottom: 2rem;
+  flex-direction: column;
+}
+.form-cont {
+  flex-direction: column;
+}
+.form-cont label {
+  font-weight: bold;
+  font-size: 1.05rem;
 }
 .date-input {
   padding: 0.4rem;
@@ -186,9 +200,6 @@ input.form-control:focus {
   gap: 1.5rem;
 }
 
-.side-bar {
-  width: 17%;
-}
 .flex-size {
   gap: 1.3rem;
   flex-wrap: wrap;
@@ -351,5 +362,16 @@ footer {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1420px !important;
   }
 }
