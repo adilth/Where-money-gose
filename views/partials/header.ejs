@@ -20,7 +20,8 @@
    <header>
       <div class="container flex between-space space-mg">
          <h2 class="logo-head"><a href="/home">Money Where Spent</a></h2>
-         <form action="/q" method="POST" class="search-form" id="searchForm">
+         <% if(search != null) {%>
+<form action="/q" method="POST" class="search-form" id="searchForm">
             <div class="input-group">
                <input type="text" class="form-control" name="searchInput" <% if (search != '') { %> value="<%= search %>"
          <% } %>>
@@ -28,6 +29,8 @@
                </div>
             </div>
          </form>
+         <%  }%> 
+         
          <ul class="flex margin ">
             <li><a href="/user/logout" class="btn btn-primary">logout</a> </li>
             <li class="mg-ft"> <a href="/profile "><span class="fosz"><%= user.userName %> </span></a></li>
