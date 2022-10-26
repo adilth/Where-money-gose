@@ -1,31 +1,40 @@
 <%- include('partials/header.ejs') -%>
 <main id="main" class="main">
    <div class="container">
-      <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
-      <h4 class="title-head">Your expenses for all times</h4>
-      <p class="total">Total: <%=total[0].count %> $ </p>
-      <form action="/home/range/:from&:to" method="get" class="flex form">
-         <div class="flex form-cont">
-            <div class="from-group">
-               <label for="from">From</label>
+      <div class="header-content flex">
+         <div class="side-bar">
+           <form action="/home/range/:from&:to" method="get" class="form flex">
+            <div class="form-cont flex">
+            <div class="from-group flex between-space">
+               <label for="from">From :</label>
                <input type="date" name="from" id="from" class="date-input">
             </div>
-            <div class="from-group">
-               <label for="to">To</label>
+            <div class="from-group flex between-space">
+               <label for="to">To :</label>
                <input type="date" name="to" id="to" class="date-input">
             </div>
          </div>
-
          <button type="submit" class="date-btn">Go</button>
-      </form>
+        </form>
+        </div>
+        <div class="content-task">
+        <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
+         <h4 class="title-head">Your expenses for all times</h4>
+         <p class="total">Total: <%=total[0].count %> $ </p>
+         <a href="/home/chartPage">more details</a>
+       </div>
+     </div>
+
       <!-- <div class=" row"> -->
       <div class="main-content flex">
-         <div class="side-bar">
             <p>Click on the Year panel to open specific month or week .</p>
             <div class="panel-group">
                <div class="panel panel-default">
                   <div class="panel-heading">
                      <h4 class="card-header">
+                        <% if(tasks == null) {%>
+                           <div class="nothing">no data found</div>
+                           <% } else {%> 
                         <ul>
                            <% [...new Set(tasks.map((task) => task.spendAt.getFullYear()))].forEach((task) =>{ %>
                            <li>
@@ -68,13 +77,13 @@
                            </li>
                            <% }) %>
                         </ul>
+                        <% } %> 
                         <!-- do on if statement and check if there in other years  -->
                      </h4>
                   </div>
                </div>
             </div>
-         </div>
-
+         
          <ul>
             <div class="flex flex-size flex-wrap">
                <% tasks.forEach(task => {%>
@@ -127,3 +136,4 @@
 </main>
 
 <%- include('partials/footer.ejs') -%>
+
