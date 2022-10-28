@@ -7,7 +7,7 @@ module.exports = {
   getHome: async (req, res) => {
     try {
       const tasks = await Tasks.find({ user: req.user.id })
-        .sort({ createdAt: "desc" })
+        .sort({ spendAt: "desc" })
         .lean();
       const total = await Tasks.aggregate([
         {
@@ -42,6 +42,7 @@ module.exports = {
       title: "Add new task Page",
       user: req.user,
       error: "",
+      search: null,
     });
   },
   getSpends: async (req, res) => {
@@ -51,6 +52,7 @@ module.exports = {
       title: "more details about spends Page",
       user: req.user,
       error: "",
+      search: null,
     });
   },
   getEditTask: async (req, res) => {
@@ -60,6 +62,7 @@ module.exports = {
       tasks: tasks,
       user: req.user,
       error: "",
+      set: "not add this",
     });
   },
   postAddTask: async (req, res) => {
@@ -129,6 +132,7 @@ module.exports = {
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
+      search: "",
       title: "Show year",
       user: req.user,
       error: "",
@@ -138,7 +142,8 @@ module.exports = {
     const tasks = await Tasks.find();
     res.render("dashboard.ejs", {
       tasks: tasks,
-      // total: tasks;
+      total: tasks,
+      search: "",
       title: "Add new task Page",
       user: req.user,
       error: "",
@@ -168,6 +173,7 @@ module.exports = {
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
+      search: "",
       title: "week spend page",
       user: req.user,
       error: "",
@@ -175,8 +181,10 @@ module.exports = {
   },
   getMonth: async (req, res) => {
     let month = req.params.month;
+    let year = req.params.year;
     let tasks = await Tasks.find({
       $expr: { $eq: [{ $month: "$spendAt" }, month] },
+      $expr: { $eq: [{ $year: "$spendAt" }, year] },
       user: req.user.id,
     })
       .sort({ createdAt: "desc" })
@@ -204,6 +212,7 @@ module.exports = {
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
+      search: "",
       title: "get month page",
       user: req.user,
       error: "",
@@ -225,7 +234,7 @@ module.exports = {
       {
         $match: {
           user: mongoose.Types.ObjectId(req.user.id),
-          spendAt: { $gte: formatFrom, $lt: formatTo },
+          spendAt: { $gte: formatFrom, $lte: formatTo },
         },
       },
       {
@@ -237,12 +246,46 @@ module.exports = {
         },
       },
     ]);
+    var labels = ["label 1", "label 2"];
+    var data = [tasks];
     res.render("dashboard.ejs", {
       tasks: tasks,
+      search: "",
       title: "range filter",
       total: total,
       user: req.user,
       error: "",
     });
+  },
+  getChartPage: async (req, res) => {
+    try {
+      const tasks = await Tasks.find({ user: req.user.id })
+        .sort({ createdAt: "desc" })
+        .lean();
+      const total = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            count: {
+              $sum: "$spend",
+            },
+          },
+        },
+      ]);
+      res.render("chartjs.ejs", {
+        tasks: tasks,
+        user: req.user,
+        total: total,
+        search: "",
+      });
+    } catch (err) {
+      console.log(err);
+      res.render("error404.ejs");
+    }
   },
 };
