@@ -27,8 +27,9 @@
 
       <!-- <div class=" row"> -->
       <div class="main-content flex">
-            <p>Click on the Year panel to open specific month or week .</p>
+            
             <div class="panel-group">
+               <p>Click on the Year panel to open specific month or week .</p>
                <div class="panel panel-default">
                   <div class="panel-heading">
                      <h4 class="card-header">
@@ -36,16 +37,16 @@
                            <div class="nothing">no data found</div>
                            <% } else {%> 
                         <ul>
-                           <% [...new Set(tasks.map((task) => task.spendAt.getFullYear()))].forEach((task) =>{ %>
+                           <% [...new Set(tasks.map((task) => task.spendAt.getFullYear()))].forEach((year) =>{ %>
                            <li>
                               <div class="flex between-space">
-                                 <a href="/home/<%= task %> "><%= task %></a>
-                                 <a class="btn" data-bs-toggle="collapse" href="#collapse<%=task %>"> <i
+                                 <a href="/home/<%= year %> "><%= year %></a>
+                                 <a class="btn" data-bs-toggle="collapse" href="#collapse<%=year %>"> <i
                                        class="fa fa-chevron-down"></i>
                                  </a>
                               </div>
 
-                              <div id="collapse<%=task %>" class="panel-collapse collapse">
+                              <div id="collapse<%=year %>" class="panel-collapse collapse">
                                  <div class="panel-body">
                                     <ul>
                                        <% [...new Set(tasks.map((task) => task.spendAt.getMonth() + 1))].forEach((month) =>{ %>
@@ -53,7 +54,7 @@
                                           <% var months = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep",
                                           "oct", "nov", "dec"];%>
                                           <div class="flex between-space">
-                                             <a class="months" href="/home/month/<%= month %>">
+                                             <a class="months" href="/home/month/<%= year%>/<%= month %>">
                                                 <%= months[month - 1]%></a> <a class="btn" data-bs-toggle="collapse"
                                                 href="#collapseM<%=month  %> ">
                                                 <i class="fa fa-chevron-down"></i></a>
@@ -137,3 +138,18 @@
 
 <%- include('partials/footer.ejs') -%>
 
+  var canvas = document.getElementById('myChart');
+  var data = {
+  labels: JSON.parse('<%- JSON.stringify([...new Set(tasks.map((task) => task.spendAt.getMonth() + 1))]); %>'),
+  datasets: [
+    {
+      label: "My First dataset",
+      backgroundColor: "rgba(255,99,132,0.2)",
+      borderColor: "rgba(255,99,132,1)",
+      borderWidth: 2,
+      hoverBackgroundColor: "rgba(255,99,132,0.4)",
+      hoverBorderColor: "rgba(255,99,132,1)",
+      data: JSON.parse('<%- JSON.stringify(tasks.map((task) => task.spend)); %>'),
+    }
+  ]
+};
