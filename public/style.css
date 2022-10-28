@@ -341,6 +341,21 @@ button {
   backdrop-filter: blur(3px);
   z-index: 1;
 }
+/* chart page */
+.charset {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.text-chart {
+  margin-top: 1rem;
+}
+.cont-chart {
+  position: relative;
+  width: 50vw;
+  height: 50vh;
+  margin-top: 2rem;
+}
 /* footer style */
 footer {
   background-color: #222;
