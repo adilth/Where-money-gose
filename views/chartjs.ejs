@@ -1,0 +1,75 @@
+ <%- include('partials/header.ejs') -%>
+ <div class="container flex charset">
+<div><h3 class="text-chart">more your Details about your spends</h3></div>
+<div class="select-wrapper">
+                        <select name="datepicker" id="datepicker">
+                          <% months.forEach(year => { %>
+                            <option value="year <%= year._id.year %> "><%= year._id.year %></option>
+
+                          <% }) %> 
+                        </select>
+                    </div>
+<div class="cont-chart">
+<canvas id="myChart"></canvas>
+<canvas id="myChartLine"></canvas>
+</div>
+ </div>
+  
+<script>
+
+// in your EJS file.
+
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var ctxLine = document.getElementById("myChartLine").getContext("2d");
+        data = {
+        labels: JSON.parse('<%- JSON.stringify(months.map((el) => el._id.month))%>'),
+        datasets: [
+          {
+            label: "Monthly Spends",
+            backgroundColor: "rgba(255,99,132,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 2,
+            hoverBackgroundColor: "rgba(255,99,132,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: JSON.parse('<%- JSON.stringify(months.map((el) => el.count))%>'),
+          }
+        ]
+      }
+      const option = {
+        title: {
+          display: true,
+          Text:"Monthly Spends",
+          fontSize: '20',
+          fontFamily: "'Roboto','sans-serif'",
+
+        },
+        scales:{
+          yAxes :{
+            ticks: {
+              beginATZero : true,
+              userCallback : function(value){
+                value = value.toString();
+                return '$' + value
+              }
+            }
+          }
+        },
+            responsive: true
+      
+      }
+        const config = {
+          type: 'bar',
+          data:data,
+          option:option,
+        }
+        const config2 = {
+          type: 'line',
+          data:data,
+          option:option,
+        }
+        var myNewChart = new Chart(ctx, config)
+        var myNewChartLine = new Chart(ctxLine, config2)
+        // var myNewChart = new Chart(ctx).Line(data);
+        const month = JSON.parse('<%- JSON.stringify(months.map((el) => el._id))%>');
+        console.log(month)
+    </script>
