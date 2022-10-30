@@ -1,4 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap");
+:root {
+  --main-color: #df4575;
+  --card-shadow: 6.4px 10.7px 5.8px rgba(0, 0, 0, 0.025),
+    20px 35px 46px rgba(0, 0, 0, 0.06);
+}
+
 *,
 *::after,
 *::before {
@@ -216,6 +222,9 @@ input.form-control:focus {
 }
 .gap-1-5 {
   gap: 1.5em;
+}
+.card-ds {
+  box-shadow: var(--card-shadow);
 }
 .between-space {
   justify-content: space-between;
