@@ -142,7 +142,7 @@ module.exports = {
     const tasks = await Tasks.find();
     res.render("dashboard.ejs", {
       tasks: tasks,
-      total: tasks,
+      total: total,
       search: "",
       title: "Add new task Page",
       user: req.user,
@@ -259,9 +259,7 @@ module.exports = {
   },
   getChartPage: async (req, res) => {
     try {
-      const tasks = await Tasks.find({ user: req.user.id })
-        .sort({ createdAt: "desc" })
-        .lean();
+      const tasks = await Tasks.find({ user: req.user.id }).lean();
       const total = await Tasks.aggregate([
         {
           $match: {
@@ -277,8 +275,31 @@ module.exports = {
           },
         },
       ]);
+      const months = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+          },
+        },
+        {
+          $group: {
+            _id: {
+              year: { $year: "$spendAt" },
+              month: { $month: "$spendAt" },
+            },
+            count: {
+              $sum: "$spend",
+            },
+          },
+        },
+        {
+          $sort: { _id: 1 },
+        },
+      ]);
+      console.log(months);
       res.render("chartjs.ejs", {
         tasks: tasks,
+        months: months,
         user: req.user,
         total: total,
         search: "",
