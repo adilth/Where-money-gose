@@ -6,9 +6,19 @@ const moment = require("moment");
 module.exports = {
   getHome: async (req, res) => {
     try {
+      let results = {};
+      let { page = 1, limit = 12 } = req.query;
+      const startIndex = page * limit;
+      const endIndex = (page - 1) * limit;
       const tasks = await Tasks.find({ user: req.user.id })
         .sort({ spendAt: "desc" })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
         .lean();
+      const count = await Tasks.countDocuments();
+      results.results = tasks.slice(startIndex, endIndex);
+      console.log(results);
+      console.log(page);
       const total = await Tasks.aggregate([
         {
           $match: {
@@ -27,6 +37,8 @@ module.exports = {
       res.render("dashboard.ejs", {
         tasks: tasks,
         user: req.user,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
         total: total,
         search: "",
       });
@@ -62,7 +74,7 @@ module.exports = {
       tasks: tasks,
       user: req.user,
       error: "",
-      set: "not add this",
+      search: null,
     });
   },
   postAddTask: async (req, res) => {
