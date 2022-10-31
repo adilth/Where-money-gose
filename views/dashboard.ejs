@@ -20,7 +20,7 @@
         <div class="content-task">
         <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
          <h4 class="title-head">Your expenses for all times</h4>
-         <p class="total">Total: <%=total[0].count %> $ </p>
+         <p class="total">Total: $<%=total[0].count %> </p>
          <a href="/home/chartPage">more details</a>
        </div>
      </div>
@@ -84,11 +84,11 @@
                   </div>
                </div>
             </div>
-         
+         <div class="main-board">
          <ul>
             <div class="flex flex-size flex-wrap">
                <% tasks.forEach(task => {%>
-               <div class="card">
+               <div class="card card-ds">
                   <div class="card-header">
                      <li class="card-title fosz text-center"> <%= task.task %></li>
 
@@ -128,6 +128,14 @@
                <% }) %>
             </div>
          </ul>
+         <div class="pages">
+            <ul>
+               <% for(let i = 1; i <= totalPages; i++){ %>
+                 <li> <a href="/home?page=<%=i%> "><%=i %></a></li>
+                  <% } %> 
+            </ul>
+         </div>
+         </div>
       </div>
 
       <!-- </div> -->
@@ -137,19 +145,3 @@
 </main>
 
 <%- include('partials/footer.ejs') -%>
-
-  var canvas = document.getElementById('myChart');
-  var data = {
-  labels: JSON.parse('<%- JSON.stringify([...new Set(tasks.map((task) => task.spendAt.getMonth() + 1))]); %>'),
-  datasets: [
-    {
-      label: "My First dataset",
-      backgroundColor: "rgba(255,99,132,0.2)",
-      borderColor: "rgba(255,99,132,1)",
-      borderWidth: 2,
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)",
-      data: JSON.parse('<%- JSON.stringify(tasks.map((task) => task.spend)); %>'),
-    }
-  ]
-};
