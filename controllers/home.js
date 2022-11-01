@@ -305,7 +305,7 @@ module.exports = {
           },
         },
         {
-          $sort: { _id: 1 },
+          $sort: { _id: -1 },
         },
       ]);
       console.log(months);
