@@ -1,28 +1,36 @@
  <%- include('partials/header.ejs') -%>
  <div class="container flex charset">
-<div><h3 class="text-chart">more your Details about your spends</h3></div>
-<div class="select-wrapper">
-                        <select name="datepicker" id="datepicker">
-                          <% months.forEach(year => { %>
-                            <option value="year <%= year._id.year %> "><%= year._id.year %></option>
+   <div><h3 class="text-chart">more your Details about your spends</h3></div>
+   <div class="select-wrapper">
+                      <select name="datepicker" id="datepicker" onchange="getSelectValue()">
+                       <% [...new Set(months.map(el => el._id.year))].forEach(year => { %>
+                            <option value="<%= year %>"><%= year %></option>
+                            <script>
 
+                            </script>
                           <% }) %> 
                         </select>
-                    </div>
-<div class="cont-chart">
-<canvas id="myChart"></canvas>
-<canvas id="myChartLine"></canvas>
-</div>
+                        
+    </div> 
+    <div class="cont-chart" data-chart-data="<%= JSON.stringify(months.map((el) => el._id.month)) %>" data-chart-label="<%= JSON.stringify(months.map((el) => el.count)) %>">
+      <canvas id="myChart"></canvas>
+      <canvas id="myChartLine"></canvas>
+  </div>
  </div>
   
 <script>
-
-// in your EJS file.
-
+  var e = JSON.parse(document.getElementById('datepicker').value);
+function getSelectValue()
+        {
+            var e = JSON.parse(document.getElementById('datepicker').value);
+          // in your EJS file.
+let filtered = JSON.parse('<%- JSON.stringify(months.map(el => el)) %>');
+let date = filtered.filter(el => el._id.year == e)
+console.log(date)
         var ctx = document.getElementById("myChart").getContext("2d");
         var ctxLine = document.getElementById("myChartLine").getContext("2d");
         data = {
-        labels: JSON.parse('<%- JSON.stringify(months.map((el) => el._id.month))%>'),
+        labels:date.map((el) => el._id.month),
         datasets: [
           {
             label: "Monthly Spends",
@@ -72,4 +80,8 @@
         // var myNewChart = new Chart(ctx).Line(data);
         const month = JSON.parse('<%- JSON.stringify(months.map((el) => el._id))%>');
         console.log(month)
+        }
+        getSelectValue();
+        
+
     </script>
