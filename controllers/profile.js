@@ -15,6 +15,7 @@ module.exports = {
         user: req.user,
         error: "",
         result: result,
+        search: null,
       });
     } catch (err) {
       console.log(err);
