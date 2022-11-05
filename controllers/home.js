@@ -6,18 +6,13 @@ const moment = require("moment");
 module.exports = {
   getHome: async (req, res) => {
     try {
-      let results = {};
       let { page = 1, limit = 12 } = req.query;
-      const startIndex = page * limit;
-      const endIndex = (page - 1) * limit;
       const tasks = await Tasks.find({ user: req.user.id })
         .sort({ spendAt: "desc" })
         .limit(limit * 1)
         .skip((page - 1) * limit)
         .lean();
       const count = await Tasks.countDocuments();
-      results.results = tasks.slice(startIndex, endIndex);
-      console.log(results);
       console.log(page);
       const total = await Tasks.aggregate([
         {
@@ -117,11 +112,17 @@ module.exports = {
     }
   },
   getYear: async (req, res) => {
+    let { page = 1, limit = 9 } = req.query;
     let year = req.params.year;
     const tasks = await Tasks.find({
       $expr: { $eq: [{ $year: "$spendAt" }, year] },
       user: req.user.id,
-    });
+    })
+      .sort({ spendAt: "desc" })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .lean();
+    const count = await Tasks.countDocuments();
     const total = await Tasks.aggregate([
       {
         $match: {
@@ -145,6 +146,7 @@ module.exports = {
       tasks: tasks,
       total: total,
       search: "",
+      totalPages: Math.ceil(count / limit),
       title: "Show year",
       user: req.user,
       error: "",
@@ -155,6 +157,7 @@ module.exports = {
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
+      totalPages: Math.ceil(count / limit),
       search: "",
       title: "Add new task Page",
       user: req.user,
@@ -162,11 +165,17 @@ module.exports = {
     });
   },
   getWeek: async (req, res) => {
+    let { page = 1, limit = 12 } = req.query;
     let week = req.params.week;
     let tasks = await Tasks.find({
       $expr: { $eq: [{ $week: "$spendAt" }, week] },
       user: req.user.id,
-    });
+    })
+      .sort({ spendAt: "desc" })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .lean();
+    const count = await Tasks.countDocuments();
     const total = await Tasks.aggregate([
       {
         $match: {
@@ -186,6 +195,7 @@ module.exports = {
       tasks: tasks,
       total: total,
       search: "",
+      totalPages: Math.ceil(count / limit),
       title: "week spend page",
       user: req.user,
       error: "",
@@ -194,13 +204,18 @@ module.exports = {
   getMonth: async (req, res) => {
     let month = req.params.month;
     let year = req.params.year;
+    let { page = 1, limit = 9 } = req.query;
+
     let tasks = await Tasks.find({
       $expr: { $eq: [{ $month: "$spendAt" }, month] },
       $expr: { $eq: [{ $year: "$spendAt" }, year] },
       user: req.user.id,
     })
-      .sort({ createdAt: "desc" })
+      .sort({ spendAt: "desc" })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
       .lean();
+    const count = await Tasks.countDocuments();
     const total = await Tasks.aggregate([
       {
         $match: {
@@ -224,6 +239,7 @@ module.exports = {
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
+      totalPages: Math.ceil(count / limit),
       search: "",
       title: "get month page",
       user: req.user,
@@ -233,6 +249,8 @@ module.exports = {
   getRange: async (req, res) => {
     let from = req.query.from;
     let to = req.query.to;
+    let { page = 1, limit = 9 } = req.query;
+    const count = await Tasks.countDocuments();
     let formatFrom = new Date(moment(from, "YYYY-MM-DD").format());
     let formatTo = new Date(moment(to, "YYYY-MM-DD").format());
     let tasks = await Tasks.find({
@@ -241,7 +259,11 @@ module.exports = {
         $lt: formatTo,
       },
       user: req.user.id,
-    });
+    })
+      .sort({ spendAt: "desc" })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .lean();
     const total = await Tasks.aggregate([
       {
         $match: {
@@ -258,12 +280,11 @@ module.exports = {
         },
       },
     ]);
-    var labels = ["label 1", "label 2"];
-    var data = [tasks];
     res.render("dashboard.ejs", {
       tasks: tasks,
       search: "",
       title: "range filter",
+      totalPages: Math.ceil(count / limit),
       total: total,
       user: req.user,
       error: "",
