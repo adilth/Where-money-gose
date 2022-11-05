@@ -7,6 +7,7 @@
   --second-bg-color: #1b2533;
   --light-color: #fff;
   --second-font-color: #21cd92;
+  --second-font-color-hover: #1ca475;
   --margin-3: 30px;
   --margin-4: 40px;
   --nav-side-bar-margin-left: 20px;
@@ -32,13 +33,13 @@ card {
 .bg-image {
   background-image: linear-gradient(
       to right,
-      rgba(132, 250, 176, 0.5),
-      rgba(143, 211, 244, 0.5)
+      rgba(27, 37, 51, 0.871),
+      rgb(28, 164, 117, 0.7)
     ),
     url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp");
   background-size: cover;
   min-width: 100%;
-  min-height: 100% !important;
+  min-height: 100vh !important;
 }
 ol,
 ul {
@@ -46,8 +47,13 @@ ul {
 }
 body,
 html {
-  height: 100%;
+  /* height: 100%; */
   width: 100%;
+  /* position: relative; */
+  min-height: 100vh;
+  background-color: var(--dark-color);
+  display: flex;
+  flex-direction: column;
   scroll-behavior: smooth;
   font-family: "Roboto", sans-serif;
 }
@@ -55,6 +61,10 @@ html {
 a {
   text-decoration: none;
   color: var(--second-font-color);
+  transition: 0.3s ease-in-out;
+}
+a:hover {
+  color: var(--second-font-color-hover);
 }
 li {
   list-style: none;
@@ -91,6 +101,23 @@ h4,
 h5 {
   line-height: 1.1;
   hyphens: auto;
+}
+/* btn */
+.btn-outline-success {
+  color: var(--second-font-color);
+  border-color: var(--second-font-color);
+}
+.btn-outline-success:hover {
+  color: var(--light-color);
+  background-color: var(--second-font-color-hover);
+}
+.btn-second {
+  background-color: var(--second-font-color-hover);
+  color: var(--light-color);
+  font-size: 1.1em;
+  font-weight: bold;
+  padding: 0.7em;
+  transition: 0.3s ease-in-out;
 }
 /* header style*/
 header {
@@ -136,8 +163,6 @@ input.form-control:focus {
   padding: 1.5rem;
   background-color: var(--second-bg-color);
   color: var(--light-color);
-  /* border-top-left-radius: var(--border-radius); */
-  /* border-bottom-left-radius: var(--border-radius); */
 }
 .logo {
   height: 60px;
@@ -155,16 +180,13 @@ input.form-control:focus {
 }
 .dashboard {
   color: var(--light-color);
-  /* height: 90%; */
+  min-height: calc(100vh - 63px - 144px);
   background-color: var(--dark-color);
   border-bottom-right-radius: var(--border-radius);
   padding: 1.5rem;
 }
 .content-task {
   flex: 2;
-}
-.side-bar {
-  width: 20%;
 }
 .page-title {
   margin: 1.5rem auto;
@@ -184,7 +206,7 @@ input.form-control:focus {
   background-repeat: no-repeat;
   background-size: cover;
   width: 100%;
-  height: 100%;
+  min-height: 90vh;
   padding: 0.9em 7em;
   color: var(--light-color);
 }
@@ -210,9 +232,9 @@ input.form-control:focus {
 }
 /* main content */
 .total {
-  color: green;
+  color: rgb(49, 161, 49);
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   display: flex;
   justify-content: end;
 }
@@ -232,14 +254,12 @@ input.form-control:focus {
   padding: 0.4rem;
   border-radius: 5px;
 }
-.date-btn {
-  width: 55px;
-  height: 45px;
-  border: none;
-  background-color: #066efd;
-  padding: 0 1em;
+.large {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.btn i {
   color: var(--light-color);
-  border-radius: 5px;
 }
 .form-cont {
   display: flex;
@@ -286,6 +306,7 @@ input.form-control:focus {
 }
 .card-link {
   background-color: transparent;
+  color: var(--second-font-color);
   border: none;
   text-decoration: underline;
 }
@@ -310,7 +331,10 @@ input.form-control:focus {
   border-radius: 5px;
   margin-left: 0.6rem;
 }
-
+/* add task page */
+.text-font {
+  color: var(--light-color);
+}
 /* profile style */
 
 .main-profile {
@@ -320,7 +344,8 @@ input.form-control:focus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #b3e6f4;
+  background-color: var(--dark-color);
+  color: var(--light-color);
 }
 .change-pass {
   display: flex;
@@ -433,8 +458,6 @@ button {
 }
 .cont-chart {
   position: relative;
-  /* width: 50vw;
-  height: 50vh; */
   margin-top: 2rem;
 }
 
@@ -477,14 +500,25 @@ button {
 .dashboard-cards {
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   margin: 0 var(--dashboard-margin);
-  padding-bottom: 50px;
-  padding: 2em 3em;
-  gap: 50px;
+  padding-bottom: 2.5rem;
+  padding: 2em 2em;
+  gap: 2em;
+}
+.pr-foot {
+  display: flex;
+  justify-content: center;
+  padding: 1.2em 0;
 }
 
 @media only screen and (max-width: 1200px) {
+  .dashboard-cards {
+    grid-template-columns: 1fr 1fr;
+    padding: 1.5em 1em;
+  }
+}
+@media only screen and (max-width: 640px) {
   .dashboard-cards {
     grid-template-columns: 1fr;
   }
@@ -492,6 +526,7 @@ button {
 
 /* footer style */
 footer {
+  margin-top: auto;
   background-color: #222;
 }
 .footer {
