@@ -1,5 +1,5 @@
  <%- include('partials/header.ejs') -%>
- <div class="container flex charset">
+ <div class="dashboard flex charset">
    <div><h3 class="text-chart">more your Details about your spends</h3></div>
    <div class="select-wrapper">
                       <select name="datepicker" id="datepicker" onchange="getSelectValue()">
@@ -12,9 +12,9 @@
                         </select>
                         
     </div> 
-    <div class="cont-chart" data-chart-data="<%= JSON.stringify(months.map((el) => el._id.month)) %>" data-chart-label="<%= JSON.stringify(months.map((el) => el.count)) %>">
-      <canvas id="myChart"></canvas>
-      <canvas id="myChartLine"></canvas>
+    <div class="cont-chart dashboard-cards" data-chart-data="<%= JSON.stringify(months.map((el) => el._id.month)) %>" data-chart-label="<%= JSON.stringify(months.map((el) => el.count)) %>">
+      <div class="card"><canvas id="myChart"></canvas></div>
+      <div class="card"><canvas id="myChartLine"></canvas></div>
   </div>
  </div>
   
@@ -54,11 +54,13 @@ console.log(date)
         scales:{
           yAxes :{
             ticks: {
+              color:'#fff',
               beginATZero : true,
               userCallback : function(value){
                 value = value.toString();
                 return '$' + value
-              }
+              },
+              
             }
           }
         },
