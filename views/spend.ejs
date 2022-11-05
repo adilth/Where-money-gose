@@ -1,5 +1,6 @@
   <%- include('partials/header.ejs') -%>
-  <div>more details about spends</div>
+  <div class="dashboard">
+ <div>more details about spends</div>
   <div class="col-6">
      <h2><%= tasks.task %></h2>
      <p><%= tasks.spend %></p>
@@ -11,4 +12,6 @@
            onclick="return confirm('Are you sure you wish to delete this?');">Delete</a>
      </div>
   </div>
+  </div>
+ 
   <%- include('partials/footer.ejs') -%>
