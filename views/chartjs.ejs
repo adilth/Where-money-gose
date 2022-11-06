@@ -1,6 +1,35 @@
  <%- include('partials/header.ejs') -%>
  <div class="dashboard flex charset">
    <div><h3 class="text-chart">more your Details about your spends</h3></div>
+   <div class="dashboard-cards">
+    <div class="card card-flex">
+      <div class="card-content">
+        <p class="number"><%=total[0].count  %> </p>
+        <p class="card-name">Total</p>
+      </div>
+      <div class="card-icon">
+        <i class="fa fa-dollar-sign"></i>
+      </div>
+    </div>
+    <div class="card card-flex">
+      <div class="card-content">
+        <p class="number"><%= spendCards  %> </p>
+        <p class="card-name">spend cards</p>
+      </div>
+      <div class="card-icon">
+        <i class="fa fa-layer-group"></i>
+      </div>
+    </div>
+    <div class="card card-flex">
+      <div class="card-content">
+        <p class="number"><%= total[0].average.toFixed(1)  %> </p>
+        <p class="card-name">Average</p>
+      </div>
+      <div class="card-icon">
+        <i class="fa fa-dollar-sign"></i>
+      </div>
+    </div>
+   </div>
    <div class="select-wrapper">
                       <select name="datepicker" id="datepicker" onchange="getSelectValue()">
                        <% [...new Set(months.map(el => el._id.year))].forEach(year => { %>
