@@ -142,6 +142,24 @@ module.exports = {
         },
       },
     ]);
+    const years = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$spendAt" },
+          },
+        },
+      },
+      {
+        $sort: { _id: -1 },
+      },
+    ]);
+    console.log(years);
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
@@ -293,6 +311,7 @@ module.exports = {
   getChartPage: async (req, res) => {
     try {
       const tasks = await Tasks.find({ user: req.user.id }).lean();
+      const count = await Tasks.countDocuments();
       const total = await Tasks.aggregate([
         {
           $match: {
@@ -301,9 +320,14 @@ module.exports = {
         },
         {
           $group: {
-            _id: null,
+            _id: {
+              year: { $year: "$spendAt" },
+            },
             count: {
               $sum: "$spend",
+            },
+            average: {
+              $avg: "$spend",
             },
           },
         },
@@ -323,18 +347,22 @@ module.exports = {
             count: {
               $sum: "$spend",
             },
+            average: {
+              $avg: "$spend",
+            },
           },
         },
         {
           $sort: { _id: -1 },
         },
       ]);
-      console.log(months);
+      console.log(total);
       res.render("chartjs.ejs", {
         tasks: tasks,
         months: months,
         user: req.user,
         total: total,
+        spendCards: count,
         search: "",
       });
     } catch (err) {
