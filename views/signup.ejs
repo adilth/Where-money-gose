@@ -1,5 +1,5 @@
 <%- include('partials/header.ejs') -%>
-<main class="container">
+<main class="dashboard">
    <div class="row justify-content-center">
       <section class="col-6 mt-5">
          <% if (locals.messages.errors) { %>
@@ -34,8 +34,8 @@
             <button type="submit" class="btn btn-primary">Submit</button>
          </form>
       </section>
+      <p class="pr-foot">you have an account? go to.<a href="/user/login">Login</a>page</p>
    </div>
-   <p align="center">you have an account? go to.<a href="/user/login">Login</a>page</p>
 </main>
 
 <%- include('partials/footer.ejs') -%>
