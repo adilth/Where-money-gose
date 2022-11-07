@@ -1,6 +1,6 @@
 <%- include('partials/header.ejs') -%>
 
-<main class="container">
+<main class="dashboard">
    <div class="row justify-content-center">
       <section class="col-6 mt-5">
          <% if (locals.messages.errors) { %> <% messages.errors.forEach( el => { %>
@@ -22,7 +22,7 @@
             <button type="submit" class="btn btn-primary">Submit</button>
          </form>
       </section>
-         <p><a href="/user/forgetPass">Forget Your Password</a></p>
+         <p><a href="/user/forget">Forget Your Password</a></p>
    </div>
    <p align="center"><a href="/user/signup">No login? Create a new account.</a></p>
 </main>
