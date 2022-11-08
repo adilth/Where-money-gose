@@ -8,18 +8,29 @@ module.exports = {
   },
   getSearch: async (req, res) => {
     let q = req.body.searchInput;
-    console.log(q);
+    let { page = 1, limit = 12 } = req.query;
+
+    const count = await Tasks.countDocuments();
+
     let taskData = null;
     let qry = { $or: [{ task: { $regex: q } }] };
     console.log(qry);
     try {
       if (q != null) {
-        let taskResult = await Tasks.find(qry);
+        let taskResult = await Tasks.find(qry)
+          .sort({ spendAt: "desc" })
+          .limit(limit * 1)
+          .skip((page - 1) * limit)
+          .lean();
         taskData = taskResult;
         console.log(taskData);
       } else {
         q = "search";
-        let taskResult = await Tasks.find({});
+        let taskResult = await Tasks.find({})
+          .sort({ spendAt: "desc" })
+          .limit(limit * 1)
+          .skip((page - 1) * limit)
+          .lean();
         taskData = taskResult;
       }
       const total = await Tasks.aggregate([
@@ -42,6 +53,8 @@ module.exports = {
         title: "task Tracker",
         tasks: taskData,
         search: q,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
         user: req.user,
         total: total,
       });
