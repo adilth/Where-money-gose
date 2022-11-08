@@ -587,7 +587,37 @@ button {
     grid-template-columns: 1fr;
   }
 }
+/* forget page */
+.forget-cont {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
+.forget-text {
+  margin-bottom: 2.5rem;
+  font-size: 1.2rem;
+}
+.col-6.card {
+  padding: 1.6em;
+}
+.forget-form {
+  text-align: center;
+}
+.forget-form label {
+  margin-right: 1rem;
+  font-size: 1.1rem;
+}
+.forget-form input {
+  border: none;
+  padding: 0.35em;
+  border-radius: 0.35rem;
+  margin-right: 0.7em;
+}
+.otherStuff {
+  margin-top: 1.7rem;
+}
 /* footer style */
 footer {
   margin-top: auto;
