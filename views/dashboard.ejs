@@ -78,7 +78,10 @@
       <div class="content-task">
         <div class="link"><a class="fosz " href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
         <h4 class="title-head">Your expenses for all times</h4>
-        <p class="total">Total: $<%=total[0].count %> </p>
+        <p class="total">Total: $<% if(total.length > 0){  %>
+        <%= total[0].count %> 
+        <% } %> 
+        </p>
         <a href="/home/chartPage">more details</a>
       </div>
 
