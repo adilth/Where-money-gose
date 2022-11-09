@@ -10,9 +10,9 @@ router.post("/login", authController.postLogin);
 router.get("/logout", authController.logout);
 router.get("/signup", authController.getSignup);
 router.get("/forget", authController.getForgetPass);
-router.get("/resetPass/:token", authController.getResetPass);
+router.get("/resetPas/:id", authController.getResetPass);
 router.post("/signup", authController.postSignup);
 router.post("/forgetPass", authController.postConfirmEmail);
-router.put("/resetPass", authController.putResetPass);
+router.put("/resetPass/:id", authController.putResetPass);
 
 module.exports = router;
