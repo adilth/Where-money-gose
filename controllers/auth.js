@@ -2,6 +2,11 @@ const passport = require("passport");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
+const mongoose = require("mongoose");
+const OAuth2 = google.auth.OAuth2;
 
 module.exports = {
   getLogin: async (req, res) => {
@@ -47,18 +52,6 @@ module.exports = {
     })(req, res, next);
   },
   logout: (req, res) => {
-    // req.logout(() => {
-    //   console.log("User has logged out.");
-    // });
-    // req.session.destroy((err) => {
-    //   if (err)
-    //     console.log(
-    //       "Error : Failed to destroy the session during logout.",
-    //       err
-    //     );
-    //   req.user = null;
-    //   res.redirect("/");
-    // });
     req.session.user = null;
     req.session.save(function (err) {
       if (err) next(err);
@@ -133,47 +126,209 @@ module.exports = {
     );
   },
   postConfirmEmail: async (req, res) => {
-    const user = await User.find();
-    if (req.user) {
-      return res.redirect("/home");
-    }
-    res.render("signup", {
-      title: "Create Account",
-      user: user,
+    const oauth2Client = new OAuth2(
+      process.env.CLIENT_ID,
+      process.env.CLIENT_SECRET,
+      "https://developers.google.com/oauthplayground"
+    );
+
+    oauth2Client.setCredentials({
+      refresh_token: process.env.REFRESH_TOKEN,
     });
+    const { email } = req.body;
+    const validationErrors = [];
+    try {
+      User.findOne({ email }, async (err, user) => {
+        if (!validator.isEmail(req.body.email)) {
+          validationErrors.push({ msg: "please enter a valid email address" });
+        }
+
+        if (err || !user) {
+          validationErrors.push({
+            msg: "No account with that email address exists.",
+          });
+        }
+        if (validationErrors.length) {
+          req.flash("errors", validationErrors);
+          return res.redirect("/user/forget");
+        }
+        const accessToken = await new Promise((resolve, reject) => {
+          oauth2Client.getAccessToken((err, token) => {
+            if (err) {
+              reject("Failed to create access token :(");
+            }
+            resolve(token);
+          });
+        });
+        const token = await jwt.sign(
+          { _id: user._id },
+          process.env.RESET_PASSWORD_KEY,
+          {
+            expiresIn: "20m",
+          }
+        );
+        let transporter = nodemailer.createTransport({
+          service: "Gmail",
+          auth: {
+            type: "OAuth2",
+            user: process.env.BUSINESS_EMAIL,
+            accessToken,
+            clientId: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECRET,
+            refreshToken: process.env.REFRESH_TOKEN,
+          },
+        });
+        const url = `http://localhost:3001/user/resetPas/${user._id}`;
+        console.log({ url });
+        const data = {
+          from: process.env.BUSINESS_EMAIL,
+          to: user.email,
+          subject: "change user password",
+          html: ` <p>Hey ${user.name || user.email}, </p> /n 
+        <p>we have received request for reset your account password </p>
+        <h3> <a href=${url}>${url}</a></h3>
+        `,
+        };
+        await transporter.sendMail(data);
+        req.flash("success", { msg: "Success! You are logged in." });
+        res.redirect("/user/forget");
+      });
+    } catch (e) {
+      console.log(e);
+      res.render("error404.ejs");
+    }
   },
   getForgetPass: async (req, res) => {
     const user = await User.find();
     if (req.user) {
       return res.redirect("/home");
     }
-    res.render("forgetPass", {
-      title: "Create Account",
+    res.render("forgetPass.ejs", {
+      title: "forget page",
       user: user,
     });
   },
   getResetPass: async (req, res) => {
-    const user = await User.find();
-    if (req.user) {
-      return res.redirect("/home");
+    const id = req.params.id;
+    console.log(id);
+    try {
+      let user = await User.findOne({ _id: req.params.id });
+      // const user = await User.findById({ _id: id });
+      if (await req.user) {
+        return res.redirect("/home");
+      }
+      if (!user) {
+        req.flash("error", "Password reset token is invalid or has expired.");
+        return res.redirect("/index");
+      }
+      console.log(user);
+      res.render("resetPass.ejs", {
+        title: "change password",
+        user: null,
+        use: user,
+      });
+    } catch (e) {
+      console.log(e);
+      res.render("error404.ejs");
     }
-    res.render("resetPass", {
-      title: "Create Account",
-      user: user,
-    });
   },
-  putResetPass: async (req, res) => {
-    const user = await User.find();
-    if (req.user) {
-      return res.redirect("/home");
-    }
-    res.render("signup", {
-      title: "Create Account",
-      user: user,
+  putResetPass: async (req, res, next) => {
+    const oauth2Client = new OAuth2(
+      process.env.CLIENT_ID,
+      process.env.CLIENT_SECRET,
+      "https://developers.google.com/oauthplayground"
+    );
+
+    oauth2Client.setCredentials({
+      refresh_token: process.env.REFRESH_TOKEN,
     });
+    try {
+      const validationErrors = [];
+      const { confirmPassword, newPassword } = req.body;
+      const { id } = req.params;
+      const user = await User.findOne({ id });
+      // , async (err, user) => {
+      console.log(id);
+      console.log(user._id);
+      if (req.user) {
+        return res.redirect("/home");
+      }
+      if (!user) {
+        req.flash("error", "Password reset token is invalid or has expired.");
+        return res.redirect("/index");
+      }
+      if (!validator.isLength(newPassword, { min: 8 }))
+        validationErrors.push({
+          msg: "Password must be at least 8 characters long",
+        });
+      if (newPassword !== confirmPassword)
+        validationErrors.push({ msg: "Passwords do not match" });
+      const salt = await bcrypt.genSalt(10);
+      if (validationErrors.length) {
+        req.flash("errors", validationErrors);
+        return res.redirect(`/user/resetPas/${user.id}`);
+      }
+      const newPass = await bcrypt.hash(newPassword, salt);
+      const userPassword = await User.findOneAndUpdate(
+        { _id: id },
+        { password: newPass },
+        { new: true }
+      );
+      console.log(userPassword);
+      const accessToken = await new Promise((resolve, reject) => {
+        oauth2Client.getAccessToken((err, token) => {
+          if (err) {
+            reject("Failed to create access token :(");
+          }
+          resolve(token);
+        });
+      });
+      let transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          type: "OAuth2",
+          user: process.env.BUSINESS_EMAIL,
+          accessToken,
+          clientId: process.env.CLIENT_ID,
+          clientSecret: process.env.CLIENT_SECRET,
+          refreshToken: process.env.REFRESH_TOKEN,
+        },
+      });
+      // console.log(transporter);
+      const data = {
+        from: process.env.BUSINESS_EMAIL,
+        to: user.email,
+        subject: "Your password has been changed",
+        html: ` <p>Hey ${user.userName || user.email}, </p>
+        <p>This is a confirmation that the password for your account  ${
+          user.email
+        } has just been changed.\n </p>
+        <h3> thank you /h3>
+        `,
+      };
+      console.log(data);
+      await transporter.sendMail(data);
+      // res.redirect(req.session.returnTo || "/home");
+      user.save((err) => {
+        if (err) {
+          return next(err);
+        }
+        req.logIn(user, (err) => {
+          if (err) {
+            return next(err);
+          }
+          res.redirect("/home");
+        });
+      });
+      // });
+    } catch (err) {
+      console.log(err);
+      res.render("error404.ejs");
+    }
   },
   changePass: async (req, res) => {
     try {
+      const validationErrors = [];
       const { id } = req.params;
       const user = await User.find({ _id: id });
       const { oldPassword, password } = req.body;
