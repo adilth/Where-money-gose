@@ -12,7 +12,7 @@ module.exports = {
         .limit(limit * 1)
         .skip((page - 1) * limit)
         .lean();
-      const count = await Tasks.countDocuments();
+      const count = await Tasks.countDocuments({ user: req.user.id });
       console.log(page);
       const total = await Tasks.aggregate([
         {
@@ -29,6 +29,7 @@ module.exports = {
           },
         },
       ]);
+      console.log(total);
       res.render("dashboard.ejs", {
         tasks: tasks,
         user: req.user,
@@ -122,7 +123,7 @@ module.exports = {
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .lean();
-    const count = await Tasks.countDocuments();
+    const count = await Tasks.countDocuments({ user: req.user.id });
     const total = await Tasks.aggregate([
       {
         $match: {
@@ -193,7 +194,7 @@ module.exports = {
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .lean();
-    const count = await Tasks.countDocuments();
+    const count = await Tasks.countDocuments({ user: req.user.id });
     const total = await Tasks.aggregate([
       {
         $match: {
@@ -233,7 +234,7 @@ module.exports = {
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .lean();
-    const count = await Tasks.countDocuments();
+    const count = await Tasks.countDocuments({ user: req.user.id });
     const total = await Tasks.aggregate([
       {
         $match: {
@@ -268,7 +269,7 @@ module.exports = {
     let from = req.query.from;
     let to = req.query.to;
     let { page = 1, limit = 9 } = req.query;
-    const count = await Tasks.countDocuments();
+    const count = await Tasks.countDocuments({ user: req.user.id });
     let formatFrom = new Date(moment(from, "YYYY-MM-DD").format());
     let formatTo = new Date(moment(to, "YYYY-MM-DD").format());
     let tasks = await Tasks.find({
@@ -311,7 +312,7 @@ module.exports = {
   getChartPage: async (req, res) => {
     try {
       const tasks = await Tasks.find({ user: req.user.id }).lean();
-      const count = await Tasks.countDocuments();
+      const count = await Tasks.countDocuments({ user: req.user.id });
       const total = await Tasks.aggregate([
         {
           $match: {
