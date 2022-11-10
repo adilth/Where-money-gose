@@ -357,10 +357,34 @@ module.exports = {
           $sort: { _id: -1 },
         },
       ]);
-      console.log(total);
+      const days = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: { format: "%Y-%m-%d", date: "$spendAt" },
+            },
+            count: {
+              $sum: "$spend",
+            },
+            average: {
+              $avg: "$spend",
+            },
+          },
+        },
+        {
+          $sort: { _id: -1 },
+        },
+      ]);
+      console.log(days);
       res.render("chartjs.ejs", {
         tasks: tasks,
         months: months,
+        days: days,
         user: req.user,
         total: total,
         spendCards: count,
