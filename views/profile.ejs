@@ -1,7 +1,7 @@
 <%- include('partials/header.ejs') -%>
-<div class="main-profile">
-
-    <% if (locals.messages.errors) { %> 
+<div class="main-profile dashboard">
+<div class="card">
+<% if (locals.messages.errors) { %> 
       <% messages.errors.forEach( el => { %>
          <div class="alert alert-danger"><%= el.msg %></div>
          <% }) %> 
@@ -23,7 +23,7 @@
    </div>
    <div class="change-pass">
       <p>if you want change <button class="btn btn-open">password</button></p>
-      <section class="modal hidden user-form">
+      <section class="modal hidden user-form card">
          <div class="flex-end">
             <button class="btn-close">X</button>
          </div>
@@ -48,7 +48,9 @@
       </section>
    </div>
 
-   <h2>you write a total of : <%= result  %> </h2>
+   <h2 class="card-total">you write a total of : <span class="number"><%= result  %> </span></h2>
+</div>
+    
    <div class="overlay hidden"></div>
 </div>
 
