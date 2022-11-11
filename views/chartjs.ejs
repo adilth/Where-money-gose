@@ -4,7 +4,10 @@
    <div class="dashboard-cards">
     <div class="card card-flex">
       <div class="card-content">
-        <p class="number"><%=total[0].count  %> </p>
+        <p class="number">Total: $<% if(total.length > 0){  %>
+        <%= total[0].count %> 
+        <% } %> 
+        </p>
         <p class="card-name">Total</p>
       </div>
       <div class="card-icon">
@@ -22,7 +25,10 @@
     </div>
     <div class="card card-flex">
       <div class="card-content">
-        <p class="number"><%= total[0].average.toFixed(1)  %> </p>
+        <p class="number"><% if( total.length > 0){ %>
+        <%= total[0].average.toFixed(1)  %>
+        <% } %> 
+        </p>
         <p class="card-name">Average</p>
       </div>
       <div class="card-icon">
@@ -44,6 +50,15 @@
     <div class="cont-chart dashboard-cards" data-chart-data="<%= JSON.stringify(months.map((el) => el._id.month)) %>" data-chart-label="<%= JSON.stringify(months.map((el) => el.count)) %>">
       <div class="card"><canvas id="myChart"></canvas></div>
       <div class="card"><canvas id="myChartLine"></canvas></div>
+      <div class="card"><canvas id="myChartAvg"></canvas></div>
+      <div class="card"><canvas id="myCharOption"></canvas>
+      <select name="dateRange" onchange="filterChart(this)">
+        <option value="">Select Please</option>
+        <option value="1">1 Month</option>
+        <option value="3">3 Months</option>
+        <option value="12">12 Months</option>
+      </select>
+      </div>
   </div>
  </div>
   
@@ -58,6 +73,7 @@ let date = filtered.filter(el => el._id.year == e)
 console.log(date)
         var ctx = document.getElementById("myChart").getContext("2d");
         var ctxLine = document.getElementById("myChartLine").getContext("2d");
+        var ctxAvg = document.getElementById("myChartAvg").getContext("2d");
         data = {
         labels:date.map((el) => el._id.month),
         datasets: [
@@ -72,16 +88,24 @@ console.log(date)
           }
         ]
       }
-      const option = {
-        title: {
-          display: true,
-          Text:"Monthly Spends",
-          fontSize: '20',
-          fontFamily: "'Roboto','sans-serif'",
-
-        },
+        data2 = {
+        labels:date.map((el) => el._id.month),
+        datasets: [
+          {
+            label: "Monthly Spends average",
+            backgroundColor: "rgba(255,99,132,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 2,
+            hoverBackgroundColor: "rgba(255,99,132,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: JSON.parse('<%- JSON.stringify(months.map((el) => el.average))%>'),
+          }
+        ]
+      }
+      const options = {
         scales:{
-          yAxes :{
+          yAxes :[{
+            display: true,
             ticks: {
               color:'#fff',
               beginATZero : true,
@@ -91,7 +115,7 @@ console.log(date)
               },
               
             }
-          }
+          }]
         },
             responsive: true
       
@@ -99,20 +123,88 @@ console.log(date)
         const config = {
           type: 'bar',
           data:data,
-          option:option,
+          options:options,
         }
+        // console.log(config)
         const config2 = {
           type: 'line',
           data:data,
-          option:option,
+          options:options,
+        }
+        const configAvg = {
+          type: 'bar',
+          data:data2,
+          options:options,
         }
         var myNewChart = new Chart(ctx, config)
         var myNewChartLine = new Chart(ctxLine, config2)
+        var myNewChartAvg = new Chart(ctxAvg, configAvg)
         // var myNewChart = new Chart(ctx).Line(data);
         const month = JSON.parse('<%- JSON.stringify(months.map((el) => el._id))%>');
-        console.log(month)
         }
         getSelectValue();
-        
 
+         var ctx = document.getElementById("myCharOption").getContext("2d");
+         let yearly = JSON.parse('<%- JSON.stringify(days.map(el => el)) %>');
+        //  console.log(yearly)
+         data = {
+        labels:yearly.map((el) => el._id ),
+        datasets: [
+          {
+            label: "Monthly Spends",
+            backgroundColor: "rgba(255,99,132,0.2)",
+            borderColor: "rgba(255,99,132,1)",
+            borderWidth: 1,
+            hoverBackgroundColor: "rgba(255,99,132,0.4)",
+            hoverBorderColor: "rgba(255,99,132,1)",
+            data: JSON.parse('<%- JSON.stringify(days.map((el) => el.count))%>'),
+          }
+        ]
+      }
+      // console.log(data)
+      const options = {
+          title: {
+            display: true,
+            Text:"Monthly",
+            fontSize: '20',
+            fontFamily: "'Roboto','sans-serif'",
+        },
+        scales:{
+          xAxes: [{
+            type:'time',
+            time:{
+              unit: 'month',
+            },
+            min:'2022-01-01',
+            max: Date.now(),
+          }],
+          yAxes :[{
+            ticks: {
+              color:'#fff',
+              beginATZero : true,
+              userCallback : function(value){
+                value = value.toString();
+                return '$' + value
+              },
+              
+            },
+            beginATZero:true
+          }]
+        },
+            responsive: true
+      
+      }
+        const config = {
+          type: 'bar',
+          data:data,
+          options:options,
+        }
+        var myNewChart = new Chart(ctx, config)
+        function filterChart(months){
+         myNewChart.config.options.scales.xAxes.min = luxon.DateTime.now().plus({months: !months.value ? -1 : -months.value }).toISODate();
+         myNewChart.config.options.scales.xAxes.max = luxon.DateTime.now().toISODate();
+         console.log(myNewChart.config.options.scales.xAxes.min)
+         myNewChart.update()
+        }
+        // filterChart(this)
     </script>
