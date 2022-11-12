@@ -1,23 +1,30 @@
 <%- include('partials/header.ejs') -%>
-  <div>please inter your new password to have a new password and access to you spend information</div>
-  <div class="col-6">
+<div class="dashboard forget-cont">
+ <div class="forget-text">please inter your new password to have a new password and access to you spend information</div>
+  <div class="col-6 card">
          <% if (locals.messages.errors) { %> <% messages.errors.forEach( el => { %>
          <div class="alert alert-danger"><%= el.msg %></div>
          <% }) %> <% } %> <% if (locals.messages.info) { %> <%
       messages.info.forEach( el => { %>
          <div class="alert alert-info"><%= el.msg %></div>
          <% }) %> <% } %>
-      <form action="/user/resetPass" method="post">
+      <form action="/user/resetPass/<%= use._id %>" method="post" class="forget-form">
          <input type="hidden" name="_method" value="PUT" />
+         <div class="form-group grid">
          <label for="password">password</label>
-         <input type="password" id="password" name="password" placeholder="please inter your password">
-         <label for="confirmPassword">password</label>
-         <input type="confirmPassword" id="confirmPassword" name="confirmPassword" placeholder="please inter your password">
-         <button type="submit" class="btn btn-primary">Submit</button>
+         <input type="password" id="password" name="newPassword" placeholder="please inter your password">
+         </div>
+         <div class="form-group grid ">
+         <label for="confirmPassword">Confirm Password</label>
+         <input type="password" id="confirmPassword" name="confirmPassword" placeholder="please inter your password">
+         </div>
+         <button type="submit" class="btn btn-outline-success">Submit</button>
       </form>
          <div class="otherStuff">
             <p>if have an account please go to <a href="/user/login">login</a> page if you do not have an account please <a href="/user/signup">signUp</a></p>
          </div>
   </div>
+</div>
+ 
 
 <%- include('partials/footer.ejs') -%>
