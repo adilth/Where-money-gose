@@ -53,7 +53,7 @@
       <div class="card"><canvas id="myChartAvg"></canvas></div>
       <div class="card"><canvas id="myCharOption"></canvas>
       <select name="dateRange" onchange="filterChart(this)">
-        <option value="">Select Please</option>
+        <option value="1">Select Please</option>
         <option value="1">1 Month</option>
         <option value="3">3 Months</option>
         <option value="12">12 Months</option>
@@ -61,7 +61,8 @@
       </div>
   </div>
  </div>
-  
+        <!-- <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script> -->
 <script>
   var e = JSON.parse(document.getElementById('datepicker').value);
 function getSelectValue()
@@ -70,12 +71,22 @@ function getSelectValue()
           // in your EJS file.
 let filtered = JSON.parse('<%- JSON.stringify(months.map(el => el)) %>');
 let date = filtered.filter(el => el._id.year == e)
-console.log(date)
+var monthsName = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep","oct", "nov", "dec"];
+      const monthsDate2 = date.map((el) => monthsName[el._id.month - 1])
+
         var ctx = document.getElementById("myChart").getContext("2d");
         var ctxLine = document.getElementById("myChartLine").getContext("2d");
         var ctxAvg = document.getElementById("myChartAvg").getContext("2d");
+         let chartBar = Chart.getChart("myChart");
+         let chartLine = Chart.getChart("myChartLine");
+         let chartAvg = Chart.getChart("myChartAvg");
+               if (chartBar != undefined || chartAvg != undefined || chartLine != undefined) {
+                chartBar.destroy();
+                chartLine.destroy();
+                chartAvg.destroy();
+              }
         data = {
-        labels:date.map((el) => el._id.month),
+        labels:monthsDate2,
         datasets: [
           {
             label: "Monthly Spends",
@@ -88,8 +99,9 @@ console.log(date)
           }
         ]
       }
+      
         data2 = {
-        labels:date.map((el) => el._id.month),
+        labels:monthsDate2,
         datasets: [
           {
             label: "Monthly Spends average",
@@ -136,6 +148,7 @@ console.log(date)
           data:data2,
           options:options,
         }
+
         var myNewChart = new Chart(ctx, config)
         var myNewChartLine = new Chart(ctxLine, config2)
         var myNewChartAvg = new Chart(ctxAvg, configAvg)
@@ -145,10 +158,16 @@ console.log(date)
         getSelectValue();
 
          var ctx = document.getElementById("myCharOption").getContext("2d");
-         let yearly = JSON.parse('<%- JSON.stringify(days.map(el => el)) %>');
-        //  console.log(yearly)
+         let yearly = JSON.parse('<%- JSON.stringify(days.map(el => el._id)) %>');
+         const dateJs = yearly.map((day) =>{
+          let days = new Date(day);
+          return days.setHours(0,0,0,0)
+         })
+        //  const days = yearly.map(el => el._id)
+         console.log(dateJs)
+         let countLab = JSON.parse('<%- JSON.stringify(days.map((el) => el.count))%>');
          data = {
-        labels:yearly.map((el) => el._id ),
+        labels:dateJs,
         datasets: [
           {
             label: "Monthly Spends",
@@ -157,7 +176,7 @@ console.log(date)
             borderWidth: 1,
             hoverBackgroundColor: "rgba(255,99,132,0.4)",
             hoverBorderColor: "rgba(255,99,132,1)",
-            data: JSON.parse('<%- JSON.stringify(days.map((el) => el.count))%>'),
+            data: countLab,
           }
         ]
       }
@@ -169,15 +188,20 @@ console.log(date)
             fontSize: '20',
             fontFamily: "'Roboto','sans-serif'",
         },
+        autoSkip:false,
         scales:{
-          xAxes: [{
+          xAxes: {
             type:'time',
             time:{
-              unit: 'month',
+              unit: 'day',
             },
-            min:'2022-01-01',
+          //    ticks: { // Edit: added this to avoid overlapping - thanks for comment
+          //     minRotation: 02, // <-- just try any number
+          //     maxRotation: 50  // <-- just try any number
+          //  },
+            min:'2022-02-01',
             max: Date.now(),
-          }],
+          },
           yAxes :[{
             ticks: {
               color:'#fff',
@@ -201,7 +225,7 @@ console.log(date)
         }
         var myNewChart = new Chart(ctx, config)
         function filterChart(months){
-         myNewChart.config.options.scales.xAxes.min = luxon.DateTime.now().plus({months: !months.value ? -1 : -months.value }).toISODate();
+          myNewChart.config.options.scales.xAxes.min = luxon.DateTime.now().plus({months: -months.value }).toISODate();
          myNewChart.config.options.scales.xAxes.max = luxon.DateTime.now().toISODate();
          console.log(myNewChart.config.options.scales.xAxes.min)
          myNewChart.update()
