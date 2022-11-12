@@ -157,6 +157,20 @@ input.form-control:focus {
 .mg-ft {
   margin-left: 0.8rem;
 }
+.profile-img {
+  width: 3rem;
+  height: 3rem;
+  overflow: hidden;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.profile-img img {
+  object-fit: cover;
+  width: 100%;
+  border-radius: 50%;
+  transform: scale(1.2);
+  cursor: pointer;
+}
 @media only screen and (max-width: 1200px) {
   .header-cont {
     grid-template-columns: 3fr 5fr 2fr;
