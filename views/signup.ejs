@@ -1,7 +1,7 @@
 <%- include('partials/header.ejs') -%>
 <main class="dashboard">
    <div class="row justify-content-center">
-      <section class="col-6 mt-5">
+      <section class="col-6 mt-5 card">
          <% if (locals.messages.errors) { %>
          <% messages.errors.forEach( el => { %>
          <div class="alert alert-danger"><%= el.msg %></div>
@@ -33,8 +33,8 @@
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
          </form>
+         <p class="pr-foot">you have an account? go to.<a href="/user/login">Login</a>page</p>
       </section>
-      <p class="pr-foot">you have an account? go to.<a href="/user/login">Login</a>page</p>
    </div>
 </main>
 
