@@ -4,10 +4,22 @@
             <p>If interest you can see more work here </p>
         </div>
     </footer>
-    <script src="/app.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/app.js"></script>
+    <script>
+         let subMenu = document.querySelector(".profile-link");
+    let imgPro = document.getElementById("img-pro");
+
+    function toggleMenu() {
+      subMenu.classList.toggle("open-menu");
+    }
+
+    imgPro.addEventListener("click", toggleMenu);
+
+    </script>
     </body>
 
     </html>
