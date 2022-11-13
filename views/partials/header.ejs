@@ -13,9 +13,9 @@
       integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous" />
       <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
       <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
-      <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-   <!-- <script src="https://kit.fontawesome.com/72df6c4456.js" crossorigin="anonymous"></script> -->
+      <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
+      <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
    <link rel="stylesheet" href="/style.css" />
 </head>
 
@@ -25,7 +25,7 @@
       <div class="container flex justify-content-around space-mg">
          <h1 class="logo-head"><a href="/home">Money Where Spent</a></h1>
          <a href="/user/login" class="btn btn-outline-success margin"> Login</a>
-         <a href="/user/signup" class="btn btn-outline-success mg-ft"> Signup</a>
+         <a href="/user/signup" class="btn btn-outline-success mg-ft"> Sign Up</a>
       </div>
    </header>
    
@@ -33,22 +33,40 @@
 <header>
       <div class="header-cont">
          <h2 class="logo-head"><a href="/home">Money Where Spent</a></h2>
-         <% if(search != null) {%>
-<form action="/q" method="POST" class="search-form" id="searchForm">
-            <div class="inputs-group flex">
-               <input type="text" class="form-control" name="searchInput" <% if (search != '') { %> value="<%= search %>"
-         <% } %>>
-               <div class="input-group-append"><button class="btn btn-outline-success"><i class="fas fa-search"></i></button>
-               </div>
-            </div>
-         </form>
-         <%  }%> 
+         <ul class="nav-links flex">
+            <li>
+               <% if(search != null) {%>
+               <form action="/q" method="POST" class="search-form" id="searchForm">
+                  <div class="inputs-group flex">
+                     <input type="text" class="form-control" name="searchInput" placeholder="Enter Spend name" <% if (search != '') { %> value="<%= search %>"
+                     <% } %>>
+                     <div class="input-group-append"><button class="btn btn-outline-success"><i class="fas fa-search"></i></button>
+                     </div>
+                  </div>
+               </form>
+               <%  }%> 
+            </li>
+            <li class="right"><a href="/home">Home</a></li>
+            <li><a href="/home/chartPage">Spend Chart</a></li>
+         </ul>
          
-         <ul class="flex margin ">
-            <li><a href="/user/logout" class="btn btn-outline-success">logout</a> </li>
-            <li class="mg-ft"> <a href="/profile "><span class="fosz"><%= user.userName %> </span></a></li>
+         
+         <div class="profile-img" id="img-pro" ><img src="/images/profile-pic.jpg" alt=""></div>
+         <ul class="profile-link">
+            <li class="sub-menu">
+               <div class="user-info">
+                  <img src="/images/profile-pic.jpg" alt="">
+                  <h3><%= user.userName %></h3>
+               </div>
+               <hr>
+            </li>
+            <li> <a href="/profile " class="sub-menu-link"><i class="fa fa-user"></i> <p>Profile</p> <span >></span></a></li>
+            <li ><a href="/user/logout" class="sub-menu-link"><i class="fas fa-sign-out-alt"></i><p>logout</p> <span>></span></a></li>
          </ul>
       </div>
 
    </header>
+   <!-- <script>
+  
+   </script> -->
    <% } %>
