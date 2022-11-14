@@ -33,25 +33,29 @@
 <header>
       <div class="header-cont">
          <h2 class="logo-head"><a href="/home">Money Where Spent</a></h2>
-         <ul class="nav-links flex">
-            <li>
-               <% if(search != null) {%>
-               <form action="/q" method="POST" class="search-form" id="searchForm">
-                  <div class="inputs-group flex">
-                     <input type="text" class="form-control" name="searchInput" placeholder="Enter Spend name" <% if (search != '') { %> value="<%= search %>"
-                     <% } %>>
-                     <div class="input-group-append"><button class="btn btn-outline-success"><i class="fas fa-search"></i></button>
+         <button class="mobile-nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+            <span class="sr-only">Menu</span>
+         </button>
+         <nav id="primary-header" class="primary-header">
+            <ul id="primary-navigation" data-visible="false" class="nav-links flex primary-navigation">
+               <li>
+                  <% if(search != null) {%>
+                  <form action="/q" method="POST" class="search-form" id="searchForm">
+                     <div class="inputs-group flex">
+                        <input type="text" class="form-control" name="searchInput" placeholder="Enter Spend name" <% if (search != '') { %> value="<%= search %>"
+                        <% } %>>
+                        <div class="input-group-append"><button class="btn btn-outline-success"><i class="fas fa-search"></i></button>
+                        </div>
                      </div>
-                  </div>
-               </form>
-               <%  }%> 
-            </li>
-            <li class="right"><a href="/home">Home</a></li>
-            <li><a href="/home/chartPage">Spend Chart</a></li>
+                  </form>
+                  <%  }%> 
+               </li>
+               <li class="right active"><a href="/home">Home</a></li>
+               <li><a href="/home/chartPage">Spend Chart</a></li>
          </ul>
          
-         
-         <div class="profile-img" id="img-pro" ><img src="/images/profile-pic.jpg" alt=""></div>
+         </nav>
+         <div aria-expanded="false" class="profile-img" id="img-pro" ><img src="/images/profile-pic.jpg" alt=""></div>
          <ul class="profile-link">
             <li class="sub-menu">
                <div class="user-info">
