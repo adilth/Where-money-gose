@@ -131,6 +131,10 @@ header {
   justify-content: center;
   padding: 1em 1.5em;
   position: relative;
+  align-items: center;
+}
+.mobile-nav-toggle {
+  display: none;
 }
 .space-mg {
   padding-block: 0.8rem;
@@ -139,11 +143,7 @@ header {
   margin-left: auto;
 }
 .nav-links li {
-  color: var(--light-color);
   padding-left: 1em;
-}
-.nav-links li a {
-  font-size: 1.1rem;
 }
 .inputs-group > .form-control {
   border-top-left-radius: 7px;
@@ -172,11 +172,11 @@ input.form-control:focus {
 .profile-img {
   width: 2.5rem;
   height: 2.5rem;
-  /* overflow: hidden; */
+  overflow: hidden;
   border-radius: 50%;
   justify-self: flex-end;
+  align-self: center;
   cursor: pointer;
-  padding-left: 0.8em;
 }
 .profile-img img {
   object-fit: cover;
@@ -196,6 +196,10 @@ input.form-control:focus {
   max-height: 0px;
   overflow: hidden;
   transition: max-height 0.4s ease-in-out;
+}
+.nav-links li a {
+  font-weight: bold;
+  font-size: 1.15rem;
 }
 .open-menu {
   max-height: 400px;
@@ -251,7 +255,8 @@ input.form-control:focus {
 }
 @media only screen and (max-width: 1200px) {
   .header-cont {
-    grid-template-columns: 2fr 5fr 1fr;
+    grid-template-columns: 3fr 6fr 0.5fr;
+    padding: 1em 1.1em;
   }
   .logo-head {
     font-size: 1.4rem;
@@ -260,15 +265,73 @@ input.form-control:focus {
     width: 170px !important;
   }
 }
+
+@media only screen and (max-width: 750px) {
+  .profile-img {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+  .header-cont {
+    grid-template-columns: 3fr 1fr 0.5fr;
+    padding: 0.8em 0.7em;
+  }
+  .nav-links .right {
+    margin-left: 0;
+  }
+  .primary-navigation {
+    position: fixed;
+    gap: 2em;
+    top: 0;
+    left: 30%;
+    right: 0;
+    bottom: 0;
+    flex-direction: column;
+    padding: 7rem 2rem;
+    background: hsl(0, 0%, 19%, 0.7);
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.5s ease;
+  }
+  .primary-navigation[data-visible="true"] {
+    transform: translateX(0%);
+  }
+  .profile-img {
+    margin-right: 3rem;
+  }
+  @supports (backdrop-filter: blur(0.5rem)) {
+    .primary-navigation {
+      background: hsl(0, 0%, 100%, 0.1);
+      backdrop-filter: blur(0.5rem);
+    }
+  }
+  .mobile-nav-toggle {
+    display: block;
+    position: absolute;
+    width: 1.6rem;
+    aspect-ratio: 1;
+    background-image: url(../images/menu-icon.svg);
+    background-size: cover;
+    filter: invert(1);
+    top: 1.3rem;
+    z-index: 999;
+    right: 1.5rem;
+  }
+  .mobile-nav-toggle[aria-expanded="true"] {
+    background-image: url(../images/close-mobile.svg);
+  }
+}
 @media only screen and (max-width: 600px) {
   .header-cont {
-    grid-template-columns: 4fr 3fr 1fr;
+    grid-template-columns: 3fr 0.5fr 0.5fr;
   }
   .logo-head {
     font-size: 1.2rem;
   }
   .inputs-group > .form-control {
     width: 110px !important;
+  }
+  .mobile-nav-toggle {
+    right: 0.9rem;
   }
 }
 /*general style*/
