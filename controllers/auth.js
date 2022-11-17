@@ -8,6 +8,34 @@ const { google } = require("googleapis");
 const mongoose = require("mongoose");
 const OAuth2 = google.auth.OAuth2;
 
+const createTransporter = async () => {
+  const oauth2Client = new OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    "https://developers.google.com/oauthplayground"
+  );
+
+  oauth2Client.setCredentials({
+    refresh_token: process.env.REFRESH_TOKEN,
+  });
+
+  const accessToken = await oauth2Client.getAccessToken();
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      type: "OAuth2",
+      user: process.env.BUSINESS_EMAIL,
+      accessToken,
+      clientId: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      refreshToken: process.env.REFRESH_TOKEN,
+    },
+  });
+
+  return transporter;
+};
+
 module.exports = {
   getLogin: async (req, res) => {
     const user = await User.find();
@@ -126,15 +154,6 @@ module.exports = {
     );
   },
   postConfirmEmail: async (req, res) => {
-    const oauth2Client = new OAuth2(
-      process.env.CLIENT_ID,
-      process.env.CLIENT_SECRET,
-      "https://developers.google.com/oauthplayground"
-    );
-
-    oauth2Client.setCredentials({
-      refresh_token: process.env.REFRESH_TOKEN,
-    });
     const { email } = req.body;
     const validationErrors = [];
     try {
@@ -152,14 +171,6 @@ module.exports = {
           req.flash("errors", validationErrors);
           return res.redirect("/user/forget");
         }
-        const accessToken = await new Promise((resolve, reject) => {
-          oauth2Client.getAccessToken((err, token) => {
-            if (err) {
-              reject("Failed to create access token :(");
-            }
-            resolve(token);
-          });
-        });
         const token = await jwt.sign(
           { _id: user._id },
           process.env.RESET_PASSWORD_KEY,
@@ -167,15 +178,11 @@ module.exports = {
             expiresIn: "20m",
           }
         );
-        let transporter = nodemailer.createTransport({
-          service: "Gmail",
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
           auth: {
-            type: "OAuth2",
             user: process.env.BUSINESS_EMAIL,
-            accessToken,
-            clientId: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            refreshToken: process.env.REFRESH_TOKEN,
+            pass: process.env.EMAIL_PASSWORD,
           },
         });
         const url = `http://localhost:3001/user/resetPas/${user._id}`;
@@ -189,6 +196,7 @@ module.exports = {
         <h3> <a href=${url}>${url}</a></h3>
         `,
         };
+        // let emailTransporter = await createTransporter();
         await transporter.sendMail(data);
         req.flash("success", { msg: "Success! You are logged in." });
         res.redirect("/user/forget");
@@ -199,21 +207,26 @@ module.exports = {
     }
   },
   getForgetPass: async (req, res) => {
-    const user = await User.find();
-    if (req.user) {
-      return res.redirect("/home");
+    try {
+      const user = await User.find();
+      if (req.user) {
+        return res.redirect("/home");
+      }
+      res.render("forgetPass.ejs", {
+        title: "forget page",
+        user: user,
+      });
+    } catch (err) {
+      console.log(e);
+      res.render("error404.ejs");
     }
-    res.render("forgetPass.ejs", {
-      title: "forget page",
-      user: user,
-    });
   },
   getResetPass: async (req, res) => {
     const id = req.params.id;
     console.log(id);
     try {
-      let user = await User.findOne({ _id: req.params.id });
-      // const user = await User.findById({ _id: id });
+      // let user = await User.find({ _id: req.params.id });
+      const user = await User.findById({ _id: id });
       if (await req.user) {
         return res.redirect("/home");
       }
@@ -233,20 +246,12 @@ module.exports = {
     }
   },
   putResetPass: async (req, res, next) => {
-    const oauth2Client = new OAuth2(
-      process.env.CLIENT_ID,
-      process.env.CLIENT_SECRET,
-      "https://developers.google.com/oauthplayground"
-    );
-
-    oauth2Client.setCredentials({
-      refresh_token: process.env.REFRESH_TOKEN,
-    });
     try {
       const validationErrors = [];
       const { confirmPassword, newPassword } = req.body;
       const { id } = req.params;
-      const user = await User.findOne({ id });
+      const user = await User.findById(req.params.id);
+      console.log(id, user);
       // , async (err, user) => {
       console.log(id);
       console.log(user._id);
@@ -275,26 +280,14 @@ module.exports = {
         { new: true }
       );
       console.log(userPassword);
-      const accessToken = await new Promise((resolve, reject) => {
-        oauth2Client.getAccessToken((err, token) => {
-          if (err) {
-            reject("Failed to create access token :(");
-          }
-          resolve(token);
-        });
-      });
-      let transporter = nodemailer.createTransport({
-        service: "Gmail",
+      // console.log(transporter);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
         auth: {
-          type: "OAuth2",
           user: process.env.BUSINESS_EMAIL,
-          accessToken,
-          clientId: process.env.CLIENT_ID,
-          clientSecret: process.env.CLIENT_SECRET,
-          refreshToken: process.env.REFRESH_TOKEN,
+          pass: process.env.EMAIL_PASSWORD,
         },
       });
-      // console.log(transporter);
       const data = {
         from: process.env.BUSINESS_EMAIL,
         to: user.email,
@@ -307,6 +300,7 @@ module.exports = {
         `,
       };
       console.log(data);
+      // let emailTransporter = await createTransporter();
       await transporter.sendMail(data);
       // res.redirect(req.session.returnTo || "/home");
       user.save((err) => {
