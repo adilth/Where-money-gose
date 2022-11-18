@@ -11,10 +11,11 @@
       integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css"
       integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous" />
-      <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script>
+      <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@^3"></script> -->
+      <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
       <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
-      <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
+      <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>  -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.0.1/chart.min.js" integrity="sha512-tQYZBKe34uzoeOjY9jr3MX7R/mo7n25vnqbnrkskGr4D6YOoPYSpyafUAzQVjV6xAozAqUFIEFsCO4z8mnVBXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
       <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
    <link rel="stylesheet" href="/style.css" />
 </head>
@@ -56,7 +57,7 @@
          
          </nav>
          <div aria-expanded="false" class="profile-img" id="img-pro" ><img src="/images/profile-pic.jpg" alt=""></div>
-         <ul class="profile-link">
+         <ul class="profile-link" id="nav">
             <li class="sub-menu">
                <div class="user-info">
                   <img src="/images/profile-pic.jpg" alt="">
@@ -66,11 +67,8 @@
             </li>
             <li> <a href="/profile " class="sub-menu-link"><i class="fa fa-user"></i> <p>Profile</p> <span >></span></a></li>
             <li ><a href="/user/logout" class="sub-menu-link"><i class="fas fa-sign-out-alt"></i><p>logout</p> <span>></span></a></li>
+            <li ><a href="/contact" class="sub-menu-link"><i class="fa fa-address-book"></i><p>Contact Us</p> <span>></span></a></li>
          </ul>
       </div>
-
    </header>
-   <!-- <script>
-  
-   </script> -->
    <% } %>
