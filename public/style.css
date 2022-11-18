@@ -204,6 +204,9 @@ input.form-control:focus {
 .open-menu {
   max-height: 400px;
 }
+.close-menu {
+  max-height: 0px;
+}
 .sub-menu {
   margin: 0.6em;
   padding: 0.9rem;
@@ -569,6 +572,9 @@ input.form-control:focus {
 .text-font {
   color: var(--light-color);
 }
+.form-outline .form-label {
+  color: var(--light-color);
+}
 /* profile style */
 
 .main-profile {
@@ -607,7 +613,7 @@ input.form-control:focus {
   position: absolute;
   z-index: 2;
   top: 15%;
-  left: 40%;
+  left: 30%;
   background-color: var(--dark-color);
   color: var(--light-color);
   border: 1px solid #ddd;
