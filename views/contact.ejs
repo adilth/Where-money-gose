@@ -1,0 +1,56 @@
+<%- include('partials/header.ejs') -%>
+<section class=" bg-image gradient-custom-3 p-5">
+      <div class="mask d-flex align-items-center">
+            <div class="container h-100">
+                  <div class="row d-flex justify-content-center align-items-center h-100">
+                        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                              <div class="card" style="border-radius: 15px;">
+                                    <div class="card-body p-5">
+                                          <h2 class="text-uppercase text-center mb-5 text-font">Contact Us</h2>
+                                            <% if (locals.messages.errors) { %>
+                                                <% messages.errors.forEach( el => { %>
+                                                <div class="alert alert-danger"><%= el.msg %></div>
+                                                <% }) %>
+                                             <% } %> 
+                                          <form action="/contact" method="POST">
+                                                <div class="form-outline mb-4">
+                                                      <label class="form-label" for="contactName">Name</label>
+                                                      <input type="text" id="contactName"
+                                                            class="form-control form-control-lg" name="name"/>                                                    
+                                                </div>
+                                                <div class="form-outline mb-4">
+                                                      <label class="form-label" for="UEmail">Email</label>
+                                                      <input type="email" id="email"
+                                                            class="form-control form-control-lg" name="email" />
+                                                </div>
+
+                                                <div class="form-outline mb-4">
+                                                      <label class="form-label" for="subject">Subject</label>
+                                                      <input type="text" id="subject"
+                                                            class="form-control form-control-lg" name="subject" />
+                                                </div>
+
+                                                <di class="form-outline mb-4">
+                                                      <label class="form-label" for="Message">Message</label>
+                                                      <textarea type="text" id="Message"
+                                                            class="form-control form-control-lg" name="message" ></textarea>
+                                                </div>
+                                                <p class="text-center text-muted mt-4 mb-3">Please make sure you file
+                                                      all field and with current info? </p>
+                                                <div class="d-flex justify-content-around">
+                                                      <div class=" menu-btn">
+                                                            <button type="submit"
+                                                                  class="btn btn-primary btn-lg">Send</button>
+                                                      </div>
+                                                </div>
+
+                                          </form>
+
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div>
+</section>
+<%- include('partials/footer.ejs') -%>
