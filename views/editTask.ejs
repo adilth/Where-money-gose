@@ -3,9 +3,6 @@
 <%= error %>
 <% } else { %>
 <section class=" bg-image gradient-custom-3 p-5">
-      <!-- <div class="head-tetle flex">
-            <h2 class="page-title"></h2>
-      </div> -->
       <div class="mask d-flex align-items-center">
             <div class="container h-100">
                   <div class="row d-flex justify-content-center align-items-center h-100">
@@ -16,43 +13,42 @@
 
                                           <form action="/home/edit/<%=tasks[0]._id%>" method="POST">
                                                 <input type="hidden" name="_method" value="PUT" />
-
                                                 <div class="form-outline mb-4">
+                                                      <label class="form-label" for="form3Example1cg">Where Spend
+                                                            it</label>
                                                       <input type="text" id="form3Example1cg"
                                                             class="form-control form-control-lg" name="task"
                                                             value="<%= tasks[0].task %>" />
-                                                      <label class="form-label" for="form3Example1cg">Where Spend
-                                                            it</label>
                                                 </div>
 
                                                 <div class="form-outline mb-4">
+                                                      <label class="form-label" for="form3Example3cg">How Much</label>
                                                       <input type="number" id="form3Example3cg"
                                                             class="form-control form-control-lg" name="spend"
                                                             value="<%= tasks[0].spend %>" />
-                                                      <label class="form-label" for="form3Example3cg">How Much</label>
                                                 </div>
 
                                                 <div class="form-outline mb-4">
+                                                      <label class="form-label" for="form3Example4cg">More Info</label>
                                                       <input type="text" id="form3Example4cg"
                                                             class="form-control form-control-lg" name="info"
                                                             value="<%= tasks[0].info %>" />
-                                                      <label class="form-label" for="form3Example4cg">More Info</label>
                                                 </div>
 
                                                 <div class="form-outline mb-4">
+                                                      <label class="form-label" for="form3Example4cdg">Date spend
+                                                            At</label>
                                                       <input type="date" id="form3Example4cdg"
                                                             class="form-control form-control-lg" name="spendAt"
                                                             value="<%= tasks[0].spendAt %>" />
-                                                      <label class="form-label" for="form3Example4cdg">Date spend
-                                                            At</label>
                                                 </div>
                                                 <p class="text-center text-muted mt-4 mb-3">Please make sure you file
                                                       all field and with current info? </p>
                                                 <div class="d-flex justify-content-around">
                                                       <div class=" menu-btn">
                                                             <button type="submit"
-                                                                  class="btn btn-primary btn-lg">Save</button>
-                                                            <button type="button" class="btn btn-primary btn-lg "
+                                                                  class="btn btn-primary btn-lg" aria-label="save the spend">Save</button>
+                                                            <button type="button" aria-label="cancel the Edit" class="btn btn-primary btn-lg "
                                                                   onclick="javascript:location.href='/home';">Cancel</button>
                                                             <input type="hidden" name="menuId"
                                                                   value="<%= tasks[0]._id %>">
