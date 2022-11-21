@@ -46,8 +46,31 @@ module.exports = {
             },
           },
         },
+        {
+          $sort: { _id: 1 },
+        },
+      ]);
+      const weekly = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+          },
+        },
+        {
+          $group: {
+            _id: {
+              year: { $year: "$spendAt" },
+              month: { $month: "$spendAt" },
+              week: { $week: "$spendAt" },
+            },
+            count: {
+              $sum: "$spend",
+            },
+          },
+        },
       ]);
       const yearFilter = yearly.map((el) => el._id.year);
+      const weekFilter = weekly.map((el) => el._id.week);
       const yearId = yearly.map((el) => el._id);
 
       console.log(yearId);
@@ -58,6 +81,7 @@ module.exports = {
         currentPage: page,
         yearl: yearFilter,
         monthly: yearId,
+        weekly: weekFilter,
         total: total,
         search: "",
       });
@@ -204,7 +228,27 @@ module.exports = {
         },
       },
     ]);
+    const weekly = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$spendAt" },
+            month: { $month: "$spendAt" },
+            week: { $week: "$spendAt" },
+          },
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
     const yearFilter = yearly.map((el) => el._id.year);
+    const weekFilter = weekly.map((el) => el._id.week);
     const yearId = yearly.map((el) => el._id);
     console.log(years);
     res.render("dashboard.ejs", {
@@ -216,6 +260,7 @@ module.exports = {
       user: req.user,
       yearl: yearFilter,
       monthly: yearId,
+      weekly: weekFilter,
     });
   },
   getDay: async (req, res) => {
@@ -294,7 +339,27 @@ module.exports = {
         },
       },
     ]);
+    const weekly = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$spendAt" },
+            month: { $month: "$spendAt" },
+            week: { $week: "$spendAt" },
+          },
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
     const yearFilter = yearly.map((el) => el._id.year);
+    const weekFilter = weekly.map((el) => el._id.week);
     const yearId = yearly.map((el) => el._id);
     res.render("dashboard.ejs", {
       tasks: tasks,
@@ -305,6 +370,7 @@ module.exports = {
       user: req.user,
       yearl: yearFilter,
       monthly: yearId,
+      weekly: weekFilter,
     });
   },
   getWeek: async (req, res) => {
@@ -334,6 +400,47 @@ module.exports = {
         },
       },
     ]);
+    const yearly = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$spendAt" },
+            month: { $month: "$spendAt" },
+            week: { $week: "$spendAt" },
+          },
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
+    const weekly = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$spendAt" },
+            month: { $month: "$spendAt" },
+            week: { $week: "$spendAt" },
+          },
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
+    const yearFilter = yearly.map((el) => el._id.year);
+    const weekFilter = weekly.map((el) => el._id.week);
+    const yearId = yearly.map((el) => el._id);
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
@@ -341,7 +448,9 @@ module.exports = {
       totalPages: Math.ceil(count / limit),
       title: "week spend page",
       user: req.user,
-      error: "",
+      yearl: yearFilter,
+      monthly: yearId,
+      weekly: weekFilter,
     });
   },
   getRange: async (req, res) => {
@@ -404,7 +513,27 @@ module.exports = {
         },
       },
     ]);
+    const weekly = await Tasks.aggregate([
+      {
+        $match: {
+          user: mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$spendAt" },
+            month: { $month: "$spendAt" },
+            week: { $week: "$spendAt" },
+          },
+          count: {
+            $sum: "$spend",
+          },
+        },
+      },
+    ]);
     const yearFilter = yearly.map((el) => el._id.year);
+    const weekFilter = weekly.map((el) => el._id.week);
     const yearId = yearly.map((el) => el._id);
     res.render("dashboard.ejs", {
       tasks: tasks,
@@ -415,6 +544,7 @@ module.exports = {
       user: req.user,
       yearl: yearFilter,
       monthly: yearId,
+      weekly: weekFilter,
     });
   },
   getChartPage: async (req, res) => {
