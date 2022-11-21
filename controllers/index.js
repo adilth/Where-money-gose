@@ -11,7 +11,7 @@ module.exports = {
     let q = req.body.searchInput;
     let { page = 1, limit = 12 } = req.query;
 
-    const count = await Tasks.countDocuments();
+    const count = await Tasks.countDocuments({ _id: req.params.id });
 
     let taskData = null;
     let qry = { $or: [{ task: { $regex: q } }] };
@@ -50,6 +50,49 @@ module.exports = {
           },
         },
       ]);
+      const yearly = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+          },
+        },
+        {
+          $group: {
+            _id: {
+              year: { $year: "$spendAt" },
+              month: { $month: "$spendAt" },
+            },
+            count: {
+              $sum: "$spend",
+            },
+          },
+        },
+        {
+          $sort: { _id: 1 },
+        },
+      ]);
+      const weekly = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+          },
+        },
+        {
+          $group: {
+            _id: {
+              year: { $year: "$spendAt" },
+              month: { $month: "$spendAt" },
+              week: { $week: "$spendAt" },
+            },
+            count: {
+              $sum: "$spend",
+            },
+          },
+        },
+      ]);
+      const yearFilter = yearly.map((el) => el._id.year);
+      const weekFilter = weekly.map((el) => el._id.week);
+      const yearId = yearly.map((el) => el._id);
       res.render("dashboard", {
         title: "task Tracker",
         tasks: taskData,
@@ -57,6 +100,9 @@ module.exports = {
         totalPages: Math.ceil(count / limit),
         currentPage: page,
         user: req.user,
+        yearl: yearFilter,
+        monthly: yearId,
+        weekly: weekFilter,
         total: total,
       });
     } catch (e) {
