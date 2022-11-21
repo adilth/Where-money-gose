@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap"); */
 :root {
   --main-color: #df4575;
   --card-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
@@ -241,6 +241,7 @@ input.form-control:focus {
 }
 .sub-menu-link p {
   width: 100%;
+  margin-bottom: 0;
 }
 .sub-menu-link i {
   font-size: 1.15rem;
@@ -331,7 +332,8 @@ input.form-control:focus {
     font-size: 1.2rem;
   }
   .inputs-group > .form-control {
-    width: 110px !important;
+    width: 140px !important;
+    padding: 0.4em;
   }
   .mobile-nav-toggle {
     right: 0.9rem;
@@ -370,10 +372,28 @@ input.form-control:focus {
 .page-title {
   margin: 1.5rem auto;
 }
+.main-header {
+  display: flex;
+  justify-content: space-between;
+}
+.linkNewAdd {
+  align-self: center;
+}
+.linkNewAdd .fosz {
+  background: var(--light-color);
+  width: max-content;
+  padding: 0.45em;
 
-.link {
-  text-align: right;
-  text-decoration: underline;
+  border-radius: 5px;
+}
+
+.fosz {
+  font-weight: bold;
+  font-size: 1.3rem;
+  text-decoration: none;
+}
+.fosz .fa {
+  margin-left: 0.2rem;
 }
 .months {
   font-size: 1.1rem;
@@ -427,16 +447,7 @@ input.form-control:focus {
   align-items: center;
   align-content: center;
 }
-.grid-center a {
-  align-self: start;
-}
-.fosz {
-  font-weight: bold;
-  font-size: 1.3rem;
-}
-.fosz .fa {
-  margin-left: 0.2rem;
-}
+
 @media only screen and (max-width: 600px) {
   .image-cont {
     padding: 0.9em 1em;
@@ -462,9 +473,7 @@ input.form-control:focus {
 /* main content */
 .content-task .card {
   width: max-content;
-  padding: 1.4em;
-  display: flex;
-  margin-left: auto;
+  padding: 1.3em;
 }
 .total {
   color: rgb(49, 161, 49);
@@ -834,6 +843,9 @@ button {
   .dashboard-cards {
     grid-template-columns: 1fr;
   }
+  .content-task .card {
+    padding: 1em;
+  }
   .col-6 {
     width: 90%;
   }
@@ -920,5 +932,27 @@ footer {
   .container-xl,
   .container-xxl {
     max-width: 1420px !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .form.flex {
+    flex-direction: column;
+  }
+}
+@media (max-width: 340px) {
+  .main-header {
+    flex-direction: column;
+    gap: 1.5em;
+    align-items: center;
+  }
+  .profile-link {
+    right: 0;
+    width: 100%;
+  }
+}
+@media (max-width: 320px) {
+  .form-cont.flex {
+    flex-direction: column;
   }
 }
