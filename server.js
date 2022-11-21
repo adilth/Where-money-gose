@@ -7,12 +7,14 @@ const MongoStore = require("connect-mongo");
 const flash = require("express-flash");
 const logger = require("morgan");
 const moment = require("moment");
+const helmet = require("helmet");
 const methodOverride = require("method-override");
 const connectDB = require("./config/db");
 const homeRouter = require("./routes/home");
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
 const profileRouter = require("./routes/profile");
+const path = require("path");
 
 require("dotenv").config({ path: "./config/.env" });
 
@@ -23,7 +25,8 @@ connectDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(helmet({ contentSecurityPolicy: false }));
+// app.use(express.static(path.join(__dirname, "./public")));
 
 // Method overwrite
 app.use(
@@ -41,6 +44,7 @@ app.use((req, res, next) => {
   next();
 });
 app.set("view engine", "ejs");
+app.use(express.static("public"));
 app.use(logger("dev"));
 app.set("trust proxy", 1);
 // Sessions
