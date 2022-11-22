@@ -39,7 +39,7 @@
          </div>
      </div>
      <div class="select-wrapper">
-         <select name="datepicker" aria-expanded="false" id="datepicker" onchange="getSelectValue()">
+         <select name="datepicker" aria-expanded="false" id="datepicker">
              <% [...new Set(months.map(el => el._id.year))].forEach(year => { %>
              <option value="<%= year %>"><%= year %></option>
              <% }) %>
@@ -51,7 +51,7 @@
          <div class="card"><canvas id="myChartLine"></canvas></div>
          <div class="card"><canvas id="myChartAvg"></canvas></div>
          <div class="card"><canvas id="myCharOption"></canvas>
-             <select name="dateRange" aria-expanded="false" onchange="filterChart(this)">
+             <select name="dateRange" aria-expanded="false" id="dateRange">
                  <option value="1">Select Please</option>
                  <option value="1">1 Month</option>
                  <option value="3">3 Months</option>
@@ -66,9 +66,10 @@
          <p>If interest you can see more work here </p>
      </div>
  </footer>
-<script src="/js/app.js"></script>
- <script>
-     var e = JSON.parse(document.getElementById('datepicker').value);
+<script nonce="dfr785" type="text/javascript" src="/js/app.js"></script>
+ <script nonce="dfr785" type="text/javascript">
+     let optionYear = document.getElementById('datepicker')
+     optionYear.addEventListener('change', getSelectValue)
 
      function getSelectValue() {
          var e = JSON.parse(document.getElementById('datepicker').value);
@@ -169,6 +170,7 @@
          const month = JSON.parse('<%- JSON.stringify(months.map((el) => el._id))%>');
      }
      getSelectValue();
+     
 
      var ctx = document.getElementById("myCharOption").getContext("2d");
      let yearly = JSON.parse('<%- JSON.stringify(days.map(el => el._id)) %>');
@@ -214,14 +216,18 @@
      },
      }
      var myNewChart = new Chart(ctx, config)
-
-     function filterChart(months) {
-         myNewChart.config.options.scales.x.min = luxon.DateTime.now().plus({
+let dateRange = document.getElementById('dateRange')
+     dateRange.addEventListener('change', (month) =>{
+        let months = month.target
+        myNewChart.config.options.scales.x.min = luxon.DateTime.now().plus({
              months: -months.value
          }).toISODate();
          myNewChart.config.options.scales.x.max = luxon.DateTime.now().toISODate();
          console.log(myNewChart.config.options.scales.x.min)
          myNewChart.update()
-     }
-     // filterChart(this)
+     } )
+    //  function filterChart(months) {
+         
+    //  }
+    // let flt = filterChart(this)
  </script>
