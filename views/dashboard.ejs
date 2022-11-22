@@ -14,7 +14,7 @@
               <input type="date" name="to" id="to" class="date-input">
             </div>
           </div>
-          <button type="submit" class="btn btn-outline-success large">Go</button>
+          <button type="submit" aria-label="button search for range date" class="btn btn-outline-success large">Go</button>
         </form>
       </div>
       <div class="panel-group">
@@ -29,8 +29,8 @@
                 <% [... new Set(yearl)].forEach((year) =>{ %>
                 <li>
                   <div class="flex between-space">
-                    <a href="/home/<%= year %> "><%= year %></a>
-                    <a class="btn" data-bs-toggle="collapse" href="#collapse<%=year %>"> <i class="fa fa-chevron-down"></i>
+                    <a href="/home/<%= year %> " aria-label="got to year <%= year %> "><%= year %></a>
+                    <a class="btn" data-bs-toggle="collapse" aria-label="open months inside year" href="#collapse<%=year %>"> <i class="fa fa-chevron-down"></i>
                     </a>
                   </div>
 
@@ -43,19 +43,15 @@
                                           "oct", "nov", "dec"];%>
                           <div class="flex between-space">
                             <% if(mon.year == year) {%> 
-                            <a class="months" href="/home/month/<%= year%>/<%= mon.month %>">
+                            <a class="months" href="/home/month/<%= year%>/<%= mon.month %>" aria-label="go to month %= months[mon.month - 1]%>">
                               <%= months[mon.month - 1]%></a>
-                              <a class="btn" data-bs-toggle="collapse" href="#collapseM<%=mon.month  %> ">
+                              <a class="btn" data-bs-toggle="collapse" aria-label="open the month <%= months[mon.month - 1]%>" href="#collapseM<%=mon.month  %> ">
                                 <i class="fa fa-chevron-down"></i></a>
                           </div>
                           <div id="collapseM<%= mon.month %>" class="penel-collapse collapse">
                             <div class="panel-body">
-                              <% [...new Set(tasks.map((week) => { %>
-                              <%    var oneJan = new Date(week.spendAt.getFullYear(),0,1);%>
-                              <%   var numberOfDays = Math.floor((week.spendAt - oneJan) / (24 * 60 * 60 * 1000));%>
-                              <% return Math.ceil(( week.spendAt.getDay() + 1 + numberOfDays) / 7) %>
-                              <% }))].forEach((week) => { %>
-                              <a class="months" href="/home/week/<%= week %> "><%=week  %> </a>
+                              <% weekly.forEach(week => { %> 
+                              <a class="months" href="/home/week/<%= week %> " aria-label="got to week"><%=week  %> </a>
                               <% }) %>
                             </div>
                           </div>
@@ -110,19 +106,27 @@
                     <%= task.info%>
                   </li>
                   <li class="col-6 mt-5">
-                    <a class="card-link" href="/home/spendsDetail/<%= task._id%>">
+                    <a class="card-link" href="/home/spendsDetail/<%= task._id%>" aria-label="go to spend for more details <%= task.task %>">
                       more details
                     </a>
                   </li>
                 </div>
 
                 <div class="mb-1 p-1 flex between-space">
-                  <a class="card-link" href="/home/editTask/<%= task._id %>">Edit</a> &nbsp;
-                  <form action="/home/deletePost/<%= task._id %>" method="POST" id="delete-form">
-                    <input type="hidden" name="_method" value="DELETE" />
-                    <button type="submit" class="card-link" onclick="return confirm('Are you sure you wish to delete this?');">Delete
+                  <a class="card-link" href="/home/editTask/<%= task._id %>" aria-label="go to edit task <%= task.task %>">Edit</a> &nbsp;
+                  
+                    <button aria-label="delete a spend name <%= task.task %>" type="submit" class="card-link btn-open">Delete
                     </button>
-                  </form>
+                    <section class="modal hidden user-form card" aria-labelledby="profile change user info">
+                        <div class="flex-end">
+                        <button class="btn-close" type="button" aria-label="close model"></button>
+                        </div>
+                        <p class="model-content">Are you sure want to Delete this spend</p>
+                        <form action="/home/deletePost/<%= task._id %>" method="POST" id="delete-form">
+                        <input type="hidden" name="_method" value="DELETE" />
+                        <button type="submit" class="btn btn-outline-success">Delete</button>
+                      </form>
+                  </section>
                 </div>
               </div>
               <div class="card-footer text-muted">
@@ -138,7 +142,7 @@
         <div class="pages">
           <ul>
             <% for(let i = 1; i <= totalPages; i++){ %>
-            <li> <a href="/home?page=<%=i%> "><%=i %></a></li>
+            <li> <a href="/home?page=<%=i%> " aria-label="go to page <%=i%>"><%=i %></a></li>
             <% } %>
           </ul>
         </div>
