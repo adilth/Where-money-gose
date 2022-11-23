@@ -1,29 +1,29 @@
 <%- include('partials/header.ejs') -%>
 
 <main class="dashboard">
-   <div class="row justify-content-center">
-      <section class="col-6 mt-5 card">
-         <% if (locals.messages.errors) { %> <% messages.errors.forEach( el => { %>
-         <div class="alert alert-danger"><%= el.msg %></div>
-         <% }) %> <% } %> <% if (locals.messages.info) { %> <%
-      messages.info.forEach( el => { %>
-         <div class="alert alert-info"><%= el.msg %></div>
-         <% }) %> <% } %>
-         <form action="/user/login" method="POST">
-            <div class="mb-3">
-               <label for="exampleInputEmail1" class="form-label">Email address</label>
-               <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                  name="email" />
-            </div>
-            <div class="mb-3">
-               <label for="exampleInputPassword1" class="form-label">Password</label>
-               <input type="password" class="form-control" id="exampleInputPassword1" name="password" />
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-         </form>
-         <p class="forget-center"><a href="/user/forget" >Forget Your Password</a></p>
-         <p align="center"><a href="/user/signup">No login? Create a new account.</a></p>
-      </section>
-   </div>
+    <div class="row justify-content-center">
+        <section class="col-6 mt-5 card" aria-labelledby="main-login">
+            <% if (locals.messages.errors) { %> <% messages.errors.forEach( el => { %>
+            <div class="alert alert-danger"><%= el.msg %></div>
+            <% }) %> <% } %> 
+            <% if (locals.messages.info) { %> <%
+                messages.info.forEach( el => { %>
+                  <div class="alert alert-info"><%= el.msg %></div>
+            <% }) %> <% } %>
+            <form action="/user/login" method="POST">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" />
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" name="password" />
+                </div>
+                <button type="submit" class="btn btn-primary" aria-label="submit a login">Submit</button>
+            </form>
+            <p class="forget-center"><a href="/user/forget" aria-label="go to forget Pass page">Forget Your Password</a></p>
+            <p align="center">No login?<a href="/user/signup" aria-label="go to create a new account"> Create a new account.</a></p>
+        </section>
+    </div>
 </main>
 <%- include('partials/footer.ejs') -%>
