@@ -6,7 +6,7 @@
   --dark-color: #252f3b;
   --second-bg-color: #1b2533;
   --light-color: #fff;
-  --second-font-color: #21cd92;
+  --second-font-color: rgb(33, 205, 146);
   --second-font-color-hover: #1ca475;
   --margin-3: 30px;
   --margin-4: 40px;
@@ -32,11 +32,10 @@ card {
 }
 .bg-image {
   background-image: linear-gradient(
-      to right,
-      rgba(27, 37, 51, 0.871),
-      rgb(28, 164, 117, 0.7)
-    ),
-    url("https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp");
+    to right,
+    rgba(27, 37, 51, 0.871),
+    rgba(40, 120, 92, 0.78)
+  );
   background-size: cover;
   min-width: 100%;
   min-height: 100vh !important;
@@ -56,6 +55,15 @@ html {
   flex-direction: column;
   scroll-behavior: smooth;
   font-family: "Roboto", sans-serif;
+}
+@font-face {
+  font-family: "Roboto", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  src: local("Pacifico Regular"), local("Pacifico-Regular"),
+    url(https://fonts.gstatic.com/s/pacifico/v12/FwZY7-Qmy14u9lezJ-6H6MmBp0u-.woff2)
+      format("woff2");
+  font-display: swap;
 }
 
 a {
@@ -155,7 +163,11 @@ header {
   margin-left: auto;
 }
 .logo-head {
-  font-size: 1.7rem;
+  width: 165px;
+}
+.logo-head img {
+  width: 100%;
+  height: 100%;
 }
 input.form-control:focus {
   box-shadow: none;
@@ -177,10 +189,12 @@ input.form-control:focus {
   justify-self: flex-end;
   align-self: center;
   cursor: pointer;
+  margin-left: 0.5em;
 }
 .profile-img img {
   object-fit: cover;
   width: 100%;
+  height: 100%;
   border-radius: 50%;
   transform: scale(1.2);
   cursor: pointer;
@@ -222,6 +236,7 @@ input.form-control:focus {
 }
 .user-info img {
   width: 50px;
+  height: 50px;
   border-radius: 50%;
   margin-right: 0.9em;
 }
@@ -263,7 +278,7 @@ input.form-control:focus {
     padding: 1em 1.1em;
   }
   .logo-head {
-    font-size: 1.4rem;
+    width: 160px;
   }
   .inputs-group > .form-control {
     width: 170px !important;
@@ -290,7 +305,7 @@ input.form-control:focus {
     right: 0;
     bottom: 0;
     flex-direction: column;
-    padding: 7rem 2rem;
+    padding: 7rem 1.5rem;
     background: hsl(0, 0%, 19%, 0.7);
     z-index: 20;
     transform: translateX(100%);
@@ -316,7 +331,7 @@ input.form-control:focus {
     background-image: url(../images/menu-icon.svg);
     background-size: cover;
     filter: invert(1);
-    top: 1.3rem;
+    top: 1.6rem;
     z-index: 999;
     right: 1.5rem;
   }
@@ -329,7 +344,7 @@ input.form-control:focus {
     grid-template-columns: 3fr 0.5fr 0.5fr;
   }
   .logo-head {
-    font-size: 1.2rem;
+    width: 135px;
   }
   .inputs-group > .form-control {
     width: 140px !important;
@@ -337,6 +352,7 @@ input.form-control:focus {
   }
   .mobile-nav-toggle {
     right: 0.9rem;
+    top: 1.2rem;
   }
 }
 /*general style*/
@@ -382,8 +398,8 @@ input.form-control:focus {
 .linkNewAdd .fosz {
   background: var(--light-color);
   width: max-content;
-  padding: 0.45em;
-
+  padding: 0.5em;
+  color: #066efd;
   border-radius: 5px;
 }
 
@@ -510,7 +526,7 @@ input.form-control:focus {
   gap: 1.5rem;
 }
 .title-head {
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
   margin-bottom: 1.6rem;
   font-weight: bold;
   text-align: center;
@@ -530,6 +546,11 @@ input.form-control:focus {
 .pd-3 {
   padding: 1rem;
 }
+.text-muted-day {
+  color: rgb(186, 185, 185);
+  font-size: 0.95rem;
+  text-align: center;
+}
 /* style cards */
 .card {
   background-color: var(--second-bg-color);
@@ -545,7 +566,7 @@ input.form-control:focus {
 .between-space {
   justify-content: space-between;
 }
-.card-link {
+.card .card-link {
   background-color: transparent;
   color: var(--second-font-color);
   border: none;
@@ -611,30 +632,31 @@ input.form-control:focus {
 }
 /* model */
 .modal {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.4rem;
+  position: fixed;
+  display: block;
   width: 450px;
-  padding: 1.2rem;
-  min-height: 340px;
-  max-height: 420px;
-  position: absolute;
-  z-index: 2;
-  top: 15%;
-  left: 30%;
+  padding: 1rem;
+  height: max-content;
+  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  transition: all 0.2s ease-in-out;
   background-color: var(--dark-color);
   color: var(--light-color);
   border: 1px solid #ddd;
   border-radius: 15px;
 }
 .hidden {
-  display: none;
+  transform: translate(-50%, -50%) scale(0);
 }
 .modal .flex-end {
   display: flex;
   align-items: center;
   justify-content: end;
+}
+.model-content {
+  font-size: 1.2em;
 }
 .user-form input {
   padding: 0.6rem 1rem;
@@ -644,9 +666,8 @@ input.form-control:focus {
 }
 
 .modal p {
-  font-size: 0.9rem;
-  color: #777;
-  margin: 0.4rem 0 0.2rem;
+  font-size: 1.1rem;
+  /* margin: 0.4rem 0 0.2rem; */
 }
 
 button {
@@ -655,11 +676,12 @@ button {
   font-weight: bold;
 }
 .btn-close {
-  transform: translate(10px, -20px);
+  transform: translate(9px, -15px);
   padding: 0.5rem 0.7rem;
-  background: #eee;
   border-radius: 50%;
   font-weight: bold;
+  font-size: 1.5em;
+  filter: invert(1);
 }
 .btn-open {
   color: #066efd;
@@ -683,16 +705,20 @@ button {
   margin-inline: 0.6rem;
 }
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   width: 100%;
   height: 100%;
+  user-select: none;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
-  z-index: 1;
+  z-index: 10;
+}
+.overlay.hidden {
+  display: none;
 }
 .card-total {
   padding: 1em;
@@ -702,23 +728,25 @@ button {
   .user-form {
     padding: 1.2em;
   }
-  .modal {
-    width: 370px;
+  .btn-close {
+    transform: translate(7px, 10px);
   }
   .modal {
-    top: 15%;
-    left: 15%;
+    width: 370px;
   }
 }
 @media only screen and (max-width: 600px) {
   .user-form {
     width: 90%;
-    padding: 0.2em;
+    padding: 0.4em;
+  }
+  .btn-close {
+    transform: translate(0, 0);
+    width: 0;
+    height: 0;
   }
   .modal {
     width: 90%;
-    top: 15%;
-    left: 0%;
   }
 }
 @media only screen and (max-width: 400px) {
@@ -727,8 +755,6 @@ button {
   }
   .modal {
     width: 95%;
-    top: 15%;
-    left: 0%;
   }
 }
 /* chart page */
@@ -842,6 +868,7 @@ button {
 @media only screen and (max-width: 640px) {
   .dashboard-cards {
     grid-template-columns: 1fr;
+    padding: 1.5em 0.5em;
   }
   .content-task .card {
     padding: 1em;
@@ -939,6 +966,12 @@ footer {
   .form.flex {
     flex-direction: column;
   }
+  .logo-head {
+    width: 120px;
+  }
+  .primary-navigation {
+    padding: 5em 1em;
+  }
 }
 @media (max-width: 340px) {
   .main-header {
@@ -950,9 +983,20 @@ footer {
     right: 0;
     width: 100%;
   }
+  .nav-links li {
+    padding-left: 0em;
+  }
 }
 @media (max-width: 320px) {
   .form-cont.flex {
     flex-direction: column;
+  }
+  .primary-navigation {
+    left: 20%;
+    padding: 5em 0.5em;
+  }
+  .flex.justify-content-around.space-mg {
+    flex-wrap: wrap;
+    gap: 0.7em;
   }
 }
