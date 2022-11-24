@@ -15,17 +15,19 @@
    <div class="user-form user-info">
       <form action="/profile/user/<%= user.id %> " method="post">
          <input type="hidden" name="_method" value="PUT" />
-         <div class="form-group flex between-space"><label for="userName">Name :  </label><input type="text" name="userName" value="<%= user.userName  %>"></div>
-         <div class="form-group flex between-space"><label for="email">Email :  </label ><input type="email" name="email" value="<%= user.email  %>"></div>
-         <div class="form-group flex between-space"><label for="confirmEmail">Confirm Email :  </label><input type="email" name="confirmEmail" value="<%= user.email  %>"></div>
-         <button type="submit" class="btn-modal">save</button>
+         <div class="form-group flex between-space"><label for="userName">Name :  </label><input type="text" name="userName" value="<%= user.userName  %>" id="userName"></div>
+         <div class="form-group flex between-space"><label for="email">Email :  </label ><input id="email" type="email" name="email" value="<%= user.email  %>"></div>
+         <div class="form-group flex between-space"><label for="confirmEmail">Confirm Email :  </label><input type="email" id="confirmEmail" name="confirmEmail" value="<%= user.email  %>"></div>
+         <button type="submit" class="btn-modal" aria-label="submit change name and email">save</button>
       </form>
    </div>
    <div class="change-pass">
       <p>if you want change <button class="btn btn-open">password</button></p>
-      <section class="modal hidden user-form card">
+      
+   </div>
+<section class="modal hidden user-form card" aria-labelledby="profile change user info">
          <div class="flex-end">
-            <button class="btn-close">X</button>
+            <button class="btn-close" type="button" aria-label="close model"></button>
          </div>
          <h3>change password</h3>
          <form action="/profile/<%=user.id %> " method="post">
@@ -43,11 +45,9 @@
                <input type="password" name="confirmPassword" id="confirmPassword">
             </div>
 
-            <button class="btn-modal">submit</button>
+            <button class="btn-modal" type="submit" aria-label="submit a change password">submit</button>
          </form>
       </section>
-   </div>
-
    <h2 class="card-total">you write a total of : <span class="number"><%= result  %> </span></h2>
 </div>
     
