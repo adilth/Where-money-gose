@@ -101,12 +101,12 @@ module.exports = {
     });
   },
   getSpends: async (req, res) => {
-    const tasks = await Tasks.find();
+    const tasks = await Tasks.find({ _id: req.params.id });
+    console.log(tasks);
     res.render("spend.ejs", {
       tasks: tasks,
       title: "more details about spends Page",
       user: req.user,
-      error: "",
       search: null,
     });
   },
