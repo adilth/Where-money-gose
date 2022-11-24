@@ -1,7 +1,7 @@
 <%- include('partials/header.ejs') -%>
 <main class="dashboard">
    <div class="row justify-content-center">
-      <section class="col-6 mt-5 card">
+      <section class="col-6 mt-5 card" aria-labelledby="main sign up">
          <% if (locals.messages.errors) { %>
          <% messages.errors.forEach( el => { %>
          <div class="alert alert-danger"><%= el.msg %></div>
@@ -31,7 +31,7 @@
                <label for="confirmPassword" class="form-label">Confirm Password</label>
                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" aria-label="submit a sign up">Submit</button>
          </form>
          <p class="pr-foot">you have an account? go to.<a href="/user/login">Login</a>page</p>
       </section>
