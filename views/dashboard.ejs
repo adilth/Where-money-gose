@@ -90,7 +90,10 @@
 
       <div class="main-board">
         <div>
-          <div class="dashboard-cards">
+          <% if(tasks === [] || tasks == {}) {%> 
+            <p>There is no spend add for now</p>
+            <%  } else{ %> 
+            <div class="dashboard-cards">
             <% tasks.forEach(task => {%>
             <div class="card card-ds">
               <div class="card-header">
@@ -137,6 +140,7 @@
             </div>
 
             <% }) %>
+            <% } %> 
           </div>
         </div>
         <div class="pages">

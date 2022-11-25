@@ -29,6 +29,7 @@ module.exports = {
           },
         },
       ]);
+      console.log(tasks);
       const yearly = await Tasks.aggregate([
         {
           $match: {
