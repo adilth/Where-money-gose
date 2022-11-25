@@ -89,27 +89,27 @@
       </div>
 
       <div class="main-board">
-        <ul>
+        <div>
           <div class="dashboard-cards">
             <% tasks.forEach(task => {%>
             <div class="card card-ds">
               <div class="card-header">
-                <li class="card-title fosz text-center"> <%= task.task %></li>
+                <p class="card-title fosz text-center"> <%= task.task %></p>
 
               </div>
               <div class="card-body">
                 <div class="card-body">
-                  <li class="card-text card-money">
-                    <%= task.spend%> $
-                  </li>
-                  <li class="card-text ">
+                  <p class="card-text card-money">
+                   $ <%= task.spend%> 
+                  </p>
+                  <p class="card-text ">
                     <%= task.info%>
-                  </li>
-                  <li class="col-6 mt-5">
+                  </p>
+                  <p class="col-6 mt-3">
                     <a class="card-link" href="/home/spendsDetail/<%= task._id%>" aria-label="go to spend for more details <%= task.task %>">
                       more details
                     </a>
-                  </li>
+                  </p>
                 </div>
 
                 <div class="mb-1 p-1 flex between-space">
@@ -130,15 +130,15 @@
                 </div>
               </div>
               <div class="card-footer text-muted">
-                <li class="card-subtitle mb-2 text-muted ">
+                <p class="card-subtitle mb-2 text-muted-day ">
                   <%= moment(task.spendAt).format("MMMM Do YYYY")%>
-                </li>
+                </p>
               </div>
             </div>
 
             <% }) %>
           </div>
-        </ul>
+        </div>
         <div class="pages">
           <ul>
             <% for(let i = 1; i <= totalPages; i++){ %>

@@ -1,17 +1,34 @@
   <%- include('partials/header.ejs') -%>
   <div class="dashboard">
- <div>more details about spends</div>
-  <div class="col-6">
-     <h2><%= tasks.task %></h2>
-     <p><%= tasks.spend %></p>
-     <p><%= tasks.info %></p>
-     <p><%= tasks.spendAt %></p>
-     <div class="mb-1 p-1">
-        <a href="/home/editTask/<%= tasks._id %>">Edit</a> &nbsp;
-        <a href="/home/deletePost/<%= tasks._id %>" class="red"
-           onclick="return confirm('Are you sure you wish to delete this?');">Delete</a>
-     </div>
+      <div>more details about spends</div>
+      <div class="card">
+      <div class="col-6">
+          <h2 class="card-header"><%= tasks[0].task %></h2>
+          <div class="card-body">
+            <p>$ <%= tasks[0].spend %></p>
+            <p><%= tasks[0].info %></p>
+             <div class="mb-1 p-1 flex between-space">
+              <a class="card-link" href="/home/editTask/<%= tasks[0]._id %>" aria-label="go to edit task <%= tasks[0].task %>">Edit</a> &nbsp;
+
+              <button aria-label="delete a spend name <%= tasks[0].task %>" type="submit" class="card-link btn-open">Delete
+              </button>
+              <section class="modal hidden user-form card" aria-labelledby="profile change user info">
+                  <div class="flex-end">
+                      <button class="btn-close" type="button" aria-label="close model"></button>
+                  </div>
+                  <p class="model-content">Are you sure want to Delete this spend</p>
+                  <form action="/home/deletePost/<%= tasks[0]._id %>" method="POST" id="delete-form">
+                      <input type="hidden" name="_method" value="DELETE" />
+                      <button type="submit" class="btn btn-outline-success">Delete</button>
+                  </form>
+              </section>
+          </div>
+          </div>
+          
+          <p class="card-footer text-muted"><%= tasks[0].spendAt %></p>
+         
+      </div>
+      </div>
   </div>
-  </div>
- 
+
   <%- include('partials/footer.ejs') -%>

@@ -40,7 +40,7 @@
                                                             At</label>
                                                       <input type="date" id="form3Example4cdg"
                                                             class="form-control form-control-lg" name="spendAt"
-                                                            value="<%= tasks[0].spendAt%>" />
+                                                            value="<%= moment(tasks[0].spendAt).format("YYYY-MM-DD")%>" />
                                                 </div>
                                                 <p class="text-center text-muted mt-4 mb-3">Please make sure you file
                                                       all field and with current info? </p>
