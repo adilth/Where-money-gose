@@ -458,95 +458,104 @@ module.exports = {
     let from = req.query.from;
     let to = req.query.to;
     let { page = 1, limit = 9 } = req.query;
+    console.log(from, to);
+    if (from === "" || to === "" || (from === "" && to === "")) {
+      res.redirect("/home");
+    }
     let formatFrom = new Date(moment(from, "YYYY-MM-DD").format());
     let formatTo = new Date(moment(to, "YYYY-MM-DD").format());
-    const count = await Tasks.countDocuments({
-      spendAt: {
-        $gte: formatFrom,
-        $lt: formatTo,
-      },
+    try {
+      const count = await Tasks.countDocuments({
+        spendAt: {
+          $gte: formatFrom,
+          $lt: formatTo,
+        },
 
-      user: req.user.id,
-    });
+        user: req.user.id,
+      });
 
-    let tasks = await Tasks.find({
-      spendAt: {
-        $gte: formatFrom,
-        $lt: formatTo,
-      },
-      user: req.user.id,
-    })
-      .sort({ spendAt: "desc" })
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .lean();
-    const total = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-          spendAt: { $gte: formatFrom, $lte: formatTo },
+      let tasks = await Tasks.find({
+        spendAt: {
+          $gte: formatFrom,
+          $lt: formatTo,
         },
-      },
-      {
-        $group: {
-          _id: null,
-          count: {
-            $sum: "$spend",
+        user: req.user.id,
+      })
+        .sort({ spendAt: "desc" })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .lean();
+      const total = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+            spendAt: { $gte: formatFrom, $lte: formatTo },
           },
         },
-      },
-    ]);
-    const yearly = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-            month: { $month: "$spendAt" },
-          },
-          count: {
-            $sum: "$spend",
+        {
+          $group: {
+            _id: null,
+            count: {
+              $sum: "$spend",
+            },
           },
         },
-      },
-    ]);
-    const weekly = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-            month: { $month: "$spendAt" },
-            week: { $week: "$spendAt" },
-          },
-          count: {
-            $sum: "$spend",
+      ]);
+      const yearly = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
           },
         },
-      },
-    ]);
-    const yearFilter = yearly.map((el) => el._id.year);
-    const weekFilter = weekly.map((el) => el._id.week);
-    const yearId = yearly.map((el) => el._id);
-    res.render("dashboard.ejs", {
-      tasks: tasks,
-      search: "",
-      title: "range filter",
-      totalPages: Math.ceil(count / limit),
-      total: total,
-      user: req.user,
-      yearl: yearFilter,
-      monthly: yearId,
-      weekly: weekFilter,
-    });
+        {
+          $group: {
+            _id: {
+              year: { $year: "$spendAt" },
+              month: { $month: "$spendAt" },
+            },
+            count: {
+              $sum: "$spend",
+            },
+          },
+        },
+      ]);
+      const weekly = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+          },
+        },
+        {
+          $group: {
+            _id: {
+              year: { $year: "$spendAt" },
+              month: { $month: "$spendAt" },
+              week: { $week: "$spendAt" },
+            },
+            count: {
+              $sum: "$spend",
+            },
+          },
+        },
+      ]);
+      const yearFilter = yearly.map((el) => el._id.year);
+      const weekFilter = weekly.map((el) => el._id.week);
+      const yearId = yearly.map((el) => el._id);
+      res.render("dashboard.ejs", {
+        tasks: tasks,
+        search: "",
+        title: "range filter",
+        totalPages: Math.ceil(count / limit),
+        total: total,
+        user: req.user,
+        yearl: yearFilter,
+        monthly: yearId,
+        weekly: weekFilter,
+      });
+    } catch (err) {
+      console.log(err);
+      res.render("error404.ejs");
+    }
   },
   getChartPage: async (req, res) => {
     try {
