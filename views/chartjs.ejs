@@ -38,6 +38,9 @@
              </div>
          </div>
      </div>
+     <% if (months.length === 0) {%>
+     <h4 class="title-head">There is no spend add for now please create one by click on new spend</h4>
+     <% }else {%>
      <div class="select-wrapper">
          <select name="datepicker" aria-expanded="false" id="datepicker">
              <% [...new Set(months.map(el => el._id.year))].forEach(year => { %>
@@ -46,7 +49,7 @@
          </select>
 
      </div>
-     <div class="cont-chart dashboard-cards" data-chart-data="<%= JSON.stringify(months.map((el) => el._id.month)) %>" data-chart-label="<%= JSON.stringify(months.map((el) => el.count)) %>">
+     <div class="cont-chart dashboard-cards">
          <div class="card"><canvas id="myChart"></canvas></div>
          <div class="card"><canvas id="myChartLine"></canvas></div>
          <div class="card"><canvas id="myChartAvg"></canvas></div>
@@ -59,188 +62,188 @@
              </select>
          </div>
      </div>
+     <% } %>
  </div>
-  <div class="overlay hidden"></div>
+ <div class="overlay hidden"></div>
  <footer>
-   <div class="footer container">
-        <ul class="flex foot-head" aria-label="sub navigation">
-            <li>Home</li>
-            <li>Chart</li>
-            <li>Profile</li>
-            <li>contact</li>
-        </ul>
-        <p>If interest you can see more work here </p>
-        <ul class="social-links" aria-label="nav social links">
-            <li><a href="https://github.com/adilth" aria-label="github" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
-            <li><a href="https://twitter.com/aadilth" aria-label="twitter" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-            <li><a href="https://www.linkedin.com/in/adil-tahiri/" target="_blank"
-               aria-label="open link to adil view's linkedin page."><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-        </ul>
-        <p>Copyright © 2022 <span>POCKET PROCESS</span> All rights reserved.</p>
+     <div class="footer container">
+         <ul class="flex foot-head" aria-label="sub navigation">
+             <li>Home</li>
+             <li>Chart</li>
+             <li>Profile</li>
+             <li>contact</li>
+         </ul>
+         <p>If interest you can see more work here </p>
+         <ul class="social-links" aria-label="nav social links">
+             <li><a href="https://github.com/adilth" aria-label="github" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+             <li><a href="https://twitter.com/aadilth" aria-label="twitter" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+             <li><a href="https://www.linkedin.com/in/adil-tahiri/" target="_blank" aria-label="open link to adil view's linkedin page."><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+         </ul>
+         <p>Copyright © 2022 <span>POCKET PROCESS</span> All rights reserved.</p>
      </div>
  </footer>
-<script nonce="dfr785gh78a1q" type="text/javascript" src="/js/app.js"></script>
+ <script nonce="dfr785gh78a1q" type="text/javascript" src="/js/app.js"></script>
  <script nonce="dfr785gh78a1q" type="text/javascript">
      let optionYear = document.getElementById('datepicker')
-     optionYear.addEventListener('change', getSelectValue)
+     if (optionYear) {
 
-     function getSelectValue() {
-         var e = JSON.parse(document.getElementById('datepicker').value);
-         // in your EJS file.
-         let filtered = JSON.parse('<%- JSON.stringify(months.map(el => el)) %>');
-         let date = filtered.filter(el => el._id.year == e)
-         const sortDate = date.map(el => el._id.month).sort((a,b)=> a - b)
-         var monthsName = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep", "oct", "nov", "dec"];
-         const monthsDate2 = sortDate.map((el) => monthsName[el - 1])
+         optionYear.addEventListener('change', getSelectValue)
 
-         var ctx = document.getElementById("myChart").getContext("2d");
-         var ctxLine = document.getElementById("myChartLine").getContext("2d");
-         var ctxAvg = document.getElementById("myChartAvg").getContext("2d");
-         let chartBar = Chart.getChart("myChart");
-         let chartLine = Chart.getChart("myChartLine");
-         let chartAvg = Chart.getChart("myChartAvg");
-         if (chartBar != undefined || chartAvg != undefined || chartLine != undefined) {
-             chartBar.destroy();
-             chartLine.destroy();
-             chartAvg.destroy();
+         function getSelectValue() {
+             var e = JSON.parse(document.getElementById('datepicker').value);
+             // in your EJS file.
+             let filtered = JSON.parse('<%- JSON.stringify(months.map(el => el)) %>');
+             let date = filtered.filter(el => el._id.year == e)
+             const sortDate = date.map(el => el._id.month).sort((a, b) => a - b)
+             var monthsName = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep", "oct", "nov", "dec"];
+             const monthsDate2 = sortDate.map((el) => monthsName[el - 1])
+
+             var ctx = document.getElementById("myChart").getContext("2d");
+             var ctxLine = document.getElementById("myChartLine").getContext("2d");
+             var ctxAvg = document.getElementById("myChartAvg").getContext("2d");
+             let chartBar = Chart.getChart("myChart");
+             let chartLine = Chart.getChart("myChartLine");
+             let chartAvg = Chart.getChart("myChartAvg");
+             if (chartBar != undefined || chartAvg != undefined || chartLine != undefined) {
+                 chartBar.destroy();
+                 chartLine.destroy();
+                 chartAvg.destroy();
+             }
+             data = {
+                 labels: monthsDate2,
+                 datasets: [{
+                     label: "Monthly Spends",
+                     backgroundColor: "rgba(255,99,132,0.2)",
+                     borderColor: "rgba(255,99,132,1)",
+                     borderWidth: 2,
+                     hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                     hoverBorderColor: "rgba(255,99,132,1)",
+                     data: JSON.parse('<%- JSON.stringify(months.map((el) => el.count))%>'),
+                 }]
+             }
+             data2 = {
+                 labels: monthsDate2,
+                 datasets: [{
+                     label: "Monthly Spends count",
+                     backgroundColor: "rgba(255,99,132,0.2)",
+                     borderColor: "rgba(255,99,132,1)",
+                     borderWidth: 2,
+                     hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                     hoverBorderColor: "rgba(255,99,132,1)",
+                     data: JSON.parse('<%- JSON.stringify(months.map((el) => el.count))%>'),
+                 }, {
+                     label: "Monthly Spends average",
+                     borderColor: "rgba(8, 110, 253, 1)",
+                     borderWidth: 2,
+                     backgroundColor: "rgba(8, 110, 253, 0.4)",
+                     hoverBorderColor: "rgba(8, 110, 253, 1)",
+                     data: JSON.parse('<%- JSON.stringify(months.map((el) => el.average))%>'),
+                 }]
+             }
+
+             data3 = {
+                 labels: monthsDate2,
+                 datasets: [{
+                     label: "Monthly Spends average",
+                     backgroundColor: "rgba(255,99,132,0.2)",
+                     borderColor: "rgba(255,99,132,1)",
+                     borderWidth: 2,
+                     hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                     hoverBorderColor: "rgba(255,99,132,1)",
+                     data: JSON.parse('<%- JSON.stringify(months.map((el) => el.average))%>'),
+                 }]
+             }
+             const options = {
+                 scales: {
+                     y: {
+                         display: true,
+                         ticks: {
+                             beginATZero: true,
+                             callback: (value) => `$ ${value}`,
+                         }
+                     }
+                 },
+                 responsive: true
+
+             }
+             const config = {
+                 type: 'bar',
+                 data: data,
+                 options: options,
+             }
+             const config2 = {
+                 type: 'line',
+                 data: data2,
+                 options: options,
+             }
+             const configAvg = {
+                 type: 'bar',
+                 data: data3,
+                 options: options,
+             }
+
+             var myNewChart = new Chart(ctx, config)
+             var myNewChartLine = new Chart(ctxLine, config2)
+             var myNewChartAvg = new Chart(ctxAvg, configAvg)
+             const month = JSON.parse('<%- JSON.stringify(months.map((el) => el._id))%>');
          }
+         getSelectValue();
+     }
+
+     let dateRange = document.getElementById('dateRange')
+     if (dateRange) {
+         var ctx = document.getElementById("myCharOption").getContext("2d");
+         let yearly = JSON.parse('<%- JSON.stringify(days.map(el => el._id)) %>');
+         const dateJs = yearly.map((day) => {
+             let days = new Date(day);
+             return days.setHours(0, 0, 0, 0)
+         })
+         let countLab = JSON.parse('<%- JSON.stringify(days.map((el) => el.count))%>');
          data = {
-             labels: monthsDate2,
+             labels: dateJs,
              datasets: [{
                  label: "Monthly Spends",
                  backgroundColor: "rgba(255,99,132,0.2)",
                  borderColor: "rgba(255,99,132,1)",
-                 borderWidth: 2,
+                 borderWidth: 1,
                  hoverBackgroundColor: "rgba(255,99,132,0.4)",
                  hoverBorderColor: "rgba(255,99,132,1)",
-                 data: JSON.parse('<%- JSON.stringify(months.map((el) => el.count))%>'),
+                 data: countLab,
              }]
          }
-         data2 = {
-             labels: monthsDate2,
-             datasets: [{
-                 label: "Monthly Spends count",
-                 backgroundColor: "rgba(255,99,132,0.2)",
-                 borderColor: "rgba(255,99,132,1)",
-                 borderWidth: 2,
-                 hoverBackgroundColor: "rgba(255,99,132,0.4)",
-                 hoverBorderColor: "rgba(255,99,132,1)",
-                 data: JSON.parse('<%- JSON.stringify(months.map((el) => el.count))%>'),
-             },{
-                label: "Monthly Spends average",
-                borderColor: "rgba(8, 110, 253, 1)",
-                borderWidth: 2,
-                backgroundColor: "rgba(8, 110, 253, 0.4)",
-                hoverBorderColor: "rgba(8, 110, 253, 1)",
-                data:JSON.parse('<%- JSON.stringify(months.map((el) => el.average))%>'),
-             }]
-         }
-
-         data3 = {
-             labels: monthsDate2,
-             datasets: [{
-                 label: "Monthly Spends average",
-                 backgroundColor: "rgba(255,99,132,0.2)",
-                 borderColor: "rgba(255,99,132,1)",
-                 borderWidth: 2,
-                 hoverBackgroundColor: "rgba(255,99,132,0.4)",
-                 hoverBorderColor: "rgba(255,99,132,1)",
-                 data: JSON.parse('<%- JSON.stringify(months.map((el) => el.average))%>'),
-             }]
-         }
-         const options = {
-             scales: {
-                 y: {
-                     display: true,
-                     ticks: {
-                         beginATZero: true,
-                         callback: (value) => `$ ${value}` ,
-                     }
-                 }
-             },
-             responsive: true
-
-         }
+         //  const options = 
          const config = {
              type: 'bar',
              data: data,
-             options: options,
+             options: {
+                 scales: {
+                     x: {
+                         type: 'time',
+                         time: {
+                             unit: 'day',
+                         },
+                         min: '2022-02-01',
+                         max: Date.now(),
+                     },
+                     y: {
+                         ticks: {
+                             display: true,
+                             callback: (value) => `$ ${value}`,
+                         },
+                     }
+                 },
+                 responsive: true
+             },
          }
-         const config2 = {
-             type: 'line',
-             data: data2,
-             options: options,
-         }
-         const configAvg = {
-             type: 'bar',
-             data: data3,
-             options: options,
-         }
-
          var myNewChart = new Chart(ctx, config)
-         var myNewChartLine = new Chart(ctxLine, config2)
-         var myNewChartAvg = new Chart(ctxAvg, configAvg)
-         const month = JSON.parse('<%- JSON.stringify(months.map((el) => el._id))%>');
+         dateRange.addEventListener('change', (month) => {
+             let months = month.target
+             myNewChart.config.options.scales.x.min = luxon.DateTime.now().plus({
+                 months: -months.value
+             }).toISODate();
+             myNewChart.config.options.scales.x.max = luxon.DateTime.now().toISODate();
+             console.log(myNewChart.config.options.scales.x.min)
+             myNewChart.update()
+         })
      }
-     getSelectValue();
-     
-
-     var ctx = document.getElementById("myCharOption").getContext("2d");
-     let yearly = JSON.parse('<%- JSON.stringify(days.map(el => el._id)) %>');
-     const dateJs = yearly.map((day) => {
-         let days = new Date(day);
-         return days.setHours(0, 0, 0, 0)
-     })
-     let countLab = JSON.parse('<%- JSON.stringify(days.map((el) => el.count))%>');
-     data = {
-         labels: dateJs,
-         datasets: [{
-             label: "Monthly Spends",
-             backgroundColor: "rgba(255,99,132,0.2)",
-             borderColor: "rgba(255,99,132,1)",
-             borderWidth: 1,
-             hoverBackgroundColor: "rgba(255,99,132,0.4)",
-             hoverBorderColor: "rgba(255,99,132,1)",
-             data: countLab,
-         }]
-     }
-    //  const options = 
-     const config = {
-         type: 'bar',
-         data: data,
-         options: {
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'day',
-                    },
-                    min: '2022-02-01',
-                    max: Date.now(),
-                },
-                y: {
-                    ticks: {
-                        display:true,
-                        callback: (value) => `$ ${value}` ,
-                    },
-                }
-            },
-            responsive: true
-     },
-     }
-     var myNewChart = new Chart(ctx, config)
-let dateRange = document.getElementById('dateRange')
-     dateRange.addEventListener('change', (month) =>{
-        let months = month.target
-        myNewChart.config.options.scales.x.min = luxon.DateTime.now().plus({
-             months: -months.value
-         }).toISODate();
-         myNewChart.config.options.scales.x.max = luxon.DateTime.now().toISODate();
-         console.log(myNewChart.config.options.scales.x.min)
-         myNewChart.update()
-     } )
-    //  function filterChart(months) {
-         
-    //  }
-    // let flt = filterChart(this)
  </script>
