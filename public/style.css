@@ -749,7 +749,7 @@ button {
     width: 90%;
   }
 }
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 450px) {
   .user-form .form-group.flex {
     flex-direction: column;
   }
@@ -936,6 +936,29 @@ footer {
   text-align: center;
   color: var(--light-color);
 }
+.foot-head {
+  justify-content: center;
+  gap: 1em;
+  flex-wrap: wrap;
+  margin-bottom: 0.6em;
+}
+.foot-head a {
+  font-size: 1.05rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.footer .social-links i {
+  color: rgb(213, 213, 213);
+  font-size: 1.4rem;
+  transition: all 200ms ease-in-out;
+}
+.footer .social-links i:hover {
+  color: rgb(235, 235, 235);
+}
+.footer .logo-name {
+  font-weight: bold;
+  color: var(--second-font-color);
+}
 @media (prefers-reduced-motion: reduce) {
   html,
   body {
@@ -972,6 +995,9 @@ footer {
   .primary-navigation {
     padding: 5em 1em;
   }
+  .footer {
+    padding: 1.5rem;
+  }
 }
 @media (max-width: 340px) {
   .main-header {
@@ -985,6 +1011,9 @@ footer {
   }
   .nav-links li {
     padding-left: 0em;
+  }
+  .footer {
+    padding: 1rem;
   }
 }
 @media (max-width: 320px) {
