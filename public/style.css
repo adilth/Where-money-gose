@@ -526,7 +526,7 @@ input.form-control:focus {
   gap: 1.5rem;
 }
 .title-head {
-  margin-top: 1.5rem;
+  margin-top: 1.9rem;
   margin-bottom: 1.6rem;
   font-weight: bold;
   text-align: center;
@@ -762,6 +762,10 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.charset .title-head {
+  margin-top: 2rem;
+  margin-bottom: 4rem;
 }
 .text-chart {
   margin-top: 1rem;
