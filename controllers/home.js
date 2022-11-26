@@ -123,6 +123,15 @@ module.exports = {
   },
   postAddTask: async (req, res) => {
     try {
+      if (
+        req.body.task === "" ||
+        req.body.spendAt === "" ||
+        req.body.spend == "" ||
+        req.body.info === ""
+      ) {
+        req.flash("errors", "please fill all fields");
+        return res.redirect("/home/new");
+      }
       req.body.user = req.user.id;
       await Tasks.create(req.body);
       res.redirect("/home");
@@ -140,6 +149,15 @@ module.exports = {
       if (task.user != req.user.id) {
         res.redirect("/home");
       } else {
+        if (
+          req.body.task === "" ||
+          req.body.spendAt === "" ||
+          req.body.spend == "" ||
+          req.body.info === ""
+        ) {
+          req.flash("errors", "please fill all fields");
+          return res.redirect("/home/editTask/" + req.params.id);
+        }
         task = await Tasks.findOneAndUpdate({ _id: req.params.id }, req.body);
       }
       res.redirect("/home");
