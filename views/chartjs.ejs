@@ -50,10 +50,10 @@
 
      </div>
      <div class="cont-chart dashboard-cards">
-         <div class="card"><canvas id="myChart"></canvas></div>
-         <div class="card"><canvas id="myChartLine"></canvas></div>
-         <div class="card"><canvas id="myChartAvg"></canvas></div>
-         <div class="card"><canvas id="myCharOption"></canvas>
+         <div class="card"><canvas id="myChart" class="chart-card"></canvas></div>
+         <div class="card"><canvas id="myChartLine" class="chart-card"></canvas></div>
+         <div class="card"><canvas id="myChartAvg" class="chart-card"></canvas></div>
+         <div class="card"><canvas id="myCharOption" class="chart-card"></canvas>
              <select name="dateRange" aria-expanded="false" id="dateRange">
                  <option value="1">Select Please</option>
                  <option value="1">1 Month</option>
@@ -67,19 +67,21 @@
  <div class="overlay hidden"></div>
  <footer>
      <div class="footer container">
-         <ul class="flex foot-head" aria-label="sub navigation">
-             <li>Home</li>
-             <li>Chart</li>
-             <li>Profile</li>
-             <li>contact</li>
-         </ul>
-         <p>If interest you can see more work here </p>
-         <ul class="social-links" aria-label="nav social links">
-             <li><a href="https://github.com/adilth" aria-label="github" target="_blank"><i class="fa fa-github" aria-hidden="true"></i></a></li>
-             <li><a href="https://twitter.com/aadilth" aria-label="twitter" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-             <li><a href="https://www.linkedin.com/in/adil-tahiri/" target="_blank" aria-label="open link to adil view's linkedin page."><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-         </ul>
-         <p>Copyright © 2022 <span>POCKET PROCESS</span> All rights reserved.</p>
+        <ul class="flex foot-head" aria-label="sub navigation">
+            <li><a href="/home">Home</a> </li>
+            <li><a href="/home/chartPage">Chart</a> </li>
+            <li><a href="/profile">Profile</a> </li>
+            <li><a href="/contact">contact</a> </li>
+        </ul>
+
+        <p>If interest you can see more work here </p>
+        <ul class="social-links flex foot-head" aria-label="nav social links">
+            <li><a href="https://github.com/adilth" aria-label="github" target="_blank"><i class="fab fa-github" aria-hidden="true"></i></a></li>
+            <li><a href="https://twitter.com/aadilth" aria-label="twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
+            <li><a href="https://www.linkedin.com/in/adil-tahiri/" target="_blank"
+               aria-label="open link to adil view's linkedin page."><i class="fab fa-linkedin" aria-hidden="true"></i></a></li>
+        </ul>
+        <p>Copyright © 2022 <span class="logo-name">POCKET PROCESS</span> All rights reserved.</p>
      </div>
  </footer>
  <script nonce="dfr785gh78a1q" type="text/javascript" src="/js/app.js"></script>
