@@ -121,6 +121,10 @@ module.exports = {
   contactUs: async (req, res) => {
     try {
       const { name, UEmail, subject, message } = req.body;
+      if (name === "" || email === "" || subject == "" || message === "") {
+        req.flash("errors", "please fill all fields");
+        return res.redirect("/contact");
+      }
       const user = await Tasks.find({ user: req.user.id });
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -140,7 +144,7 @@ module.exports = {
       console.log(data);
       // let emailTransporter = await createTransporter();
       await transporter.sendMail(data);
-      req.flash("errors", {
+      req.flash("success", {
         msg: "your email has successfully send message",
       });
       res.render("contact", { user: req.user, search: null });
