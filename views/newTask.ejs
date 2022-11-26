@@ -1,7 +1,5 @@
 <%- include('partials/header.ejs') -%>
-<% if (error != '') { %>
-<%= error %>
-<% } else { %>
+
 <section class=" bg-image gradient-custom-3 p-5">
       <!-- <div class="head-tetle flex">
             <h2 class="page-title"></h2>
@@ -13,9 +11,10 @@
                               <div class="card">
                                     <div class="card-body p-5">
                                           <h2 class="text-uppercase text-center mb-5 text-font">Add New Spends</h2>
-
+                                           <% if (locals.messages.errors) { %>
+                                                <div class="alert alert-danger"><%= messages.errors%></div>
+                                             <% } %> 
                                           <form action="/home/newTask" method="POST">
-
                                                 <div class="form-outline mb-4">
                                                       <label class="form-label" for="form3Example1cg">Where Spend
                                                             it</label>
@@ -23,7 +22,6 @@
                                                             class="form-control form-control-lg" name="task" />
                                                       
                                                 </div>
-
                                                 <div class="form-outline mb-4">
                                                       <label class="form-label" for="form3Example3cg">How Much</label>
                                                       <input type="number" id="form3Example3cg"
@@ -62,5 +60,5 @@
             </div>
       </div>
 </section>
-<% } %>
+
 <%- include('partials/footer.ejs') -%>
