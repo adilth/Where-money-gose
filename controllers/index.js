@@ -120,7 +120,7 @@ module.exports = {
   },
   contactUs: async (req, res) => {
     try {
-      const { name, UEmail, subject, message } = req.body;
+      const { name, email, subject, message } = req.body;
       if (name === "" || email === "" || subject == "" || message === "") {
         req.flash("errors", "please fill all fields");
         return res.redirect("/contact");
@@ -134,15 +134,14 @@ module.exports = {
         },
       });
       const data = {
-        from: UEmail,
+        from: email,
         to: process.env.BUSINESS_EMAIL,
         subject: subject,
-        html: ` <p>email from ${name} and his ${UEmail} send from spend money  </p>
+        html: ` <p>email from ${name} and his ${email} send from spend money  </p>
         <p> ${message} </p>
         `,
       };
       console.log(data);
-      // let emailTransporter = await createTransporter();
       await transporter.sendMail(data);
       req.flash("success", {
         msg: "your email has successfully send message",
