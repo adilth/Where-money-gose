@@ -8,6 +8,6 @@ const TasksSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  spendAt: { type: Date, default: Date.now },
+  spendAt: { type: Date, require: true, default: Date.now },
 });
 module.exports = mongoose.model("Tasks", TasksSchema);
