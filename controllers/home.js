@@ -88,7 +88,7 @@ module.exports = {
       });
     } catch (err) {
       console.log(err);
-      res.render("error404.ejs");
+      res.render("error505.ejs");
     }
   },
   getAddTask: async (req, res) => {
@@ -357,6 +357,9 @@ module.exports = {
           },
         },
       },
+      {
+        $sort: { _id: -1 },
+      },
     ]);
     const weekly = await Tasks.aggregate([
       {
@@ -577,7 +580,9 @@ module.exports = {
   },
   getChartPage: async (req, res) => {
     try {
-      const tasks = await Tasks.find({ user: req.user.id }).lean();
+      const tasks = await Tasks.find({ user: req.user.id })
+        .sort({ createdAt: 1 })
+        .lean();
       const count = await Tasks.countDocuments({ user: req.user.id });
       const total = await Tasks.aggregate([
         {
@@ -617,10 +622,13 @@ module.exports = {
             average: {
               $avg: "$spend",
             },
+            doc: {
+              $sum: 1,
+            },
           },
         },
         {
-          $sort: { _id: -1 },
+          $sort: { "_id.year": -1, "_id.month": 1 },
         },
       ]);
       const days = await Tasks.aggregate([
@@ -640,13 +648,14 @@ module.exports = {
             average: {
               $avg: "$spend",
             },
+            doc: {
+              $sum: 1,
+            },
           },
         },
-        {
-          $sort: { _id: -1 },
-        },
       ]);
-      console.log(days);
+
+      console.log(months);
       res.render("chartjs.ejs", {
         tasks: tasks,
         months: months,
