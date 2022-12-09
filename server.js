@@ -8,6 +8,7 @@ const flash = require("express-flash");
 const logger = require("morgan");
 const moment = require("moment");
 const helmet = require("helmet");
+const cors = require("cors");
 const methodOverride = require("method-override");
 const connectDB = require("./config/db");
 const homeRouter = require("./routes/home");
@@ -44,6 +45,7 @@ app.use((req, res, next) => {
   res.locals.moment = moment;
   next();
 });
+app.use(cors());
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(logger("dev"));
@@ -54,7 +56,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true, sameSite: "strict" },
+    cookie: { secure: false, httpOnly: true, sameSite: "lax" },
     // store: new MongoStore({ mongooseConnection: mongoose.connection }),
     store: MongoStore.create({ mongoUrl: process.env.CONNECT_DB }),
   })
