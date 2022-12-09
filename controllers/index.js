@@ -15,7 +15,6 @@ module.exports = {
 
     let taskData = null;
     let qry = { $or: [{ task: { $regex: q } }] };
-    console.log(qry);
     try {
       if (q != null) {
         let taskResult = await Tasks.find(qry)
@@ -24,7 +23,6 @@ module.exports = {
           .skip((page - 1) * limit)
           .lean();
         taskData = taskResult;
-        console.log(taskData);
       } else {
         q = "search";
         let taskResult = await Tasks.find({})
@@ -141,7 +139,6 @@ module.exports = {
         <p> ${message} </p>
         `,
       };
-      console.log(data);
       await transporter.sendMail(data);
       req.flash("success", {
         msg: "your email has successfully send message",

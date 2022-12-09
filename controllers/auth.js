@@ -155,7 +155,6 @@ module.exports = {
           },
         });
         const url = `http://localhost:3001/user/resetPas/${user._id}`;
-        console.log({ url });
         const data = {
           from: process.env.BUSINESS_EMAIL,
           to: user.email,
@@ -192,7 +191,6 @@ module.exports = {
   },
   getResetPass: async (req, res) => {
     const id = req.params.id;
-    console.log(id);
     try {
       // let user = await User.find({ _id: req.params.id });
       const user = await User.findById({ _id: id });
@@ -203,7 +201,6 @@ module.exports = {
         req.flash("error", "Password reset token is invalid or has expired.");
         return res.redirect("/index");
       }
-      console.log(user);
       res.render("resetPass.ejs", {
         title: "change password",
         user: null,
@@ -220,10 +217,7 @@ module.exports = {
       const { confirmPassword, newPassword } = req.body;
       const { id } = req.params;
       const user = await User.findById(req.params.id);
-      console.log(id, user);
-      // , async (err, user) => {
-      console.log(id);
-      console.log(user._id);
+
       if (req.user) {
         return res.redirect("/home");
       }
@@ -248,8 +242,7 @@ module.exports = {
         { password: newPass },
         { new: true }
       );
-      console.log(userPassword);
-      // console.log(transporter);
+
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -268,7 +261,6 @@ module.exports = {
         <h3> thank you /h3>
         `,
       };
-      console.log(data);
       // let emailTransporter = await createTransporter();
       await transporter.sendMail(data);
       // res.redirect(req.session.returnTo || "/home");

@@ -88,7 +88,7 @@ module.exports = {
           { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
         ],
       });
-      console.log(existingUser);
+
       if (existingUser != null && existingUser.userName == req.body.userName) {
         req.flash("errors", {
           msg: "this userName is already exists",

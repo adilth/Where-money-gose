@@ -13,7 +13,6 @@ module.exports = {
         .skip((page - 1) * limit)
         .lean();
       const count = await Tasks.countDocuments({ user: req.user.id });
-      console.log(page);
       const total = await Tasks.aggregate([
         {
           $match: {
@@ -29,7 +28,6 @@ module.exports = {
           },
         },
       ]);
-      console.log(tasks);
       const yearly = await Tasks.aggregate([
         {
           $match: {
@@ -74,7 +72,6 @@ module.exports = {
       const weekFilter = weekly.map((el) => el._id.week);
       const yearId = yearly.map((el) => el._id);
 
-      console.log(yearId);
       res.render("dashboard.ejs", {
         tasks: tasks,
         user: req.user,
@@ -94,7 +91,6 @@ module.exports = {
   getAddTask: async (req, res) => {
     // const tasks = await Tasks.find();
     res.render("newTask.ejs", {
-      // tasks: tasks,
       title: "Add new task Page",
       user: req.user,
       error: "",
@@ -103,7 +99,6 @@ module.exports = {
   },
   getSpends: async (req, res) => {
     const tasks = await Tasks.find({ _id: req.params.id });
-    console.log(tasks);
     res.render("spend.ejs", {
       tasks: tasks,
       title: "more details about spends Page",
@@ -269,7 +264,6 @@ module.exports = {
     const yearFilter = yearly.map((el) => el._id.year);
     const weekFilter = weekly.map((el) => el._id.week);
     const yearId = yearly.map((el) => el._id);
-    console.log(years);
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
@@ -479,7 +473,7 @@ module.exports = {
     let from = req.query.from;
     let to = req.query.to;
     let { page = 1, limit = 9 } = req.query;
-    console.log(from, to);
+
     if (from === "" || to === "" || (from === "" && to === "")) {
       res.redirect("/home");
     }
@@ -655,7 +649,6 @@ module.exports = {
         },
       ]);
 
-      console.log(months);
       res.render("chartjs.ejs", {
         tasks: tasks,
         months: months,
