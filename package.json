@@ -1,8 +1,8 @@
 {
-  "name": "money-where-spent",
+  "name": "pocket-process",
   "version": "1.0.0",
   "description": "website to know where you spend money how much spend and left in day and week and month",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
