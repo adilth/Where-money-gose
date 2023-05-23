@@ -453,7 +453,7 @@ input.form-control:focus {
   background-size: cover;
   width: 100%;
   min-height: 90vh;
-  padding: 0.9em 7em;
+  padding: 0.9em 6em;
   color: var(--light-color);
 }
 
@@ -464,17 +464,61 @@ input.form-control:focus {
 }
 
 .grid-center {
+  width: 50%;
+  margin: 0 auto;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  align-content: center;
+  /* align-items: center; */
+}
+
+.grid-center h1 {
+  margin-bottom: 1.6rem;
+}
+.grid-center p {
+  font-size: 0.95rem;
+  color: var(--light-color-2);
+}
+.grid-center a {
+  align-self: center;
+}
+@media only screen and (max-width: 1008px) {
+  .image-cont {
+    padding: 0.9em 3.7em;
+  }
+  .grid-center {
+    width: 65%;
+  }
+}
+@media only screen and (max-width: 829px) {
+  .image-cont {
+    padding: 0.9em 3em;
+  }
+  .grid-center {
+    width: 80%;
+  }
+}
+@media only screen and (max-width: 708px) {
+  .image-cont {
+    padding: 0.9em 2.5em;
+  }
+  /* index page */
+  .grid-center {
+    width: 92%;
+  }
 }
 
 @media only screen and (max-width: 600px) {
+  /* index page */
+  .grid-center {
+    width: 100%;
+  }
   .image-cont {
     padding: 0.9em 1em;
+  }
+  .grid-center a {
+    align-self: self-start;
   }
   .fosz {
     font-size: 1.1rem;
@@ -789,7 +833,12 @@ button {
   position: relative;
   margin-top: 2rem;
 }
-
+.select-group {
+  display: flex;
+}
+.select-group .date {
+  color: #666;
+}
 .select-wrapper {
   width: 180px;
   margin-left: 50px;
@@ -862,7 +911,11 @@ button {
   justify-content: center;
   padding: 1.2em 0;
 }
-
+.pr-foot a {
+  /* padding: auto 0.5rem; */
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
 @media only screen and (max-width: 1200px) {
   .dashboard-cards {
     grid-template-columns: 1fr 1fr;
@@ -885,6 +938,9 @@ button {
   }
 }
 @media only screen and (max-width: 640px) {
+  .select-wrapper {
+    margin-left: 1rem;
+  }
   .dashboard-cards {
     grid-template-columns: 1fr;
     padding: 1.5em 0.5em;
@@ -959,7 +1015,7 @@ footer {
   background-color: #222;
 }
 .footer {
-  padding: 2rem;
+  padding: 1.6rem;
   text-align: center;
   color: var(--light-color);
 }
@@ -1064,5 +1120,22 @@ footer {
   .flex.justify-content-around.space-mg {
     flex-wrap: wrap;
     gap: 0.7em;
+  }
+}
+@media (min-width: 576px) {
+  .container,
+  .container-sm {
+    max-width: 100%;
+    padding-right: var(--bs-gutter-x, 1rem);
+    padding-left: var(--bs-gutter-x, 1rem);
+  }
+}
+@media (min-width: 768px) {
+  .container,
+  .container-md,
+  .container-sm {
+    max-width: 100%;
+    padding-right: var(--bs-gutter-x, 1.5rem);
+    padding-left: var(--bs-gutter-x, 1.5rem);
   }
 }
