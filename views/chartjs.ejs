@@ -41,14 +41,24 @@
      <% if (months.length === 0) {%>
      <h4 class="title-head">There is no spend add for now please create one by click on new spend</h4>
      <% }else {%>
+        <div class="select-group">
      <div class="select-wrapper">
          <select name="datepicker" aria-expanded="false" id="datepicker">
              <% [...new Set(months.map(el => el._id.year))].forEach(year => { %>
              <option value="<%= year %>"><%= year %></option>
              <% }) %>
          </select>
+        
 
      </div>
+     <div class="select-wrapper date">
+      <select name="datepicker" aria-expanded="false" id="datepicker" disabled>
+           <option value="daily">daily</option>
+           <option value="months">month</option>
+           <option value="week">weak</option>
+         </select>
+         </div>
+         </div>
      <div class="cont-chart dashboard-cards">
          <div class="card"><canvas id="myChart" class="chart-card"></canvas></div>
          <div class="card"><canvas id="myChartLine" class="chart-card"></canvas></div>
