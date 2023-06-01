@@ -375,6 +375,9 @@ input.form-control:focus {
   background-color: var(--second-bg-color);
   color: var(--light-color);
 }
+.btn.chevron {
+  padding: 0 0.5rem;
+}
 .logo {
   height: 60px;
   width: 60px;
@@ -420,7 +423,16 @@ input.form-control:focus {
   margin-left: 0.2rem;
 }
 .months {
-  font-size: 1.1rem;
+  font-size: 1rem;
+}
+.weeks {
+  margin-bottom: 0.3rem;
+}
+.weeks a {
+  border: 0.15px solid var(--second-font-color-hover);
+  padding: 0.3rem;
+  color: var(--light-color-2);
+  margin-right: 0.15rem;
 }
 @media only screen and (max-width: 1200px) {
   .size-grid {
@@ -572,6 +584,7 @@ input.form-control:focus {
 }
 .btn i {
   color: var(--light-color);
+  font-size: 0.8rem;
 }
 .form-cont {
   display: flex;
