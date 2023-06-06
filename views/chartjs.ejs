@@ -6,8 +6,9 @@
      <div class="dashboard-cards">
          <div class="card card-flex">
              <div class="card-content">
-                 <p class="number">Total: $<% if(total.length > 0){  %>
-                     <%= total[0].count %>
+                 <p class="number numberSpend">
+                    <% if(total.length > 0){  %>
+                     <%= total.reduce((ac,el)=> ac + el.count,0) %>
                      <% } %>
                  </p>
                  <p class="card-name">Total</p>
@@ -28,7 +29,7 @@
          <div class="card card-flex">
              <div class="card-content">
                  <p class="number"><% if( total.length > 0){ %>
-                     <%= total[0].average.toFixed(1)  %>
+                     <%= total.reduce((ac,el)=> ac + el.average,0) %>
                      <% } %>
                  </p>
                  <p class="card-name">Average</p>
@@ -55,7 +56,7 @@
       <select name="datepicker" aria-expanded="false" id="datepicker" disabled>
            <option value="daily">daily</option>
            <option value="months">month</option>
-           <option value="week">weak</option>
+           <option value="week">week</option>
          </select>
          </div>
          </div>
@@ -101,7 +102,7 @@
 
          optionYear.addEventListener('change', getSelectValue)
 
-         function getSelectValue() {
+         function getSelectValue() {         
              var e = JSON.parse(document.getElementById('datepicker').value);
              // in your EJS file.
              let filtered = JSON.parse('<%- JSON.stringify(months.map(el => el)) %>');
