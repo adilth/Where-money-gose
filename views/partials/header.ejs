@@ -64,10 +64,10 @@
                 <ul id="primary-navigation" data-visible="false" class="nav-links flex primary-navigation">
                     <li>
                         <% if(search != null) {%>
-                        <form action="/q" method="POST" class="search-form" id="searchForm">
+                        <form action="/home/q" method="POST" class="search-form" id="searchForm">
                             <div class="inputs-group flex">
-                                <input type="text" class="form-control" name="searchInput" placeholder="Enter Spend name" <% if (search != '') { %> value="<%= search %>" <% } %>>
-                                <div class="input-group-append"><button aria-label="search for spend" class="btn btn-outline-success"><i class="fas fa-search"></i></button>
+                                <input type="text" class="form-control searchField" maxlength="30" name="searchInput" placeholder="Enter Spend name" <% if (search != '') { %> value="<%= search %>" <% } %>>
+                                <div class="input-group-append"><button aria-label="search for spend" class="btn btn-outline-success searchBtn"><i class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </form>
