@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -15,7 +14,7 @@ const homeRouter = require("./routes/home");
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
 const profileRouter = require("./routes/profile");
-const path = require("path");
+const errorHandler = require("./middleware/errorHandler");
 
 require("dotenv").config({ path: "./config/.env" });
 
@@ -26,9 +25,7 @@ connectDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(helmet());
 app.use(helmet({ contentSecurityPolicy: false }));
-// app.use(express.static(path.join(__dirname, "./public")));
 
 // Method overwrite
 app.use(
@@ -57,12 +54,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, httpOnly: true, sameSite: "lax" },
-    // store: new MongoStore({ mongooseConnection: mongoose.connection }),
     store: MongoStore.create({ mongoUrl: process.env.CONNECT_DB }),
   })
 );
 
-// app.use(cookies());
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
@@ -75,7 +70,7 @@ app.use("/profile", profileRouter);
 app.use((req, res, next) => {
   res.status(404).render("error404.ejs");
 });
-
+app.use(errorHandler);
 app.listen(process.env.PORT, () => {
   console.log("Server is running, you better catch it!");
 });
