@@ -62,3 +62,34 @@ document.addEventListener("keydown", function (e) {
     modalClose();
   }
 });
+
+let cancel = document.querySelector(".cancel");
+if (cancel) {
+  cancel.addEventListener("click", () => {
+    location.href = "/home";
+  });
+}
+
+let toast = document.querySelector(".toast");
+if (toast) {
+  setTimeout(() => {
+    toast.classList.remove("show");
+    toast.parentNode.style.display = "none";
+  }, 3000);
+}
+
+let searchBtn = document.querySelector(".searchBtn");
+let search = document.querySelector(".searchField");
+
+if (search) {
+  searchBtn.disabled = true;
+  search.addEventListener("keyup", buttonState);
+
+  function buttonState() {
+    if (search.value === "" || search.value.length === 1) {
+      searchBtn.disabled = true; // return disabled as true whenever the input field is empty
+    } else {
+      searchBtn.disabled = false; // enable the button once the input field has content
+    }
+  }
+}
