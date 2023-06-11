@@ -1,161 +1,193 @@
 <%- include('partials/header.ejs') -%>
 <main id="main" class="main">
-  <div class="size-grid">
-    <div class="sidebar">
-      <div class="side-bar">
-        <form action="/home/range/:from&:to" method="get" class="form flex">
-          <div class="form-cont flex">
-            <div class="from-group flex between-space">
-              <label for="from">From :</label>
-              <input type="date" name="from" id="from" class="date-input">
-            </div>
-            <div class="from-group flex between-space">
-              <label for="to">To :</label>
-              <input type="date" name="to" id="to" class="date-input">
-            </div>
-          </div>
-          <button type="submit" aria-label="button search for range date" class="btn btn-outline-success large">Go</button>
-        </form>
-      </div>
-      <div class="panel-group">
-        <p>Click on the Year panel to open specific month or week .</p>
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="card-header">
-              <% if(tasks == null) {%>
-              <div class="nothing">no data found</div>
-              <% } else {%>
-              <ul>
-                <% [... new Set(yearl)].forEach((year) =>{ %>
-                <li>
-                  <div class="flex between-space">
-                    <a href="/home/<%= year %> " aria-label="got to year <%= year %> "><%= year %></a>
-                    <a class="btn" data-bs-toggle="collapse" aria-label="open months inside year" href="#collapse<%=year %>"> <i class="fa fa-chevron-down"></i>
-                    </a>
-                  </div>
-
-                  <div id="collapse<%=year %>" class="panel-collapse collapse">
-                    <div class="panel-body">
-                      <ul>
-                        <% monthly.forEach((mon) =>{ %>
-                        <li>
-                          <% var months = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep",
-                                          "oct", "nov", "dec"];%>
-                          <div class="flex between-space">
-                            <% if(mon.year == year) {%> 
-                            <a class="months" href="/home/month/<%= year%>/<%= mon.month %>" aria-label="go to month %= months[mon.month - 1]%>">
-                              <%= months[mon.month - 1]%></a>
-                              <a class="btn" data-bs-toggle="collapse" aria-label="open the month <%= months[mon.month - 1]%>" href="#collapseM<%=mon.month  %> ">
-                                <i class="fa fa-chevron-down"></i></a>
-                          </div>
-                          <div id="collapseM<%= mon.month %>" class="penel-collapse collapse">
-                            <div class="panel-body">
-                              <% weekly.forEach(week => { %> 
-                              <a class="months" href="/home/week/<%= week %> " aria-label="got to week"><%=week  %> </a>
-                              <% }) %>
-                            </div>
-                          </div>
-                        </li>
-                        <% } %> 
-                        <% }) %>
-                      </ul>
-                    </div>
-                  </div>
-                </li>
-                <% }) %>
-              </ul>
-              <% } %>
-              <!-- do on if statement and check if there in other years  -->
-            </h4>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- <div class=" row"> -->
-    <div class="main-content dashboard">
-      <div class="content-task">
-        <div class="main-header">
-          <div class="linkNewAdd"><a class="fosz" href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
-          <div class="card">
-          <p class="total">Total: $<% if(total.length > 0){  %>
-          <%= total[0].count %> 
-          <% } %> 
-          </p>
-        </div>
-        </div>
-        <% if(tasks.length === 0) {%> 
-            <h4 class="title-head">There is no spend add for now please create one by click on new spend</h4>
-            <%  } else {%> 
-        <h4 class="title-head">Your expenses for all times</h4>
-        <% } %> 
-      </div>
-
-      <div class="main-board">
-        <div>
-            <div class="dashboard-cards">
-            <% tasks.forEach(task => {%>
-            <div class="card card-ds">
-              <div class="card-header">
-                <p class="card-title fosz text-center"> <%= task.task %></p>
-
-              </div>
-              <div class="card-body">
-                <div class="card-body">
-                  <p class="card-text card-money">
-                   $ <%= task.spend%> 
-                  </p>
-                  <p class="card-text ">
-                    <%= task.info%>
-                  </p>
-                  <p class="col-6 mt-3">
-                    <a class="card-link" href="/home/spendsDetail/<%= task._id%>" aria-label="go to spend for more details <%= task.task %>">
-                      more details
-                    </a>
-                  </p>
-                </div>
-
-                <div class="mb-1 p-1 flex between-space">
-                  <a class="card-link" href="/home/editTask/<%= task._id %>" aria-label="go to edit task <%= task.task %>">Edit</a> &nbsp;
-                  
-                    <button aria-label="delete a spend name <%= task.task %>" type="submit" class="card-link btn-open">Delete
-                    </button>
-                    <section class="modal hidden user-form card" aria-labelledby="profile change user info">
-                        <div class="flex-end">
-                        <button class="btn-close" type="button" aria-label="close model"></button>
+    <div class="size-grid">
+        <div class="sidebar">
+            <div class="side-bar">
+                <form action="/home/range/:from/:to" method="get" class="form flex">
+                    <div class="form-cont flex">
+                        <div class="from-group flex between-space">
+                            <label for="from">From :</label>
+                            <input type="date" name="from" id="from" class="date-input">
                         </div>
-                        <p class="model-content">Are you sure want to Delete this spend</p>
-                        <form action="/home/deletePost/<%= task._id %>" method="POST" id="delete-form">
-                        <input type="hidden" name="_method" value="DELETE" />
-                        <button type="submit" class="btn btn-outline-success">Delete</button>
-                      </form>
-                  </section>
-                </div>
-              </div>
-              <div class="card-footer text-muted">
-                <p class="card-subtitle mb-2 text-muted-day ">
-                  <%= moment(task.spendAt).format("MMMM Do YYYY")%>
-                </p>
-              </div>
+                        <div class="from-group flex between-space">
+                            <label for="to">To :</label>
+                            <input type="date" name="to" id="to" class="date-input">
+                        </div>
+                    </div>
+                    <button type="submit" aria-label="button search for range date" class="btn btn-outline-success large">Go</button>
+                </form>
             </div>
+            <div class="panel-group">
+                <p>Click on the Year panel to open specific month or week .</p>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="card-header">
+                            <% if(tasks === null) {%>
+                            <div class="nothing">no data found</div>
+                            <% } else {%>
+                            <ul>
+                                <% [... new Set(yearl)].forEach((year) =>{ %>
+                                <li>
+                                    <div class="flex between-space">
+                                        <a href="/home/<%= year %> " aria-label="got to year <%= year %> "><%= year %></a>
+                                        <a class="btn" data-bs-toggle="collapse" aria-label="open months inside year" href="#collapse<%=year %>"> <i class="fa fa-chevron-down"></i>
+                                        </a>
+                                    </div>
 
-            <% }) %>
-          </div>
+                                    <div id="collapse<%=year %>" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <ul>
+                                                <% weekly.forEach(([key,value]) =>{ %>
+                                                <% let month = Object.keys(value) %>
+                                                <% var months = ["jan", "feb", "mar", "apr", "may", "jun", "july", "aug", "sep",
+                                          "oct", "nov", "dec"];%>
+                                                <% if(+key === +year) {%>
+                                                <% month.forEach((mon)=>{ %>
+                                                <li>
+                                                    <div class="flex between-space month">
+                                                        <a class="months" href="/home/month/<%= year%>/<%= mon %>" aria-label="go to month <%= months[mon - 1]%>">
+                                                            <%= months[mon - 1]%></a>
+                                                        <a class="btn chevron" data-bs-toggle="collapse" aria-label="open the month <%= months[mon - 1]%>" href="#collapseM<%=mon  %> ">
+                                                            <i class="fa fa-chevron-down"></i></a>
+                                                    </div>
+                                                    <div id="collapseM<%= mon %>" class="penel-collapse collapse">
+                                                        <div class="panel-body weeks">
+                                                            <% if(mon) { %>
+                                                            <% value[mon].forEach((week)=> { %>
+                                                            <a class="months " href="/home/week/<%= year %>/<%= mon %>/<%= week %> " aria-label="got to week"><%= week %> </a>
+                                                            <% }) %>
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <% })%>
+
+                                                <% } %>
+                                                <% }) %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                                <% }) %>
+                            </ul>
+                            <% } %>
+                            <!-- do on if statement and check if there in other years  -->
+                        </h4>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="pages">
-          <ul>
-            <% for(let i = 1; i <= totalPages; i++){ %>
-            <li> <a href="/home?page=<%=i%> " aria-label="go to page <%=i%>"><%=i %></a></li>
-            <% } %>
-          </ul>
+
+        <!-- <div class=" row"> -->
+        <div class="main-content dashboard">
+            <div class="content-task">
+                <div class="main-header">
+                    <div class="linkNewAdd"><a class="fosz" href="/home/new">New Spend<i class="fa fa-plus"></i></a></div>
+                    <div class="card">
+                        <p class="total">Total: $<% if(total.length > 0){  %>
+                            <%= total[0].count %>
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+                <% if(locals.messages.errors || locals.messages.info){ %>
+                    <div class="toast-container
+                position-absolute top-0 end-0 m-5 p-2">
+                <div role="alert" aria-live="assertive" aria-atomic="true" class="toast bg-danger show" data-bs-autohide="false" data-bs-delay="1000">
+                    <div class="d-flex">
+                        <% if (locals.messages.errors) { %>
+                            <div class="toast-body h6 message-red">
+                                <%= messages.errors %>
+                            </div>
+                        <% } %>
+                        <% if (locals.messages.info) { %>
+                             <div class="toast-body h6 message-green">
+                                <%= messages.info %>
+                            </div>
+                        <% } %>
+                         <button type="button" class="btn-close btn-close-white m-auto me-2 btn-lg" data-bs-dismiss="toast" aria-label="Close"><span class="visually-hidden">Close</span></button>
+                         </div>
+                </div>
+                </div>
+                <% } %>
+                <% if(tasks.length === 0) {%>
+                <% if(tasks === null) {%>
+                <h4 class="title-head">There is no spend add for now please create one by click on new spend</h4>
+                <% } %>
+                <h4 class="title-head">there is no speed in date found please try a one</h4>
+                <%  } else {%>
+                <h4 class="title-head">Your expenses for all times</h4>
+                <% } %>
+            </div>
+            <div class="main-board">
+                <div>
+                    <div class="dashboard-cards">
+                        <% tasks.forEach(task => {%>
+                        <div class="card card-ds">
+                            <div class="card-header">
+                                <p class="card-title fosz text-center"> <%= task.task %></p>
+
+                            </div>
+                            <div class="card-body">
+                                <div class="card-body">
+                                    <p class="card-text card-money">
+                                        $ <%= task.spend%>
+                                    </p>
+                                    <p class="card-text ">
+                                        <%= task.info%>
+                                    </p>
+                                    <p class="col-6 mt-3">
+                                        <a class="card-link" href="/home/spendsDetail/<%= task._id%>" aria-label="go to spend for more details <%= task.task %>">
+                                            more details
+                                        </a>
+                                    </p>
+                                </div>
+
+                                <div class="mb-1 p-1 flex between-space">
+                                    <a class="card-link" href="/home/editTask/<%= task._id %>" aria-label="go to edit task <%= task.task %>">Edit</a> &nbsp;
+
+                                    <button aria-label="delete a spend name <%= task.task %>" type="submit" class="card-link btn-open">Delete
+                                    </button>
+                                    <section class="modal hidden user-form card" aria-labelledby="profile change user info">
+                                        <div class="flex-end">
+                                            <button class="btn-close" type="button" aria-label="close model"></button>
+                                        </div>
+                                        <p class="model-content">Are you sure want to Delete this spend</p>
+                                        <form action="/home/deletePost/<%= task._id %>" method="POST" id="delete-form">
+                                            <input type="hidden" name="_method" value="DELETE" />
+                                            <button type="submit" class="btn btn-outline-success">Delete</button>
+                                        </form>
+                                    </section>
+                                </div>
+                            </div>
+                            <div class="card-footer text-muted">
+                                <p class="card-subtitle mb-2 text-muted-day ">
+                                    <%= moment(task.spendAt).format("MMMM Do YYYY")%>
+                                </p>
+                            </div>
+                        </div>
+
+                        <% }) %>
+                    </div>
+                </div>
+                <% if(totalPages > 1){ %>
+                <div class="pages">
+                    <ul>
+                        <% for(let i = 1; i <= totalPages; i++){ %>                           
+                              <% let pageUrl = (fullUrl.includes('?')) ? fullUrl.replace(/([&?])page=\d+/gi, '') : fullUrl %>
+                              <% pageUrl += (pageUrl.includes('?')) ? `&page=${i}` : `?page=${i}` %>
+                        <li> <a href="<%= pageUrl%>" aria-label="go to page <%=i%>"><%=i %></a></li>
+                        <% } %>
+                    </ul>
+                </div>
+                <% } %>
+            </div>
         </div>
-      </div>
+
+        <!-- </div> -->
+
+
     </div>
-
-    <!-- </div> -->
-
-
-  </div>
 </main>
 
 <%- include('partials/footer.ejs') -%>
