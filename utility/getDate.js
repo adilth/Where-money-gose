@@ -3,50 +3,6 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 
 async function getDate(req, res) {
-  let month = req.params.month;
-  let year = req.params.year;
-  let { page = 1, limit = 9 } = req.query;
-  let tasks = await Tasks.find({
-    $expr: {
-      $and: [
-        { $eq: [{ $year: "$spendAt" }, year] },
-        { $eq: [{ $month: "$spendAt" }, month] },
-      ],
-    },
-    user: req.user.id,
-  })
-    .sort({ spendAt: "desc" })
-    .limit(limit * 1)
-    .skip((page - 1) * limit)
-    .lean();
-  const count = await Tasks.countDocuments({
-    $expr: {
-      $and: [
-        { $eq: [{ $year: "$spendAt" }, year] },
-        { $eq: [{ $month: "$spendAt" }, month] },
-      ],
-    },
-    user: req.user.id,
-  });
-  const total = await Tasks.aggregate([
-    {
-      $match: {
-        user: mongoose.Types.ObjectId(req.user.id),
-        spendAt: {
-          $gte: new Date(`2022-${month}-01`),
-          $lte: new Date(`2022-${month}-31`),
-        },
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        count: {
-          $sum: "$spend",
-        },
-      },
-    },
-  ]);
   const yearly = await Tasks.aggregate([
     {
       $match: {
@@ -87,13 +43,30 @@ async function getDate(req, res) {
       },
     },
   ]);
+  const yearFilter = yearly.map((el) => el._id.year);
+  const dateData = {};
+
+  weekly.forEach((el) => {
+    const { year, month, week } = el._id;
+
+    if (!dateData[year]) {
+      dateData[year] = {};
+    }
+
+    if (!dateData[year][month]) {
+      dateData[year][month] = [];
+    }
+
+    dateData[year][month].push(week);
+  });
+  let fullUrl = req.originalUrl;
+  console.log(fullUrl);
+  let weekFilter = Object.entries(dateData);
   return {
-    tasks,
-    yearly,
-    weekly,
-    count,
-    total,
+    yearFilter,
+    weekFilter,
+    fullUrl,
   };
 }
 
-module.exports = getDate();
+module.exports = getDate;
