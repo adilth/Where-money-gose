@@ -25,12 +25,6 @@
   margin: 0;
   padding: 0;
 }
-card {
-  width: 400px;
-  background-color: var(--light-color);
-  border: none;
-  border-radius: 12px;
-}
 .bg-image {
   background-image: linear-gradient(
     to right,
@@ -47,15 +41,14 @@ ul {
 }
 body,
 html {
-  /* height: 100%; */
   width: 100%;
-  /* position: relative; */
   min-height: 100vh;
   background-color: var(--dark-color);
   display: flex;
   flex-direction: column;
   scroll-behavior: smooth;
   font-family: "Roboto", sans-serif;
+  /* align-items: center; */
 }
 @font-face {
   font-family: "Roboto", sans-serif;
@@ -111,6 +104,10 @@ h5 {
   line-height: 1.1;
   hyphens: auto;
 }
+.main {
+  max-width: 1550px;
+  margin: 0 auto;
+}
 /* btn */
 .btn-outline-success {
   color: var(--second-font-color);
@@ -134,6 +131,7 @@ header {
 }
 .header-cont {
   max-width: 1500px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: 3fr 9fr 1fr;
   justify-content: center;
@@ -378,14 +376,6 @@ input.form-control:focus {
 .btn.chevron {
   padding: 0 0.5rem;
 }
-.logo {
-  height: 60px;
-  width: 60px;
-  margin-top: var(--margin-3);
-  margin-bottom: 150px;
-  margin-left: var(--nav-side-bar-margin-left);
-}
-
 .dashboard {
   color: var(--light-color);
   min-height: calc(100vh - 63px - 144px);
@@ -618,6 +608,7 @@ input.form-control:focus {
 }
 /* style cards */
 .card {
+  max-width: 700px;
   background-color: var(--second-bg-color);
   border-radius: 10px;
   box-shadow: 10px 10px 10px #151d28;
@@ -830,14 +821,14 @@ button {
   }
 }
 /* chart page */
-.charset {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.chartcont {
+  width: 1460px;
+  max-width: calc(100% - 20px);
+  margin: 0 auto;
 }
-.charset .title-head {
-  margin-top: 2rem;
-  margin-bottom: 4rem;
+.chartSet {
+  flex-direction: column;
+  align-items: center;
 }
 .text-chart {
   margin-top: 1rem;
@@ -848,6 +839,8 @@ button {
 }
 .select-group {
   display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 .select-group .date {
   color: #666;
@@ -867,7 +860,7 @@ button {
   right: 20px;
   color: var(--second-font-color);
 }
-#datepicker {
+.datepicker {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -883,7 +876,7 @@ button {
   color: var(--first-font-color);
 }
 
-#datepicker option {
+.datepicker option {
   color: #666;
   background-color: transparent;
 }
@@ -925,7 +918,6 @@ button {
   padding: 1.2em 0;
 }
 .pr-foot a {
-  /* padding: auto 0.5rem; */
   padding-left: 0.3rem;
   padding-right: 0.3rem;
 }
