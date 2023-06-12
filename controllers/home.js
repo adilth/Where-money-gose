@@ -2,6 +2,7 @@ const Tasks = require("../models/Tasks");
 const User = require("../models/User");
 const mongoose = require("mongoose");
 const moment = require("moment");
+const getDate = require("../utility/getDate");
 
 module.exports = {
   getHome: async (req, res) => {
@@ -12,6 +13,10 @@ module.exports = {
         .limit(limit * 1)
         .skip((page - 1) * limit)
         .lean();
+      if (!tasks) {
+        res.status(404);
+        throw new Error("No tasks found");
+      }
       const count = await Tasks.countDocuments({ user: req.user.id });
       const total = await Tasks.aggregate([
         {
@@ -28,64 +33,22 @@ module.exports = {
           },
         },
       ]);
-      const yearly = await Tasks.aggregate([
-        {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
-        },
-        {
-          $group: {
-            _id: {
-              year: { $year: "$spendAt" },
-              month: { $month: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-          },
-        },
-        {
-          $sort: { _id: 1 },
-        },
-      ]);
-      const weekly = await Tasks.aggregate([
-        {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
-        },
-        {
-          $group: {
-            _id: {
-              year: { $year: "$spendAt" },
-              month: { $month: "$spendAt" },
-              week: { $week: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-          },
-        },
-      ]);
-      const yearFilter = yearly.map((el) => el._id.year);
-      const weekFilter = weekly.map((el) => el._id.week);
-      const yearId = yearly.map((el) => el._id);
 
+      let { yearFilter, weekFilter, fullUrl } = await getDate(req, res);
       res.render("dashboard.ejs", {
         tasks: tasks,
         user: req.user,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
         yearl: yearFilter,
-        monthly: yearId,
+        fullUrl,
         weekly: weekFilter,
         total: total,
         search: "",
       });
     } catch (err) {
       console.log(err);
-      res.render("error505.ejs");
+      res.render("error500.ejs");
     }
   },
   getAddTask: async (req, res) => {
@@ -128,11 +91,14 @@ module.exports = {
         return res.redirect("/home/new");
       }
       req.body.user = req.user.id;
-      await Tasks.create(req.body);
-      res.redirect("/home");
+      let task = await Tasks.create(req.body);
+      if (task) {
+        req.flash("info", "you have successfully create the speed");
+        return res.redirect("/home");
+      }
     } catch (err) {
       console.log(err);
-      res.render("error404.ejs");
+      res.render("error500.ejs");
     }
   },
   editTask: async (req, res) => {
@@ -154,8 +120,12 @@ module.exports = {
           return res.redirect("/home/editTask/" + req.params.id);
         }
         task = await Tasks.findOneAndUpdate({ _id: req.params.id }, req.body);
+        if (task) {
+          req.flash("info", "you have successfully updated the task");
+          return res.redirect("/home");
+        }
       }
-      res.redirect("/home");
+      // res.redirect("/home");
     } catch (err) {
       console.error(err);
       res.render("error500.ejs");
@@ -166,9 +136,12 @@ module.exports = {
       // Find post by id
       let task = await Tasks.findById({ _id: req.params.id });
       // Delete task from db
-      await task.remove({ _id: req.params.id });
+      let removed = await task.remove({ _id: req.params.id });
       console.log("Deleted task");
-      res.redirect("/home");
+      if (removed) {
+        req.flash("success", "the spend was successfully removed");
+        return res.redirect("/home");
+      }
     } catch (err) {
       res.redirect("/home");
     }
@@ -176,118 +149,87 @@ module.exports = {
   getYear: async (req, res) => {
     let { page = 1, limit = 9 } = req.query;
     let year = req.params.year;
-    const tasks = await Tasks.find({
-      $expr: { $eq: [{ $year: "$spendAt" }, year] },
-      user: req.user.id,
-    })
-      .sort({ spendAt: "desc" })
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .lean();
-    const count = await Tasks.countDocuments({
-      $expr: { $eq: [{ $year: "$spendAt" }, year] },
-      user: req.user.id,
-    });
-    const total = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-          spendAt: {
-            $gte: new Date(`${year}-1-01`),
-            $lte: new Date(`${year}-12-31`),
+    // Find the distinct years in the Tasks collection if not available redirect to home
+    try {
+      const distinctYears = await Tasks.distinct("spendAt", {
+        user: req.user.id,
+      });
+      const years = distinctYears.map((date) => date.getFullYear());
+      if (!years.includes(parseInt(year))) {
+        res.status(404);
+        req.flash("errors", "invalid date provided");
+        return res.redirect("/home");
+      }
+      const tasks = await Tasks.find({
+        $expr: { $eq: [{ $year: "$spendAt" }, parseInt(year)] },
+        user: req.user.id,
+      })
+        .sort({ spendAt: "desc" })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .lean();
+      if (!tasks) {
+        res.status(404);
+        throw new Error("No tasks found");
+      }
+      const count = await Tasks.countDocuments({
+        $expr: { $eq: [{ $year: "$spendAt" }, year] },
+        user: req.user.id,
+      });
+      const total = await Tasks.aggregate([
+        {
+          $match: {
+            user: mongoose.Types.ObjectId(req.user.id),
+            spendAt: {
+              $gte: new Date(`${year}-1-01`),
+              $lte: new Date(`${year}-12-31`),
+            },
           },
         },
-      },
-      {
-        $group: {
-          _id: null,
-          count: {
-            $sum: "$spend",
+        {
+          $group: {
+            _id: null,
+            count: {
+              $sum: "$spend",
+            },
           },
         },
-      },
-    ]);
-    const years = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-          },
-        },
-      },
-      {
-        $sort: { _id: -1 },
-      },
-    ]);
-    const yearly = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-            month: { $month: "$spendAt" },
-          },
-          count: {
-            $sum: "$spend",
-          },
-        },
-      },
-    ]);
-    const weekly = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-            month: { $month: "$spendAt" },
-            week: { $week: "$spendAt" },
-          },
-          count: {
-            $sum: "$spend",
-          },
-        },
-      },
-    ]);
-    const yearFilter = yearly.map((el) => el._id.year);
-    const weekFilter = weekly.map((el) => el._id.week);
-    const yearId = yearly.map((el) => el._id);
-    res.render("dashboard.ejs", {
-      tasks: tasks,
-      total: total,
-      search: "",
-      totalPages: Math.ceil(count / limit),
-      title: "Show year",
-      user: req.user,
-      yearl: yearFilter,
-      monthly: yearId,
-      weekly: weekFilter,
-    });
+      ]);
+      let { yearFilter, weekFilter, fullUrl } = await getDate(req);
+      res.render("dashboard.ejs", {
+        tasks: tasks,
+        total: total,
+        search: "",
+        totalPages: Math.ceil(count / limit),
+        title: "Show year",
+        user: req.user,
+        yearl: yearFilter,
+        weekly: weekFilter,
+        fullUrl,
+      });
+    } catch (err) {
+      console.error(err);
+      res.redirect("/home");
+    }
   },
   getDay: async (req, res) => {
-    const tasks = await Tasks.find();
-    res.render("dashboard.ejs", {
-      tasks: tasks,
-      total: total,
-      totalPages: Math.ceil(count / limit),
-      search: "",
-      title: "Add new task Page",
-      user: req.user,
-      yearl: yearFilter,
-      monthly: yearId,
-    });
+    const { page = 1, limit = 9 } = req.query;
+    try {
+      const tasks = await Tasks.find();
+      res.render("dashboard.ejs", {
+        tasks: tasks,
+        total: total,
+        totalPages: Math.ceil(count / limit),
+        search: "",
+        title: "Add new task Page",
+        user: req.user,
+        yearl: yearFilter,
+        fullUrl,
+      });
+    } catch (err) {
+      console.log(err);
+      res.render("error404.ejs");
+    }
   },
   getMonth: async (req, res) => {
     let month = req.params.month;
@@ -320,8 +262,8 @@ module.exports = {
         $match: {
           user: mongoose.Types.ObjectId(req.user.id),
           spendAt: {
-            $gte: new Date(`2022-${month}-01`),
-            $lte: new Date(`2022-${month}-31`),
+            $gte: new Date(`${year}-${month}-01`),
+            $lte: new Date(`${year}-${month}-31`),
           },
         },
       },
@@ -334,49 +276,7 @@ module.exports = {
         },
       },
     ]);
-    const yearly = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-            month: { $month: "$spendAt" },
-          },
-          count: {
-            $sum: "$spend",
-          },
-        },
-      },
-      {
-        $sort: { _id: -1 },
-      },
-    ]);
-    const weekly = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-            month: { $month: "$spendAt" },
-            week: { $week: "$spendAt" },
-          },
-          count: {
-            $sum: "$spend",
-          },
-        },
-      },
-    ]);
-    const yearFilter = yearly.map((el) => el._id.year);
-    const weekFilter = weekly.map((el) => el._id.week);
-    const yearId = yearly.map((el) => el._id);
+    let { yearFilter, weekFilter, fullUrl } = await getDate(req, res);
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
@@ -385,78 +285,37 @@ module.exports = {
       title: "get month page",
       user: req.user,
       yearl: yearFilter,
-      monthly: yearId,
+      fullUrl,
       weekly: weekFilter,
     });
   },
   getWeek: async (req, res) => {
     let { page = 1, limit = 12 } = req.query;
     let week = req.params.week;
+    let year = req.params.year;
+    let month = req.params.month;
     let tasks = await Tasks.find({
-      $expr: { $eq: [{ $week: "$spendAt" }, week] },
+      $expr: {
+        $and: [
+          { $eq: [{ $year: "$spendAt" }, year] },
+          { $eq: [{ $month: "$spendAt" }, month] },
+          { $eq: [{ $week: "$spendAt" }, week] },
+        ],
+      },
       user: req.user.id,
     })
       .sort({ spendAt: "desc" })
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .lean();
-    const count = await Tasks.countDocuments({ user: req.user.id });
-    const total = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          count: {
-            $sum: "$spend",
-          },
-        },
-      },
-    ]);
-    const yearly = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-            month: { $month: "$spendAt" },
-            week: { $week: "$spendAt" },
-          },
-          count: {
-            $sum: "$spend",
-          },
-        },
-      },
-    ]);
-    const weekly = await Tasks.aggregate([
-      {
-        $match: {
-          user: mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$spendAt" },
-            month: { $month: "$spendAt" },
-            week: { $week: "$spendAt" },
-          },
-          count: {
-            $sum: "$spend",
-          },
-        },
-      },
-    ]);
-    const yearFilter = yearly.map((el) => el._id.year);
-    const weekFilter = weekly.map((el) => el._id.week);
-    const yearId = yearly.map((el) => el._id);
+    if (!tasks) {
+      res.status(404);
+      throw new Error("No tasks found");
+    }
+    let { yearFilter, weekFilter, count, total, fullUrl } = await getDate(
+      req,
+      res
+    );
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
@@ -465,17 +324,21 @@ module.exports = {
       title: "week spend page",
       user: req.user,
       yearl: yearFilter,
-      monthly: yearId,
+      fullUrl,
       weekly: weekFilter,
     });
   },
   getRange: async (req, res) => {
-    let from = req.query.from;
-    let to = req.query.to;
+    let { from, to } = req.query;
     let { page = 1, limit = 9 } = req.query;
+    // Validate the 'from' and 'to' values using moment.js
+    const validFrom = moment(from, "YYYY-MM-DD", true).isValid();
+    const validTo = moment(to, "YYYY-MM-DD", true).isValid();
 
-    if (from === "" || to === "" || (from === "" && to === "")) {
-      res.redirect("/home");
+    if (!validFrom || !validTo) {
+      res.status(400);
+      req.flash("errors", "please enter a valid date");
+      return res.redirect("/home");
     }
     let formatFrom = new Date(moment(from, "YYYY-MM-DD").format());
     let formatTo = new Date(moment(to, "YYYY-MM-DD").format());
@@ -500,6 +363,10 @@ module.exports = {
         .limit(limit * 1)
         .skip((page - 1) * limit)
         .lean();
+      if (!tasks) {
+        res.status(404);
+        throw new Error("No tasks found");
+      }
       const total = await Tasks.aggregate([
         {
           $match: {
@@ -516,46 +383,7 @@ module.exports = {
           },
         },
       ]);
-      const yearly = await Tasks.aggregate([
-        {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
-        },
-        {
-          $group: {
-            _id: {
-              year: { $year: "$spendAt" },
-              month: { $month: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-          },
-        },
-      ]);
-      const weekly = await Tasks.aggregate([
-        {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
-        },
-        {
-          $group: {
-            _id: {
-              year: { $year: "$spendAt" },
-              month: { $month: "$spendAt" },
-              week: { $week: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-          },
-        },
-      ]);
-      const yearFilter = yearly.map((el) => el._id.year);
-      const weekFilter = weekly.map((el) => el._id.week);
-      const yearId = yearly.map((el) => el._id);
+      let { yearFilter, weekFilter, fullUrl } = await getDate(req, res);
       res.render("dashboard.ejs", {
         tasks: tasks,
         search: "",
@@ -564,7 +392,7 @@ module.exports = {
         total: total,
         user: req.user,
         yearl: yearFilter,
-        monthly: yearId,
+        fullUrl,
         weekly: weekFilter,
       });
     } catch (err) {
@@ -577,6 +405,10 @@ module.exports = {
       const tasks = await Tasks.find({ user: req.user.id })
         .sort({ createdAt: 1 })
         .lean();
+      if (!tasks) {
+        res.status(404);
+        throw new Error("No tasks found");
+      }
       const count = await Tasks.countDocuments({ user: req.user.id });
       const total = await Tasks.aggregate([
         {
