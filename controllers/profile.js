@@ -1,14 +1,13 @@
 const User = require("../models/User");
 const Tasks = require("../models/Tasks");
-const passport = require("passport");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const asyncHandler = require("express-async-handler");
 
 module.exports = {
-  getProfile: async (req, res) => {
+  getProfile: asyncHandler(async (req, res) => {
     try {
-      const id = req.params.id;
-      const tasks = await Tasks.findById({ _id: id });
+      const tasks = await Tasks.findById(req.params.id);
       const result = await Tasks.count({ user: req.user.id });
       res.render("profile.ejs", {
         tasks: tasks,
@@ -21,7 +20,7 @@ module.exports = {
       console.log(err);
       res.render("error404.ejs");
     }
-  },
+  }),
   getCount: async (req, res) => {
     Tasks.count({}, function (err, result) {
       if (err) {
@@ -72,48 +71,58 @@ module.exports = {
   changeUserInfo: async (req, res, next) => {
     try {
       const { id } = req.params;
+      const { userName, email } = req.body;
       const validationErrors = [];
-      if (!validator.isLength(req.body.userName, { min: 5 }))
+
+      if (!validator.isLength(userName, { min: 5 }))
         validationErrors.push({
           msg: "user Name must be at least 6 characters long",
         });
-      if (!validator.isEmail(req.body.email))
+      if (!validator.isEmail(email))
         validationErrors.push({ msg: "Please enter a valid email address." });
-      if (req.body.email !== req.body.confirmEmail)
+      if (email !== req.body.confirmEmail)
         validationErrors.push({ msg: "please check you email your enter" });
       let user = await User.findById({ _id: id });
       const existingUser = await User.findOne({
         $and: [
           { _id: { $ne: req.user.id } },
-          { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
+          { $or: [{ email }, { userName }] },
         ],
       });
 
-      if (existingUser != null && existingUser.userName == req.body.userName) {
+      console.log(user, existingUser);
+      if (existingUser != null && existingUser.userName == userName) {
         req.flash("errors", {
           msg: "this userName is already exists",
         });
-        return res.redirect("/profile/" + req.params.id);
+        return res.redirect("/profile/" + id);
       }
+
       if (existingUser) {
         req.flash("errors", {
           msg: "this email is already exists",
         });
-        return res.redirect("/profile/" + req.params.id);
+        return res.redirect("/profile/" + id);
+      }
+      if (user.email == email && user.userName == userName) {
+        req.flash("errors", {
+          msg: "please enter what you want to change",
+        });
+        return res.redirect("/profile/" + id);
       }
 
       if (validationErrors.length) {
         req.flash("errors", validationErrors);
-        return res.redirect("/profile/" + req.params.id);
+        return res.redirect("/profile/" + id);
       }
       const tasks = await User.findOneAndUpdate(
         { _id: req.user.id },
-        { $set: { userName: req.body.userName, email: req.body.email } }
+        { $set: { userName: userName, email: email } }
       );
       req.flash("success", {
         msg: "your user info has successfully changed",
       });
-      res.redirect("/profile/" + req.params.id);
+      res.redirect("/profile/" + id);
     } catch (err) {
       console.error(err);
       res.render("error500.ejs");
