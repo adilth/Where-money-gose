@@ -2,109 +2,45 @@ const User = require("../models/User");
 const Tasks = require("../models/Tasks");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const getDate = require("../utility/getDate");
 module.exports = {
   getIndex: async (req, res) => {
     const user = await User.find();
     res.render("index.ejs", { user: user });
   },
   getSearch: async (req, res) => {
-    let q = req.body.searchInput;
-    let { page = 1, limit = 12 } = req.query;
-
-    const count = await Tasks.countDocuments({ _id: req.params.id });
-
-    let taskData = null;
-    let qry = { $or: [{ task: { $regex: q } }] };
     try {
-      if (q != null) {
-        let taskResult = await Tasks.find(qry)
-          .sort({ spendAt: "desc" })
-          .limit(limit * 1)
-          .skip((page - 1) * limit)
-          .lean();
-        taskData = taskResult;
+      const q = req.body.searchInput;
+      let { page = 1, limit = 9 } = req.query;
+      const count = await getTaskCountBySearch(req.user.id, q);
+      console.log(count);
+      let tasks;
+      let search = q;
+      if (q !== null) {
+        tasks = await getTasksBySearch(q, limit, page);
       } else {
-        q = "search";
-        let taskResult = await Tasks.find({})
-          .sort({ spendAt: "desc" })
-          .limit(limit * 1)
-          .skip((page - 1) * limit)
-          .lean();
-        taskData = taskResult;
+        search = "search";
+        tasks = await getAllTasks(limit, page);
       }
-      const total = await Tasks.aggregate([
-        {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-            task: q,
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            count: {
-              $sum: "$spend",
-            },
-          },
-        },
-      ]);
-      const yearly = await Tasks.aggregate([
-        {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
-        },
-        {
-          $group: {
-            _id: {
-              year: { $year: "$spendAt" },
-              month: { $month: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-          },
-        },
-        {
-          $sort: { _id: 1 },
-        },
-      ]);
-      const weekly = await Tasks.aggregate([
-        {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
-        },
-        {
-          $group: {
-            _id: {
-              year: { $year: "$spendAt" },
-              month: { $month: "$spendAt" },
-              week: { $week: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-          },
-        },
-      ]);
-      const yearFilter = yearly.map((el) => el._id.year);
-      const weekFilter = weekly.map((el) => el._id.week);
-      const yearId = yearly.map((el) => el._id);
+      const total = await getTotalSpendBySearch(req.user.id, q);
+      console.log(total);
+      const { yearFilter, weekFilter, fullUrl } = await getDate(req);
+
       res.render("dashboard", {
         title: "task Tracker",
-        tasks: taskData,
-        search: q,
+        tasks,
+        search,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
         user: req.user,
         yearl: yearFilter,
-        monthly: yearId,
+        fullUrl,
         weekly: weekFilter,
-        total: total,
+        total,
       });
     } catch (e) {
       console.error(e);
+      res.render("error500.ejs");
     }
   },
   getContactUs: async (req, res) => {
@@ -139,7 +75,7 @@ module.exports = {
         <p> ${message} </p>
         `,
       };
-      await transporter.sendMail(data);
+      _id: await transporter.sendMail(data);
       req.flash("success", {
         msg: "your email has successfully send message",
       });
@@ -150,3 +86,45 @@ module.exports = {
     }
   },
 };
+
+async function getTaskCountBySearch(userId, q) {
+  return Tasks.countDocuments({
+    $or: [{ task: { $regex: `${q}` } }],
+    user: userId,
+  });
+}
+
+async function getTasksBySearch(q, limit, page) {
+  return Tasks.find({ $or: [{ task: { $regex: `${q}` } }] })
+    .sort({ spendAt: "desc" })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .lean();
+}
+
+async function getAllTasks(limit, page) {
+  return Tasks.find({})
+    .sort({ spendAt: "desc" })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .lean();
+}
+
+async function getTotalSpendBySearch(userId, q) {
+  return Tasks.aggregate([
+    {
+      $match: {
+        user: mongoose.Types.ObjectId(userId),
+        task: { $regex: q, $options: "i" },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        count: {
+          $sum: "$spend",
+        },
+      },
+    },
+  ]);
+}
