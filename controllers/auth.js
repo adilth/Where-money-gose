@@ -43,7 +43,7 @@ module.exports = {
         if (err) {
           return next(err);
         }
-        req.flash("success", { msg: "Success! You are logged in." });
+        req.flash("info", { msg: "Success! You are logged in." });
         res.redirect(req.session.returnTo || "/home");
       });
     })(req, res, next);
@@ -52,7 +52,6 @@ module.exports = {
     req.session.user = null;
     req.session.save(function (err) {
       if (err) next(err);
-
       // regenerate the session, which is good practice to help
       // guard against forms of session fixation
       req.session.regenerate(function (err) {
@@ -116,6 +115,9 @@ module.exports = {
             if (err) {
               return next(err);
             }
+            req.flash("info", {
+              msg: "welcome to the pocket process",
+            });
             res.redirect("/home");
           });
         });
@@ -272,10 +274,10 @@ module.exports = {
           if (err) {
             return next(err);
           }
+          req.flash("info", "you Successfully reset your password");
           res.redirect("/home");
         });
       });
-      // });
     } catch (err) {
       console.log(err);
       res.render("error404.ejs");
