@@ -3,13 +3,16 @@
 <main class="dashboard">
     <div class="row justify-content-center">
         <section class="col-6 mt-5 card" aria-labelledby="main-login">
-            <% if (locals.messages.errors) { %> <% messages.errors.forEach( el => { %>
+            <% if (locals.messages.errors) { %>
+            <% messages.errors.forEach( el => { %>
             <div class="alert alert-danger"><%= el.msg %></div>
-            <% }) %> <% } %> 
-            <% if (locals.messages.info) { %> <%
-                messages.info.forEach( el => { %>
-                  <div class="alert alert-info"><%= el.msg %></div>
-            <% }) %> <% } %>
+            <% }) %>
+            <% } %>
+            <% if (locals.messages.info) { %>
+            <% messages.info.forEach( el => { %>
+            <div class="alert alert-info"><%= el.msg %></div>
+            <% }) %>
+            <% } %>
             <form action="/user/login" method="POST">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Email address</label>
