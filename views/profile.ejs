@@ -1,66 +1,108 @@
 <%- include('partials/header.ejs') -%>
 <div class="main-profile dashboard">
-    <div class="card">
-        <% if (locals.messages.errors) { %>
-        <% messages.errors.forEach( el => { %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-         <%= el.msg %>
-           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-
-           </button>
-       </div>
-        <% }) %>
-        <% } else if (locals.messages.success) { %>
-        <% messages.success.forEach( el => { %>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-         <%= el.msg %>
-         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-
-           </button>
-       </div>
-        <% }) %>
-        <% } %>
-
-        <div class="user-form user-info">
-            <form action="/profile/user/<%= user.id %> " method="post">
-                <input type="hidden" name="_method" value="PUT" />
-                <div class="form-group flex between-space"><label for="userName">Name : </label><input type="text" name="userName" value="<%= user.userName  %>" id="userName"></div>
-                <div class="form-group flex between-space"><label for="email">Email : </label><input id="email" type="email" name="email" value="<%= user.email  %>"></div>
-                <div class="form-group flex between-space"><label for="confirmEmail">Confirm Email : </label><input type="email" id="confirmEmail" name="confirmEmail" value="<%= user.email  %>"></div>
-                <button type="submit" class="btn-modal" aria-label="submit change name and email">save</button>
-            </form>
-        </div>
-        <div class="change-pass">
-            <p>if you want change <button class="btn btn-open">password</button></p>
-
-        </div>
-        <section class="modal hidden user-form card" aria-labelledby="profile change user info">
-            <div class="flex-end">
-                <button class="btn-close" type="button" aria-label="close model"></button>
-            </div>
-            <h3>change password</h3>
-            <form action="/profile/<%=user.id %> " method="post">
-                <input type="hidden" name="_method" value="PUT" />
-                <div class="form-group flex between-space">
-                    <label for="oldPass">Old password</label>
-                    <input type="password" name="oldPassword" id="oldPass">
-                </div>
-                <div class="form-group flex between-space">
-                    <label for="password">password</label>
-                    <input type="password" name="password" id="password">
-                </div>
-                <div class="form-group flex between-space">
-                    <label for="confirmPassword">confirm password</label>
-                    <input type="password" name="confirmPassword" id="confirmPassword">
-                </div>
-
-                <button class="btn-modal" type="submit" aria-label="submit a change password">submit</button>
-            </form>
-        </section>
-        <h2 class="card-total">you write a total of : <span class="number"><%= result  %> </span></h2>
+  <div class="card">
+    <% if (locals.messages.errors) { %> <% messages.errors.forEach( el=> { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <%= el.msg %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
     </div>
+    <% }) %> <% } else if (locals.messages.success) { %> <%
+    messages.success.forEach( el=> { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= el.msg %>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+    <% }) %> <% } %>
 
-    <div class="overlay hidden"></div>
+    <div class="user-form user-info">
+      <form action="/profile/user/<%= user.id %> " method="post">
+        <input type="hidden" name="_method" value="PUT" />
+        <div class="form-group flex between-space">
+          <label for="userName">Name : </label
+          ><input
+            type="text"
+            name="userName"
+            value="<%= user.userName %>"
+            id="userName"
+          />
+        </div>
+        <div class="form-group flex between-space">
+          <label for="email">Email : </label
+          ><input
+            id="email"
+            type="email"
+            name="email"
+            value="<%= user.email  %>"
+          />
+        </div>
+        <div class="form-group flex between-space">
+          <label for="confirmEmail">Confirm Email : </label
+          ><input type="email" id="confirmEmail" name="confirmEmail" value="" />
+        </div>
+        <button
+          type="submit"
+          class="btn-modal"
+          aria-label="submit change name and email"
+        >
+          save
+        </button>
+      </form>
+    </div>
+    <div class="change-pass">
+      <p>if you want change <button class="btn btn-open">password</button></p>
+    </div>
+    <section
+      class="modal hidden user-form card"
+      aria-labelledby="profile change user info"
+    >
+      <div class="flex-end">
+        <button
+          class="btn-close"
+          type="button"
+          aria-label="close model"
+        ></button>
+      </div>
+      <h3>change password</h3>
+      <form action="/profile/<%=user.id %> " method="post">
+        <input type="hidden" name="_method" value="PUT" />
+        <div class="form-group flex between-space">
+          <label for="oldPass">Old password</label>
+          <input type="password" name="oldPassword" id="oldPass" />
+        </div>
+        <div class="form-group flex between-space">
+          <label for="password">password</label>
+          <input type="password" name="password" id="password" />
+        </div>
+        <div class="form-group flex between-space">
+          <label for="confirmPassword">confirm password</label>
+          <input type="password" name="confirmPassword" id="confirmPassword" />
+        </div>
+
+        <button
+          class="btn-modal"
+          type="submit"
+          aria-label="submit a change password"
+        >
+          submit
+        </button>
+      </form>
+    </section>
+    <h2 class="card-total">
+      you write a total of : <span class="number"> <%= result %> </span>Spend
+    </h2>
+  </div>
+
+  <div class="overlay hidden"></div>
 </div>
 
 <%- include('partials/footer.ejs') %>
