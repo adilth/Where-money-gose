@@ -1,5 +1,6 @@
  <%- include('partials/header.ejs') -%>
- <div class="dashboard flex charset">
+ <div class="chartcont">
+ <div class="dashboard flex chartSet">
      <div>
          <h3 class="text-chart">more your Details about your spends</h3>
      </div>
@@ -7,7 +8,7 @@
          <div class="card card-flex">
              <div class="card-content">
                  <p class="number numberSpend">
-                    <% if(total.length > 0){  %>
+                     <% if(total.length > 0){  %>
                      <%= total.reduce((ac,el)=> ac + el.count,0) %>
                      <% } %>
                  </p>
@@ -42,24 +43,22 @@
      <% if (months.length === 0) {%>
      <h4 class="title-head">There is no spend add for now please create one by click on new spend</h4>
      <% }else {%>
-        <div class="select-group">
-     <div class="select-wrapper">
-         <select name="datepicker" aria-expanded="false" id="datepicker">
-             <% [...new Set(months.map(el => el._id.year))].forEach(year => { %>
-             <option value="<%= year %>"><%= year %></option>
-             <% }) %>
-         </select>
-        
-
+     <div class="select-group">
+         <div class="select-wrapper">
+             <select name="datepicker" aria-expanded="false" class="datepicker" id="datepicker">
+                 <% [...new Set(months.map(el => el._id.year))].forEach(year => { %>
+                 <option value="<%= year %>"><%= year %></option>
+                 <% }) %>
+             </select>
+         </div>
+         <div class="select-wrapper date">
+             <select name="pickerDate" aria-expanded="false" class="datepicker" id="pickerDate" disabled>
+                 <option value="daily">daily</option>
+                 <option value="months">month</option>
+                 <option value="week">week</option>
+             </select>
+         </div>
      </div>
-     <div class="select-wrapper date">
-      <select name="datepicker" aria-expanded="false" id="datepicker" disabled>
-           <option value="daily">daily</option>
-           <option value="months">month</option>
-           <option value="week">week</option>
-         </select>
-         </div>
-         </div>
      <div class="cont-chart dashboard-cards">
          <div class="card"><canvas id="myChart" class="chart-card"></canvas></div>
          <div class="card"><canvas id="myChartLine" class="chart-card"></canvas></div>
@@ -75,24 +74,24 @@
      </div>
      <% } %>
  </div>
+ </div>
  <div class="overlay hidden"></div>
  <footer>
      <div class="footer container">
-        <ul class="flex foot-head" aria-label="sub navigation">
-            <li><a href="/home">Home</a> </li>
-            <li><a href="/home/chartPage">Chart</a> </li>
-            <li><a href="/profile/<%= user._id %>">Profile</a> </li>
-            <li><a href="/contact">contact</a> </li>
-        </ul>
+         <ul class="flex foot-head" aria-label="sub navigation">
+             <li><a href="/home">Home</a> </li>
+             <li><a href="/home/chartPage">Chart</a> </li>
+             <li><a href="/profile/<%= user._id %>">Profile</a> </li>
+             <li><a href="/contact">contact</a> </li>
+         </ul>
 
-        <p>If interest you can see more work here </p>
-        <ul class="social-links flex foot-head" aria-label="nav social links">
-            <li><a href="https://github.com/adilth" aria-label="github" target="_blank"><i class="fab fa-github" aria-hidden="true"></i></a></li>
-            <li><a href="https://twitter.com/aadilth" aria-label="twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
-            <li><a href="https://www.linkedin.com/in/adil-tahiri/" target="_blank"
-               aria-label="open link to adil view's linkedin page."><i class="fab fa-linkedin" aria-hidden="true"></i></a></li>
-        </ul>
-        <p>Copyright © 2022 <span class="logo-name">POCKET PROCESS</span> All rights reserved.</p>
+         <p>If interest you can see more work here </p>
+         <ul class="social-links flex foot-head" aria-label="nav social links">
+             <li><a href="https://github.com/adilth" aria-label="github" target="_blank"><i class="fab fa-github" aria-hidden="true"></i></a></li>
+             <li><a href="https://twitter.com/aadilth" aria-label="twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
+             <li><a href="https://www.linkedin.com/in/adil-tahiri/" target="_blank" aria-label="open link to adil view's linkedin page."><i class="fab fa-linkedin" aria-hidden="true"></i></a></li>
+         </ul>
+         <p>Copyright © 2022 <span class="logo-name">POCKET PROCESS</span> All rights reserved.</p>
      </div>
  </footer>
  <script nonce="dfr785gh78a1q" type="text/javascript" src="/js/app.js"></script>
@@ -102,7 +101,7 @@
 
          optionYear.addEventListener('change', getSelectValue)
 
-         function getSelectValue() {         
+         function getSelectValue() {
              var e = JSON.parse(document.getElementById('datepicker').value);
              // in your EJS file.
              let filtered = JSON.parse('<%- JSON.stringify(months.map(el => el)) %>');
@@ -122,7 +121,7 @@
                  chartLine.destroy();
                  chartAvg.destroy();
              }
-             data = {
+             let data = {
                  labels: monthsDate2,
                  datasets: [{
                      label: "Monthly Spends",
@@ -134,7 +133,7 @@
                      data: JSON.parse('<%- JSON.stringify(months.map((el) => el.count))%>'),
                  }]
              }
-             data2 = {
+             let data2 = {
                  labels: monthsDate2,
                  datasets: [{
                      label: "Monthly Spends count",
@@ -154,7 +153,7 @@
                  }]
              }
 
-             data3 = {
+             let data3 = {
                  labels: monthsDate2,
                  datasets: [{
                      label: "Monthly Spends average",
@@ -212,7 +211,7 @@
              return days.setHours(0, 0, 0, 0)
          })
          let countLab = JSON.parse('<%- JSON.stringify(days.map((el) => el.count))%>');
-         data = {
+         let data = {
              labels: dateJs,
              datasets: [{
                  label: "Monthly Spends",
