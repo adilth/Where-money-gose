@@ -21,8 +21,6 @@ require("dotenv").config({ path: "./config/.env" });
 // Passport config
 require("./config/passport")(passport);
 
-connectDB();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -71,6 +69,8 @@ app.use((req, res, next) => {
   res.status(404).render("error404.ejs");
 });
 app.use(errorHandler);
-app.listen(process.env.PORT, () => {
-  console.log("Server is running, you better catch it!");
+connectDB().then(() => {
+  app.listen(process.env.PORT, () => {
+    console.log("Server is running, you better catch it!");
+  });
 });
