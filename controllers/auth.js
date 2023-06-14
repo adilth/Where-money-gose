@@ -5,6 +5,22 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
+async function nodemailerEmail(subject, message, userEmail) {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.BUSINESS_EMAIL,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+  const data = {
+    from: process.env.BUSINESS_EMAIL,
+    to: userEmail,
+    subject: subject,
+    html: message,
+  };
+  return await transporter.sendMail(data);
+}
 module.exports = {
   getLogin: async (req, res) => {
     const user = await User.find();
@@ -18,7 +34,8 @@ module.exports = {
   },
   postLogin: (req, res, next) => {
     const validationErrors = [];
-    if (!validator.isEmail(req.body.email))
+    let { email } = req.body;
+    if (!validator.isEmail(email))
       validationErrors.push({ msg: "Please enter a valid email address." });
     if (validator.isEmpty(req.body.password))
       validationErrors.push({ msg: "Password cannot be blank." });
@@ -27,7 +44,7 @@ module.exports = {
       req.flash("errors", validationErrors);
       return res.redirect("/user/login");
     }
-    req.body.email = validator.normalizeEmail(req.body.email, {
+    email = validator.normalizeEmail(email, {
       gmail_remove_dots: false,
     });
 
@@ -43,7 +60,7 @@ module.exports = {
         if (err) {
           return next(err);
         }
-        req.flash("info", { msg: "Success! You are logged in." });
+        req.flash("info", "Success! You are logged in.");
         res.redirect(req.session.returnTo || "/home");
       });
     })(req, res, next);
@@ -70,66 +87,72 @@ module.exports = {
       user: user,
     });
   },
-  postSignup: (req, res, next) => {
-    const validationErrors = [];
-    if (!validator.isEmail(req.body.email))
-      validationErrors.push({ msg: "Please enter a valid email address." });
-    if (!validator.isLength(req.body.password, { min: 8 }))
-      validationErrors.push({
-        msg: "Password must be at least 8 characters long",
+  postSignup: async (req, res, next) => {
+    try {
+      const { email, password, confirmPassword, userName } = req.body;
+      const validationErrors = [];
+
+      if (!validator.isEmail(email)) {
+        validationErrors.push({ msg: "Please enter a valid email address." });
+      }
+
+      if (!validator.isLength(password, { min: 8 })) {
+        validationErrors.push({
+          msg: "Password must be at least 8 characters long.",
+        });
+      }
+
+      if (password !== confirmPassword) {
+        validationErrors.push({ msg: "Passwords do not match." });
+      }
+
+      if (validationErrors.length > 0) {
+        req.flash("errors", validationErrors);
+        return res.redirect("/user/signup");
+      }
+
+      const normalizedEmail = validator.normalizeEmail(email, {
+        gmail_remove_dots: false,
       });
-    if (req.body.password !== req.body.confirmPassword)
-      validationErrors.push({ msg: "Passwords do not match" });
 
-    if (validationErrors.length) {
-      req.flash("errors", validationErrors);
-      return res.redirect("/user/signup");
-    }
-    req.body.email = validator.normalizeEmail(req.body.email, {
-      gmail_remove_dots: false,
-    });
+      const existingUser = await User.findOne({
+        $or: [{ email: normalizedEmail }, { userName: userName }],
+      });
 
-    const user = new User({
-      userName: req.body.userName,
-      email: req.body.email,
-      password: req.body.password,
-    });
+      if (existingUser) {
+        req.flash("errors", {
+          msg: "An account with that email address or username already exists.",
+        });
+        return res.redirect("/user/signup");
+      }
 
-    User.findOne(
-      { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
-      (err, existingUser) => {
+      const user = new User({
+        userName,
+        email: normalizedEmail,
+        password,
+      });
+
+      await user.save();
+
+      req.logIn(user, (err) => {
         if (err) {
           return next(err);
         }
-        if (existingUser) {
-          req.flash("errors", {
-            msg: "Account with that email address or username already exists.",
-          });
-          return res.redirect("/user/signup");
-        }
-        user.save((err) => {
-          if (err) {
-            return next(err);
-          }
-          req.logIn(user, (err) => {
-            if (err) {
-              return next(err);
-            }
-            req.flash("info", {
-              msg: "welcome to the pocket process",
-            });
-            res.redirect("/home");
-          });
-        });
-      }
-    );
+        req.flash("info", "Welcome to the pocket process.");
+        res.redirect("/home");
+      });
+    } catch (err) {
+      console.log(err);
+      res.render("error500.ejs");
+      return next(err);
+    }
   },
   postConfirmEmail: async (req, res) => {
     const { email } = req.body;
     const validationErrors = [];
     try {
       User.findOne({ email }, async (err, user) => {
-        if (!validator.isEmail(req.body.email)) {
+        if (!validator.isEmail(email)) {
           validationErrors.push({ msg: "please enter a valid email address" });
         }
 
@@ -149,26 +172,18 @@ module.exports = {
             expiresIn: "20m",
           }
         );
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.BUSINESS_EMAIL,
-            pass: process.env.EMAIL_PASSWORD,
-          },
-        });
-        const url = `http://localhost:3001/user/resetPas/${user._id}`;
-        const data = {
-          from: process.env.BUSINESS_EMAIL,
-          to: user.email,
-          subject: "change user password",
-          html: ` <p>Hey ${user.name || user.email}, </p> /n 
+        const url = `https://${req.get("host")}/user/resetPas/${user._id}`;
+        nodemailerEmail(
+          "change user password",
+          `<p>Hey ${user.userName || user.email}, </p> 
         <p>we have received request for reset your account password </p>
         <h3> <a href=${url}>${url}</a></h3>
         `,
-        };
-        // let emailTransporter = await createTransporter();
-        await transporter.sendMail(data);
-        req.flash("success", { msg: "Success! You are logged in." });
+          user.email
+        );
+        req.flash("info", {
+          msg: "Please check your Email to reset your password ",
+        });
         res.redirect("/user/forget");
       });
     } catch (e) {
@@ -194,7 +209,6 @@ module.exports = {
   getResetPass: async (req, res) => {
     const id = req.params.id;
     try {
-      // let user = await User.find({ _id: req.params.id });
       const user = await User.findById({ _id: id });
       if (await req.user) {
         return res.redirect("/home");
@@ -218,7 +232,7 @@ module.exports = {
       const validationErrors = [];
       const { confirmPassword, newPassword } = req.body;
       const { id } = req.params;
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(id);
 
       if (req.user) {
         return res.redirect("/home");
@@ -245,27 +259,16 @@ module.exports = {
         { new: true }
       );
 
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.BUSINESS_EMAIL,
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      });
-      const data = {
-        from: process.env.BUSINESS_EMAIL,
-        to: user.email,
-        subject: "Your password has been changed",
-        html: ` <p>Hey ${user.userName || user.email}, </p>
-        <p>This is a confirmation that the password for your account  ${
+      nodemailerEmail(
+        "Your password has been changed",
+        ` <p>Hey ${user?.userName || user?.email}, </p>
+        <p>This is a confirmation that the password for your account ${
           user.email
-        } has just been changed.\n </p>
+        } has just been changed. </p>
         <h3> thank you /h3>
         `,
-      };
-      // let emailTransporter = await createTransporter();
-      await transporter.sendMail(data);
-      // res.redirect(req.session.returnTo || "/home");
+        user.email
+      );
       user.save((err) => {
         if (err) {
           return next(err);
@@ -307,11 +310,6 @@ module.exports = {
       const salt = await bcrypt.genSalt(10);
 
       const newPassword = await bcrypt.hash(password, salt);
-      // const userPassword = await User.findOneAndUpdate(
-      //   { _id: req.user.id },
-      //   { password: passport },
-      //   { new: true }
-      // );
       await newPassword.save();
       res.render("profile.ejs", {
         title: "Profile Page",
