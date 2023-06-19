@@ -17,15 +17,18 @@ module.exports = {
       let tasks;
       let search = q;
       if (q !== null) {
-        tasks = await getTasksBySearch(q, limit, page);
+        tasks = await getAllTasks(
+          { $or: [{ task: { $regex: `${q}` } }] },
+          limit,
+          page
+        );
       } else {
         search = "search";
-        tasks = await getAllTasks(limit, page);
+        tasks = await getAllTasks({}, limit, page);
       }
       const total = await getTotalSpendBySearch(req.user.id, q);
       console.log(total);
       const { yearFilter, weekFilter, fullUrl } = await getDate(req);
-
       res.render("dashboard", {
         title: "task Tracker",
         tasks,
@@ -94,16 +97,8 @@ async function getTaskCountBySearch(userId, q) {
   });
 }
 
-async function getTasksBySearch(q, limit, page) {
-  return Tasks.find({ $or: [{ task: { $regex: `${q}` } }] })
-    .sort({ spendAt: "desc" })
-    .limit(limit * 1)
-    .skip((page - 1) * limit)
-    .lean();
-}
-
-async function getAllTasks(limit, page) {
-  return Tasks.find({})
+async function getAllTasks(target, limit, page) {
+  return Tasks.find(target)
     .sort({ spendAt: "desc" })
     .limit(limit * 1)
     .skip((page - 1) * limit)
