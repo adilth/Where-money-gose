@@ -117,6 +117,17 @@ h5 {
   color: var(--light-color);
   background-color: var(--second-font-color-hover);
 }
+.btn-primary {
+  background-color: transparent;
+  border-color: var(--second-font-color);
+  color: var(--second-font-color);
+  font-weight: bold;
+}
+.btn-primary:hover,
+.btn-primary:active {
+  color: white;
+  background-color: var(--second-font-color-hover);
+}
 .btn-second {
   background-color: var(--second-font-color-hover);
   color: var(--light-color);
@@ -213,7 +224,7 @@ input.form-control:focus {
   font-weight: bold;
   font-size: 1.15rem;
 }
-.open-menu {
+.profile-link.show {
   max-height: 400px;
 }
 .close-menu {
@@ -268,6 +279,9 @@ input.form-control:focus {
 }
 .sub-menu-link:hover span {
   transform: translateX(5px);
+}
+.toast-container {
+  margin-right: 2rem;
 }
 @media only screen and (max-width: 1200px) {
   .header-cont {
@@ -346,6 +360,9 @@ input.form-control:focus {
   }
 }
 @media only screen and (max-width: 600px) {
+  .btn-second {
+    font-size: 1rem;
+  }
   .header-cont {
     grid-template-columns: 3fr 0.5fr 0.5fr;
   }
@@ -359,6 +376,9 @@ input.form-control:focus {
   .mobile-nav-toggle {
     right: 0.9rem;
     top: 1.2rem;
+  }
+  .toast-container {
+    margin-right: 1rem;
   }
 }
 /*general style*/
@@ -400,7 +420,7 @@ input.form-control:focus {
   background: var(--light-color);
   width: max-content;
   padding: 0.5em;
-  color: #066efd;
+  color: var(--second-font-color-hover);
   border-radius: 5px;
 }
 
@@ -638,6 +658,14 @@ input.form-control:focus {
     gap: 1.4rem;
   }
 }
+@media (max-width: 600px) {
+  .card {
+    box-shadow: 8px 6px 10px #151d28;
+  }
+  .main-content {
+    gap: 1.4rem;
+  }
+}
 /* style page numbers*/
 .pages {
   margin: 1.2rem auto;
@@ -748,10 +776,13 @@ button {
   filter: invert(100%);
 }
 .btn-open {
-  color: #066efd;
+  color: var(--second-font-color-hover);
   font-size: 1.1rem;
-  text-decoration: underline;
+  text-decoration: underline white;
   font-weight: bold;
+}
+.btn-open:hover {
+  color: var(--second-font-color);
 }
 .btn-modal {
   display: inline-block;
