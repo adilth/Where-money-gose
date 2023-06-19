@@ -1,13 +1,22 @@
 let subMenu = document.querySelector(".profile-link");
 let imgPro = document.getElementById("img-pro");
 const overlay = document.querySelector(".overlay");
-function toggleMenu() {
-  subMenu.classList.remove("hidden");
-  subMenu.classList.toggle("open-menu");
-}
-if (imgPro) {
-  imgPro.addEventListener("click", toggleMenu);
-}
+document.addEventListener("DOMContentLoaded", () => {
+  function toggleMenu(e) {
+    e.stopPropagation();
+    // subMenu.classList.remove("hidden");
+    subMenu.classList.toggle("show");
+  }
+  if (imgPro) {
+    imgPro.addEventListener("click", toggleMenu);
+    overlay.addEventListener("click", toggleMenu);
+    document.addEventListener("click", function () {
+      if (subMenu.classList.contains("show")) {
+        subMenu.classList.remove("show");
+      }
+    });
+  }
+});
 
 const primaryNav = document.querySelector(".primary-navigation");
 const navToggle = document.querySelector(".mobile-nav-toggle");
