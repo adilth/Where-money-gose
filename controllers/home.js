@@ -3,16 +3,19 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 const moment = require("moment");
 const getDate = require("../utility/getDate");
-
+const checkRequirementsInput = require("../utility/helper");
+async function getTasks(determineTask, page, limit) {
+  return await Tasks.find(determineTask)
+    .sort({ spendAt: "desc" })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .lean();
+}
 module.exports = {
   getHome: async (req, res) => {
     try {
       let { page = 1, limit = 12 } = req.query;
-      const tasks = await Tasks.find({ user: req.user.id })
-        .sort({ spendAt: "desc" })
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .lean();
+      const tasks = await getTasks({ user: req.user.id }, page, limit);
       if (!tasks) {
         res.status(404);
         throw new Error("No tasks found");
@@ -81,18 +84,10 @@ module.exports = {
   },
   postAddTask: async (req, res) => {
     try {
-      if (
-        req.body.task === "" ||
-        req.body.spendAt === "" ||
-        req.body.spend == "" ||
-        req.body.info === ""
-      ) {
-        req.flash("errors", "please fill all fields");
-        return res.redirect("/home/new");
-      }
+      let valid = await checkRequirementsInput(req, res, "/home/new");
       req.body.user = req.user.id;
       let task = await Tasks.create(req.body);
-      if (task) {
+      if (task && valid) {
         req.flash("info", "you have successfully create the speed");
         return res.redirect("/home");
       }
@@ -103,29 +98,26 @@ module.exports = {
   },
   editTask: async (req, res) => {
     try {
-      const task = await Tasks.findById(req.params.id).lean();
+      let task = await Tasks.findById(req.params.id).lean();
       if (!task) {
         return res.render("error404.ejs");
       }
       if (task.user != req.user.id) {
         res.redirect("/home");
       } else {
-        if (
-          req.body.task === "" ||
-          req.body.spendAt === "" ||
-          req.body.spend == "" ||
-          req.body.info === ""
-        ) {
-          req.flash("errors", "please fill all fields");
-          return res.redirect("/home/editTask/" + req.params.id);
-        }
-        task = await Tasks.findOneAndUpdate({ _id: req.params.id }, req.body);
-        if (task) {
+        let valid = await checkRequirementsInput(
+          req,
+          res,
+          "/home/editTask/" + req.params.id
+        );
+        task = await Tasks.findOneAndUpdate({ _id: req.params.id }, req.body, {
+          new: true,
+        });
+        if (task && valid) {
           req.flash("info", "you have successfully updated the task");
           return res.redirect("/home");
         }
       }
-      // res.redirect("/home");
     } catch (err) {
       console.error(err);
       res.render("error500.ejs");
@@ -133,9 +125,7 @@ module.exports = {
   },
   deleteSpends: async (req, res) => {
     try {
-      // Find post by id
       let task = await Tasks.findById({ _id: req.params.id });
-      // Delete task from db
       let removed = await task.remove({ _id: req.params.id });
       console.log("Deleted task");
       if (removed) {
@@ -160,14 +150,14 @@ module.exports = {
         req.flash("errors", "invalid date provided");
         return res.redirect("/home");
       }
-      const tasks = await Tasks.find({
-        $expr: { $eq: [{ $year: "$spendAt" }, parseInt(year)] },
-        user: req.user.id,
-      })
-        .sort({ spendAt: "desc" })
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .lean();
+      const tasks = await getTasks(
+        {
+          $expr: { $eq: [{ $year: "$spendAt" }, parseInt(year)] },
+          user: req.user.id,
+        },
+        page,
+        limit
+      );
       if (!tasks) {
         res.status(404);
         throw new Error("No tasks found");
@@ -235,19 +225,19 @@ module.exports = {
     let month = req.params.month;
     let year = req.params.year;
     let { page = 1, limit = 9 } = req.query;
-    let tasks = await Tasks.find({
-      $expr: {
-        $and: [
-          { $eq: [{ $year: "$spendAt" }, year] },
-          { $eq: [{ $month: "$spendAt" }, month] },
-        ],
+    let tasks = await getTasks(
+      {
+        $expr: {
+          $and: [
+            { $eq: [{ $year: "$spendAt" }, year] },
+            { $eq: [{ $month: "$spendAt" }, month] },
+          ],
+        },
+        user: req.user.id,
       },
-      user: req.user.id,
-    })
-      .sort({ spendAt: "desc" })
-      .limit(limit * 1)
-      .skip((page - 1) * limit)
-      .lean();
+      page,
+      limit
+    );
     const count = await Tasks.countDocuments({
       $expr: {
         $and: [
@@ -312,10 +302,7 @@ module.exports = {
       res.status(404);
       throw new Error("No tasks found");
     }
-    let { yearFilter, weekFilter, count, total, fullUrl } = await getDate(
-      req,
-      res
-    );
+    let { yearFilter, weekFilter, count, total, fullUrl } = await getDate(req);
     res.render("dashboard.ejs", {
       tasks: tasks,
       total: total,
@@ -352,17 +339,17 @@ module.exports = {
         user: req.user.id,
       });
 
-      let tasks = await Tasks.find({
-        spendAt: {
-          $gte: formatFrom,
-          $lt: formatTo,
+      let tasks = await getTasks(
+        {
+          spendAt: {
+            $gte: formatFrom,
+            $lt: formatTo,
+          },
+          user: req.user.id,
         },
-        user: req.user.id,
-      })
-        .sort({ spendAt: "desc" })
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
-        .lean();
+        page,
+        limit
+      );
       if (!tasks) {
         res.status(404);
         throw new Error("No tasks found");
@@ -410,77 +397,28 @@ module.exports = {
         throw new Error("No tasks found");
       }
       const count = await Tasks.countDocuments({ user: req.user.id });
-      const total = await Tasks.aggregate([
+      const total = await countChartsDate(
+        req.user.id,
         {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
+          year: { $year: "$spendAt" },
         },
+        { _id: 1 }
+      );
+      const months = await countChartsDate(
+        req.user.id,
         {
-          $group: {
-            _id: {
-              year: { $year: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-            average: {
-              $avg: "$spend",
-            },
-          },
+          year: { $year: "$spendAt" },
+          month: { $month: "$spendAt" },
         },
-      ]);
-      const months = await Tasks.aggregate([
+        { "_id.year": -1, "_id.month": 1 }
+      );
+      const days = await countChartsDate(
+        req.user.id,
         {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
+          $dateToString: { format: "%Y-%m-%d", date: "$spendAt" },
         },
-        {
-          $group: {
-            _id: {
-              year: { $year: "$spendAt" },
-              month: { $month: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-            average: {
-              $avg: "$spend",
-            },
-            doc: {
-              $sum: 1,
-            },
-          },
-        },
-        {
-          $sort: { "_id.year": -1, "_id.month": 1 },
-        },
-      ]);
-      const days = await Tasks.aggregate([
-        {
-          $match: {
-            user: mongoose.Types.ObjectId(req.user.id),
-          },
-        },
-        {
-          $group: {
-            _id: {
-              $dateToString: { format: "%Y-%m-%d", date: "$spendAt" },
-            },
-            count: {
-              $sum: "$spend",
-            },
-            average: {
-              $avg: "$spend",
-            },
-            doc: {
-              $sum: 1,
-            },
-          },
-        },
-      ]);
-
+        { _id: 1 }
+      );
       res.render("chartjs.ejs", {
         tasks: tasks,
         months: months,
@@ -492,7 +430,34 @@ module.exports = {
       });
     } catch (err) {
       console.log(err);
-      res.render("error404.ejs");
+      res.render("error500.ejs");
     }
   },
 };
+
+async function countChartsDate(id, idRange, sort) {
+  return await Tasks.aggregate([
+    {
+      $match: {
+        user: mongoose.Types.ObjectId(id),
+      },
+    },
+    {
+      $group: {
+        _id: idRange,
+        count: {
+          $sum: "$spend",
+        },
+        average: {
+          $avg: "$spend",
+        },
+        doc: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $sort: sort,
+    },
+  ]);
+}
