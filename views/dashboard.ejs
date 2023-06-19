@@ -92,8 +92,8 @@
                 </div>
                 <% if(locals.messages.errors || locals.messages.info){ %>
                     <div class="toast-container
-                position-absolute top-0 end-0 m-5 p-2">
-                <div role="alert" aria-live="assertive" aria-atomic="true" class="toast bg-danger show" data-bs-autohide="false" data-bs-delay="1000">
+                position-absolute top-0 end-0 my-5 p-2">
+                <div role="alert" aria-live="assertive" aria-atomic="true" class="toast <%- locals.messages.errors ?'bg-danger' : 'bg-success' -%> show" data-bs-autohide="false" data-bs-delay="1000">
                     <div class="d-flex">
                         <% if (locals.messages.errors) { %>
                             <div class="toast-body h6 message-red">
